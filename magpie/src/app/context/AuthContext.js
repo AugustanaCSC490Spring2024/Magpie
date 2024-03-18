@@ -14,13 +14,20 @@ export const AuthContextProvider = ({ children }) => {
 
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
+    // Set custom parameters for GoogleAuthProvider
+    provider.setCustomParameters({
+      hd: "augustana.edu", // This restricts sign-in to users with augustana.edu emails
+    });
     signInWithPopup(auth, provider)
       .then((result) => {
+        // This will be executed only if the user's email is from augustana.edu
         console.log("Sign in successful!", result);
       })
       .catch((error) => {
         if (error.code === 'auth/cancelled-popup-request') {
           console.log("Sign in was cancelled. Please try again.");
+        } else if (error.code === 'auth/unauthorized-domain') {
+          console.error("The domain of the user's email is not authorized for sign-in.");
         } else {
           console.error("Authentication error:", error);
         }
@@ -36,7 +43,7 @@ export const AuthContextProvider = ({ children }) => {
       setUser(currentUser);
     });
     return () => unsubscribe();
-  }, [user]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, googleSignIn, logOut }}>
