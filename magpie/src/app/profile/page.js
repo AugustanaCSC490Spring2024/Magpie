@@ -1,9 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { UserAuth } from "../context/AuthContext";
-import Spinner from "../components/Spinner";
 
-const page = () => {
+export default function Page() {
   const { user } = UserAuth();
   const [loading, setLoading] = useState(true);
 
@@ -29,4 +28,3 @@ const page = () => {
   );
 };
 
-export default page;
