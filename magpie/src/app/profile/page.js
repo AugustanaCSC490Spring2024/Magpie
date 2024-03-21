@@ -1,26 +1,24 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { UserAuth } from "../context/AuthContext";
 
 export default function Page() {
-  const { user } = UserAuth();
+    const { user } = UserAuth();
 
-  useEffect(() => {
+    useEffect(() => { 
     const checkAuthentication = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
     };
     checkAuthentication();
-  }, [user]);
+}, {user});
 
   return (
-    <div>
-      { user ? (
-        <p>
-          Welcome, {user.displayName} - you are logged in to the profile page -
-          a protected route.
-        </p>
-      ) : (
-        <p>You must be logged in to view this page - protected route.</p>
+    <div className="profile-page">
+      {user && (
+        <div>
+          <h1>Welcome to your profile page, {user.displayName}!</h1>
+          <p>This is your dedicated space in our application.</p>
+        </div>
       )}
     </div>
   );
