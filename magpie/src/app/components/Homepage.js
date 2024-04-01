@@ -17,6 +17,7 @@ export default function Homepage() {
         <h2>Include your prefernces and filter your searches to find the right person to room with</h2>
       </div>
     </div>
+    
     </ AuthContextProvider>
   );
 }

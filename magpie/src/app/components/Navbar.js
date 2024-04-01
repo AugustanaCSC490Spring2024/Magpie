@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { UserAuth } from "../context/AuthContext";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
   const { user, googleSignIn, logOut } = UserAuth();
   const [loading, setLoading] = useState(true);
 
@@ -49,17 +51,17 @@ const Navbar = () => {
           <li onClick={handleSignIn}>
             Login
           </li>
-          <li onClick={handleSignIn}>
-            Sign up
-          </li>
         </ul>
       ) : (
-        <div className="user-greeting">
-          <p>Welcome, {user.displayName}</p>
-          <p onClick={handleSignOut}>
-            Sign out
-          </p>
-        </div>
+        // <div className="user-greeting">
+        //   <p>Welcome, {user.displayName}</p>
+        //   <p onClick={handleSignOut}>
+        //     Sign out
+        //   </p>
+        // </div>
+        
+           <>{router.push('/dashboard')}</>
+          
       )}
     </div>
   );
