@@ -4,10 +4,12 @@ import { UserAuth } from "../context/AuthContext";
 
 export default function Page() {
   const { user } = UserAuth();
+  const {loading, setLoading} = useState(true);
 
   useEffect(() => {
     const checkAuthentication = async () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
+      setLoading(false);
     };
     checkAuthentication();
   }, [user]);
