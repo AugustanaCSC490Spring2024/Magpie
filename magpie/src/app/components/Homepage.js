@@ -13,7 +13,7 @@ export default function Homepage() {
     <div className="page-container">
       <div className="background-image"></div>
       <div className="content">
-        <div className="title">Find your Perfect Roommate</div>
+        <h1 className="title" style={{fontFamily: 'Poppins', color: 'white', textAlign: 'left', paddingLeft: '10px'}}>Find your Perfect Roommate</h1>
         <h2>Include your prefernces and filter your searches to find the right person to room with</h2>
       </div>
     </div>
