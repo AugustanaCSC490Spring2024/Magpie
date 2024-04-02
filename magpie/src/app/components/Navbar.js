@@ -35,9 +35,7 @@ const Navbar = () => {
   return (
     <div className="navbar">
       <ul>
-        <li>
-          <Link href="/">Home</Link>
-        </li>
+        
 
         {!user ? null : (
           <li>
