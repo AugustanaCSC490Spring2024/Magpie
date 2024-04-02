@@ -25,7 +25,7 @@ return (
           
             <Grid container spacing={4} style={{ paddingLeft: 140, paddingRight: 10, paddingBottom: 80, paddingTop: 30 }}>
               <Grid item xs={12} style={{ textAlign: 'center', alignItems: 'center', paddingRight: '15rem'}}>
-              <img src={`https://via.placeholder.com/150x150.png?text=1`} ></img>
+              <img src={`https://via.placeholder.com/150x150.png?text=1`} style={{borderRadius: '80px'}}></img>
 
               </Grid>
               <Grid item xs={12} style={{ textAlign: 'center', paddingRight: '15rem'}}>

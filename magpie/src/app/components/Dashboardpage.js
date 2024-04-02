@@ -36,10 +36,10 @@ const Dashboardpage = () => {
             {Users.map((user, index) => {
                 return (
                     <Grid item xs={4} key={index}>
-                        <Card style={{ textAlign: 'center', padding: '2.4rem', width: '15rem', height: '30rem' }}>
+                        <Card style={{ textAlign: 'center', padding: '2.4rem', width: '15rem', height: '30rem', borderRadius: '15px' }}>
                             <Grid container spacing={3}>
                                 <Grid item xs={12} sx={{ margin: 'auto' }}>
-                                    <img src={`https://via.placeholder.com/150x150.png?text=${index}`}></img>
+                                    <img src={`https://via.placeholder.com/150x150.png?text=${index}`} style={{borderRadius: '80px'}}></img>
                                 </Grid>
                                 <Grid item xs={12} sx={{ margin: 'auto' }}>
                                     <Typography variant={'h4'}>{user.name}</Typography>
