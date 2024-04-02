@@ -14,7 +14,6 @@ export const AuthContextProvider = ({ children }) => {
 
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
-    // Set custom parameters for GoogleAuthProvider
     provider.setCustomParameters({
       hd: "augustana.edu", // This restricts sign-in to users with augustana.edu emails
     });
