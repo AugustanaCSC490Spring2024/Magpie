@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { db } from '../firebase'; 
+import { db } from '../firebase';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-import { useRouter } from 'next/navigation'; // Import useRouter for navigation
-import { Button, TextField, Typography, CircularProgress, Box } from '@mui/material';
+import { useRouter } from 'next/navigation'; // Adjusted import path
+import { Button, Typography, CircularProgress, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 
 const Onboarding = () => {
   const [questions, setQuestions] = useState([]);
@@ -33,8 +33,7 @@ const Onboarding = () => {
       setCurrentQuestionIndex(current => current + 1);
     } else {
       console.log('Submit responses:', responses);
-      // After submission, redirect or notify user
-      router.push('/profile'); // Redirect back to profile or a confirmation page
+      router.push('/profile');
     }
   };
 
@@ -51,14 +50,33 @@ const Onboarding = () => {
       <Typography variant="h5" component="h2" gutterBottom>
         {currentQuestion.questionText}
       </Typography>
-      <TextField
-        fullWidth
-        variant="outlined"
-        type="text"
-        value={responses[currentQuestion.id] || ''}
-        onChange={handleChange}
-        margin="normal"
-      />
+      {currentQuestion.options ? (
+        <FormControl fullWidth margin="normal">
+          <InputLabel id="response-select-label">Select</InputLabel>
+          <Select
+            labelId="response-select-label"
+            id="response-select"
+            value={responses[currentQuestion.id] || ''}
+            label="Select"
+            onChange={handleChange}
+          >
+            {currentQuestion.options.map((option, index) => (
+              <MenuItem key={index} value={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      ) : (
+        <TextField
+          fullWidth
+          variant="outlined"
+          type="text"
+          value={responses[currentQuestion.id] || ''}
+          onChange={handleChange}
+          margin="normal"
+        />
+      )}
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
         <Button variant="contained" color="primary" onClick={handleNext}>
           {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}

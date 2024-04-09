@@ -10,7 +10,11 @@ admin.initializeApp({
 const db = admin.firestore();
 
 const questions = [
-  
+  // {
+  //   questionText: "Add questions",
+  //   options: ["option1, option2"],
+  //   order: "start with 3"
+  // },
   // Add more questions as needed
 ];
 
