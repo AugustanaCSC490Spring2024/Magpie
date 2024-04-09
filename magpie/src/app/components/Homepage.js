@@ -3,7 +3,6 @@ import Image from "next/image";
 // import styles from "./page.module.css";
 import Navbar from "./Navbar";
 import "../globals.css";
-import { AuthContextProvider } from "../context/AuthContext";
 import { UserAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";

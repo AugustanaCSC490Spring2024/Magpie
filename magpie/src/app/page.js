@@ -7,7 +7,6 @@ export default function Home() {
   return (
     <AuthContextProvider>
           <Homepage></Homepage>
-
     </AuthContextProvider>
   );
 }

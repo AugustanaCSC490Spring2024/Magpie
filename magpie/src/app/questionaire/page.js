@@ -256,7 +256,6 @@ function AdminPage() {
 </Box>
 
       <Dialog open={openEditModal} onClose={handleCloseEditModal}>
-        <DialogTitle>Edit Question</DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"

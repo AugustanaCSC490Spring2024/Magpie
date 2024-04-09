@@ -13,6 +13,7 @@ const Profilepage = () => {
   };
 
   return (
+
     <div className="profile-page">
       {user && (
         <Container maxWidth='xl'>
@@ -24,9 +25,7 @@ const Profilepage = () => {
               </Grid>
               <Grid item xs={12} style={{ textAlign: 'center', paddingRight: '15rem'}}>
                 <Typography variant={'h4'}>{user.displayName}</Typography>
-                <Button variant="contained" color="primary" onClick={handleOnboardingClick} style={{ marginTop: '20px' }}>
-                  Start Onboarding
-                </Button>
+                
               </Grid>
             </Grid>
           </div>

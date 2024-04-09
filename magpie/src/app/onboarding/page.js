@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { db } from '../firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-import { useRouter } from 'next/navigation';
-import { Button, Typography, CircularProgress, Box, FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material';
+import React, { useEffect, useState, useContext  } from 'react';
+import { db } from '../firebase'; // Make sure this points to your Firebase config
+import { collection, getDocs, query, orderBy, writeBatch, doc } from 'firebase/firestore';
+import { useRouter } from 'next/navigation'; // Corrected for Next.js router
+import { UserAuth  } from '../context/AuthContext'; // Adjust based on your actual import
+import { Button, Typography, CircularProgress, Box, FormControl, InputLabel, Select, MenuItem, TextField, Container, Paper, Stepper, Step, StepLabel, useTheme, useMediaQuery } from '@mui/material';
 
 const Onboarding = () => {
   const [questions, setQuestions] = useState([]);
@@ -11,95 +12,105 @@ const Onboarding = () => {
   const [responses, setResponses] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const { user } = UserAuth();
+  
 
   useEffect(() => {
     const fetchQuestions = async () => {
       setIsLoading(true);
       const q = query(collection(db, 'onboardingQuestions'), orderBy('order'));
       const querySnapshot = await getDocs(q);
-      const fetchedQuestions = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setQuestions(fetchedQuestions);
+      setQuestions(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
       setIsLoading(false);
     };
 
     fetchQuestions();
   }, []);
 
-  const handleNext = () => {
+  const handleChange = (event, questionId) => {
+    setResponses({ ...responses, [questionId]: event.target.value });
+  };
+
+  const handleNext = async () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(current => current + 1);
     } else {
-      console.log('Submit responses:', responses);
-      router.push('/profile');
+      await handleSubmitResponses();
     }
   };
 
-  const handleChange = (e) => {
-    setResponses({ ...responses, [questions[currentQuestionIndex].id]: e.target.value });
+  const handleSubmitResponses = async () => {
+    if (!user) {
+      console.log('User must be logged in to submit responses.');
+      return;
+    }
+
+    const batch = writeBatch(db);
+    const responsesRef = doc(collection(db, 'userResponses'));
+    batch.set(responsesRef, {
+      userId: user.uid,
+      responses,
+      submittedAt: new Date(),
+    });
+
+    try {
+      await batch.commit();
+      console.log('Responses submitted successfully');
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Error submitting responses:', error);
+    }
   };
 
-  if (isLoading) return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <CircularProgress />
-    </Box>
-  );
+  if (isLoading) {
+    return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}><CircularProgress /></Box>;
+  }
 
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-      <Typography variant="h2" component="h2" sx={{
-          background: 'linear-gradient(90deg, blue, purple, green)',
-          backgroundSize: '200% 200%',
-          animation: 'gradientShift 3s ease infinite',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          textAlign: 'center',
-          width: '100%',
-          fontSize: '3rem',
-          fontWeight: 'bold',
-          mb: 4,
-        }} gutterBottom>
-        Welcome to Your Onboarding Page
-      </Typography>
-      <Box sx={{ width: '100%', maxWidth: 480, px: 2 }}>
-        {currentQuestion.options ? (
+    <Container maxWidth="md" sx={{ mt: 4 }}>
+      <Paper elevation={3} sx={{ p: isSmallScreen ? 2 : 4 }}>
+        <Stepper activeStep={currentQuestionIndex} alternativeLabel nonLinear sx={{ mb: 4 }}>
+          {questions.map((_, index) => (
+            <Step key={index}>
+              <StepLabel>{`Question ${index + 1}`}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+        <Typography variant="h4" gutterBottom component="div" sx={{ fontWeight: 'bold', mb: 3 }}>
+          Onboarding
+        </Typography>
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="h6" gutterBottom>{currentQuestion.questionText}</Typography>
           <FormControl fullWidth margin="normal">
-            <InputLabel id="response-select-label">{currentQuestion.questionText}</InputLabel>
+            <InputLabel>{currentQuestion.questionText}</InputLabel>
             <Select
-              labelId="response-select-label"
-              id="response-select"
               value={responses[currentQuestion.id] || ''}
-              label={currentQuestion.questionText}
-              onChange={handleChange}
+              onChange={(e) => handleChange(e, currentQuestion.id)}
             >
               {currentQuestion.options.map((option, index) => (
-                <MenuItem key={index} value={option}>
-                  {option}
-                </MenuItem>
+                <MenuItem key={index} value={option}>{option}</MenuItem>
               ))}
             </Select>
           </FormControl>
-        ) : (
-          <TextField
-            fullWidth
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+          <Button
             variant="outlined"
-            type="text"
-            value={responses[currentQuestion.id] || ''}
-            onChange={handleChange}
-            margin="normal"
-          />
-        )}
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-          <Button variant="contained" color="primary" onClick={handleNext}>
+            disabled={currentQuestionIndex === 0}
+            onClick={() => setCurrentQuestionIndex(current => Math.max(current - 1, 0))}
+          >
+            Back
+          </Button>
+          <Button variant="contained" onClick={handleNext}>
             {currentQuestionIndex === questions.length - 1 ? 'Submit' : 'Next'}
           </Button>
         </Box>
-      </Box>
-    </Box>
+      </Paper>
+    </Container>
   );
 };
 
