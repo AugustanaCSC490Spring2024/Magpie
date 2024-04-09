@@ -1,11 +1,11 @@
-function AdminPage() {
-    return (
-      <div>
-        <h1>Admin Dashboard</h1>
-        <p>Welcome, admin!</p>
-      </div>
-    );
-  }
-  
-  export default AdminPage;
-  
+"use client";
+import { AuthContextProvider } from "../context/AuthContext";
+import AdminHome from "../components/AdminHome";
+
+const AdminPage = () => {
+  return (
+    <AdminHome />
+  );
+};
+
+export default AdminPage;
