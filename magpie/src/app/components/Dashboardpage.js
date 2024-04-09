@@ -12,7 +12,7 @@ const capitalizeFirstLetter = (string) => {
   }
 const Dashboardpage = () => {
 
-    const { user, logOut } = UserAuth();
+    const { user, logOut, isAdmin } = UserAuth();
 
     useEffect(() => {
         const checkAuthentication = async () => {
@@ -22,6 +22,14 @@ const Dashboardpage = () => {
     }, [user]);
 
     const router = useRouter();
+
+    useEffect(() => {
+       
+        if (isAdmin) {
+            router.push('/AdminPage');
+        }
+    }, [isAdmin, router]);
+    
     const [modalOpen, setModalOpen] = useState(false);
     const handleModal = (val) => {
         setModalOpen(val);

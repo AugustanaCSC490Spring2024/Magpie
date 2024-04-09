@@ -9,6 +9,9 @@
 # testing
 /coverage
 
+# admin sdk
+/service_accounts.json
+
 # next.js
 /.next/
 /out/
