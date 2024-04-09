@@ -5,6 +5,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Users } from "../api/users";
 import Contactbutton from "./Contactbutton";
+const capitalizeFirstLetter = (string) => {
+    return string.toLowerCase().split(' ').map(word => {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join(' ');
+  }
 const Dashboardpage = () => {
 
     const { user, logOut } = UserAuth();
@@ -22,10 +27,10 @@ const Dashboardpage = () => {
         setModalOpen(val);
     }
     return (
-        <Container maxWidth='xl'>
+        <Container maxWidth='xl' >
         <Grid container spacing={2} style={{ paddingLeft: 140, paddingRight: 10, paddingBottom: 80, paddingTop: 30 }}>
             <Grid item xs={10}>
-                {user && `welcome ${user.displayName}`}
+            {user && <Typography variant="h6">Welcome <span style={{ fontFamily: 'Arial' }}>{user.displayName}</span></Typography>}
             </Grid>
             <Grid item xs={1}>
                 <Button href={'../profile'}>{"profile"}</Button>
@@ -36,13 +41,13 @@ const Dashboardpage = () => {
             {Users.map((user, index) => {
                 return (
                     <Grid item xs={4} key={index}>
-                        <Card style={{ textAlign: 'center', padding: '2.4rem', width: '15rem', height: '30rem', borderRadius: '15px' }}>
+                        <Card style={{ textAlign: 'center', padding: '2.4rem', width: '15rem', height: '30rem', borderRadius: '15px'}}>
                             <Grid container spacing={3}>
-                                <Grid item xs={12} sx={{ margin: 'auto' }}>
-                                    <img src={`https://via.placeholder.com/150x150.png?text=${index}`} style={{borderRadius: '80px'}}></img>
+                                <Grid item xs={12} sx={{ margin: 'auto'}}>
+                                <img src={`https://via.placeholder.com/150x150.png?text=${index}`} style={{ width: '150px', height: '150px', borderRadius: '15px' }} alt={`User ${index}`}></img>
                                 </Grid>
                                 <Grid item xs={12} sx={{ margin: 'auto' }}>
-                                    <Typography variant={'h4'}>{user.name}</Typography>
+                                    <Typography variant={'h4'}>{capitalizeFirstLetter(user.name)}</Typography>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <Typography variant={'h6'}>{user.major}</Typography>
@@ -51,7 +56,7 @@ const Dashboardpage = () => {
                                     <Typography>{user.year}</Typography>
                                 </Grid>
                                 <Grid item xs={12} sx={{ margin: 'auto' }}>
-                                    <Contactbutton user={user}></Contactbutton>
+                                    <Contactbutton user={user} ></Contactbutton>
                                 </Grid>
 
                             </Grid>
