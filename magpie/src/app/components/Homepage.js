@@ -4,20 +4,81 @@ import Image from "next/image";
 import Navbar from "./Navbar";
 import "../globals.css";
 import { AuthContextProvider } from "../context/AuthContext";
+import { UserAuth } from "../context/AuthContext";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Homepage() {
-  return (
-    <AuthContextProvider>
 
-    <Navbar />
-    <div className="page-container">
-      <div className="background-image"></div>
-      <div className="content">
-        <h1 className="title" style={{fontFamily: 'Poppins', color: 'white', textAlign: 'left', paddingLeft: '10px'}}>Find your Perfect Roommate</h1>
-        <h2>Include your prefernces and filter your searches to find the right person to room with</h2>
+  const router = useRouter();
+  const { user, googleSignIn, logOut } = UserAuth();
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      setLoading(false);
+    };
+    checkAuthentication();
+  }, [user]);
+
+  const handleSignIn = async () => {
+    try {
+      await googleSignIn();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+
+    <div class="header">
+      <nav>
+        <ul>
+          <li>About</li>
+          <li>
+          {loading ? null : !user ? (
+            <ul>
+              <button type="button" class="btn" onClick={handleSignIn}>Log in</button>
+
+            </ul>
+          ) : (
+            // <div className="user-greeting">
+            //   <p>Welcome, {user.displayName}</p>
+            //   <p onClick={handleSignOut}>
+            //     Sign out
+            //   </p>
+            // </div>
+
+            <>{router.push('/dashboard')}</>
+
+          )}
+          </li>
+        </ul>
+      </nav>
+      <div class="text-box">
+        <h1>Find your<br />Perfect roommate</h1>
+        <p class="secondarytext">Connect with other students that share your housing preferences.</p>
+        {loading ? null : !user ? (
+            
+            <button type="button" class="btn" onClick={handleSignIn}>Create an account</button>
+
+            
+          ) : (
+            // <div className="user-greeting">
+            //   <p>Welcome, {user.displayName}</p>
+            //   <p onClick={handleSignOut}>
+            //     Sign out
+            //   </p>
+            // </div>
+
+            <>{router.push('/dashboard')}</>
+
+          )}
       </div>
     </div>
-    
-    </ AuthContextProvider>
+
+
   );
 }

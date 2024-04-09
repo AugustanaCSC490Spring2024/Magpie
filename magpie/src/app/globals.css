@@ -17,22 +17,21 @@ body, html {
 
 .page-container {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 94vh;
   overflow: hidden;
 }
 
 .background-image {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background-image: url('/capture.jpg'); 
-  background-size: cover;
   background-position: center;
-  opacity: 0.8; 
-  z-index: -1;
+  background-size: cover;
+  color: #fff;
+  padding: 0 7%;
+  position: relative;
+
 }
 
 .content {
@@ -146,7 +145,9 @@ h2:hover {
 h3, h4, h5, h6, p {
   color: #333;
 }
-
+.secondarytext{
+  color:#fff;
+}
 /* Utility Classes */
 .cursor-pointer {
   cursor: pointer;
@@ -161,5 +162,206 @@ h3, h4, h5, h6, p {
 
   .navbar li {
     padding: 8px 10px;
+  }
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'poppins', sans-serif;
+}
+ul .flash li{
+  color: white;
+}
+.header{
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('/capture.jpg');
+  background-position: center;
+  background-size: cover;
+  color: #fff;
+  padding: 0 7%;
+  position: relative;
+}
+nav {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 30px;
+  padding-left: 100px;
+}
+
+nav ul {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%; /* Ensures the ul takes up the remaining space */
+  list-style: none;
+  padding: 0; /* Removes default padding */
+  margin: 0; /* Ensure there's no default margin */
+}
+
+nav ul li {
+  display: flex;
+  justify-content: center; /* Horizontally center the content */
+  align-items: center; /* Vertically center the content */
+  list-style: none;
+  margin: 10px 30px; /* Adjust margin as necessary */
+  /* Optional: specify a fixed width and height for each li to better visualize the centering */
+  /* width: 120px; */
+  /* height: 40px; */
+}
+
+.logo{
+  width: 160px;
+  cursor: pointer;
+  
+}
+
+nav ul li a{
+  text-decoration: none;
+  color: #fff;
+  font-size: 17px;
+  letter-spacing: 1px;
+}
+nav ul li a:hover{
+color: #2F80ED; 
+}
+nav ul button{
+  outline: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  background: #fff;
+  color: #000000;
+  border-radius: 30px;
+  padding: 14px 40px;
+  cursor: pointer;
+}
+.text-box{
+  margin-top: 16%;
+  font-size: 22px;
+
+}
+.text-box h1{
+  font-size: 85px;
+  font-weight: 600;
+  line-height: 100px;
+  margin-bottom: 10px;
+}
+.text-box .btn{
+  outline: none;
+  border: none;
+  font-size: 16px;
+  margin-top: 30px;
+  background: linear-gradient(160deg, #5fc6e6, #2F80ED);
+  color: #fff;
+  padding: 14px 40px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+/* About section styles */
+.about-section {
+  padding: 50px;
+  text-align: center;
+}
+
+.about-section .content h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.about-section .content p {
+  font-size: 18px;
+}
+
+/* Features section styles */
+.features-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin-top: 50px;
+}
+
+.feature {
+  flex-basis: 45%;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature h3 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.feature p {
+  font-size: 16px;
+  color: #666;
+}
+
+/* Hanging effect */
+.feature:before {
+  content: "";
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background-color: #f9f9f9;
+  width: 100%;
+  height: 30px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 85%);
+}
+
+.feature:after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: -15px;
+  background-color: #f9f9f9;
+  width: 100%;
+  height: 30px;
+  clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+}
+
+/* CSS animation for sliding in features */
+.feature {
+  animation-duration: 1s;
+  animation-timing-function: ease;
+}
+
+.feature:nth-child(odd) {
+  animation-name: slideInFromLeft;
+}
+
+.feature:nth-child(even) {
+  animation-name: slideInFromRight;
+}
+
+@keyframes slideInFromLeft {
+  0% {
+      transform: translateX(-100%);
+      opacity: 0;
+  }
+  100% {
+      transform: translateX(0);
+      opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+      transform: translateX(100%);
+      opacity: 0;
+  }
+  100% {
+      transform: translateX(0);
+      opacity: 1;
   }
 }
