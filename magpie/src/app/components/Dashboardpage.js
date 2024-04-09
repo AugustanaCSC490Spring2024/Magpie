@@ -50,7 +50,7 @@ const Dashboardpage = () => {
                 return (
                     <Grid item xs={4} key={index}>
                         <Card style={{ textAlign: 'center', padding: '2.4rem', width: '15rem', height: '30rem', borderRadius: '15px'}}>
-                            <Grid container spacing={2}>
+                            <Grid container spacing={3}>
                                 <Grid item xs={12} sx={{ margin: 'auto'}}>
                                 <img src={`https://via.placeholder.com/150x150.png?text=${index}`} style={{ width: '150px', height: '150px', borderRadius: '15px' }} alt={`User ${index}`}></img>
                                 </Grid>
