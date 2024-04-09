@@ -8,9 +8,13 @@ import {
 import { auth } from "../firebase";
 
 const AuthContext = createContext();
+const adminEmails = ["aymanesghier22@augustana.edu"];
+
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
 
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
@@ -21,6 +25,10 @@ export const AuthContextProvider = ({ children }) => {
       .then((result) => {
         // This will be executed only if the user's email is from augustana.edu
         console.log("Sign in successful!", result);
+        const userEmail = result.user.email;
+      if (adminEmails.includes(userEmail)) {
+        setIsAdmin(true); 
+      } // This sets is Admin to true, if user is an admin(There will be 5 admins which are the developers.)
       })
       .catch((error) => {
         if (error.code === 'auth/cancelled-popup-request') {
@@ -32,6 +40,7 @@ export const AuthContextProvider = ({ children }) => {
         }
       });
   };
+
   
   const logOut = () => {
     signOut(auth);
@@ -40,12 +49,13 @@ export const AuthContextProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      setIsAdmin(currentUser ? adminEmails.includes(currentUser.email) : false);
     });
     return () => unsubscribe();
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, googleSignIn, logOut }}>
+    <AuthContext.Provider value={{ user, googleSignIn, logOut, isAdmin}}>
       {children}
     </AuthContext.Provider>
   );
