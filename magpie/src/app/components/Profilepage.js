@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, IconButton, styled } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; // Slightly different icon for a fresh look
+import { Container, Typography, Box, IconButton, Button, styled } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; 
 import { UserAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { useRouter } from 'next/navigation'; 
 
 const InteractiveBackground = styled('div')(({ theme }) => ({
-  position: 'fixed', // Changed to 'fixed' to ensure it's always in the background
+  position: 'fixed', 
   top: 0,
   left: 0,
   width: '100%',
@@ -14,13 +15,18 @@ const InteractiveBackground = styled('div')(({ theme }) => ({
   background: 'radial-gradient(circle, #123312, #b312ff, #ffddee)',
   clipPath: 'circle(50% at center)',
   transition: 'clip-path 0.8s ease',
-  zIndex: -1, // Ensure this stays behind other content
+  zIndex: -1, 
 }));
 
 
 const ProfilePage = () => {
   const { user } = UserAuth();
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150.png?text=Profile');
+  const router = useRouter();
+
+  const navigateToDashboard = () => {
+    router.push('/dashboard'); 
+  };
 
   // Mouse move effect for background
   useEffect(() => {
@@ -28,7 +34,9 @@ const ProfilePage = () => {
       const { clientX, clientY } = e;
       const xPercent = clientX / window.innerWidth * 100;
       const yPercent = clientY / window.innerHeight * 100;
-      document.querySelector('#interactiveBackground').style.clipPath = `circle(50% at ${xPercent}% ${yPercent}%)`;
+      if (document.querySelector('#interactiveBackground')) {
+        document.querySelector('#interactiveBackground').style.clipPath = `circle(50% at ${xPercent}% ${yPercent}%)`;
+      }
     };
 
     window.addEventListener('mousemove', updateBackground);
@@ -87,7 +95,7 @@ const ProfilePage = () => {
         </Typography>
         <Box sx={{
           marginBottom: '20px',
-          borderRadius: '50%',
+          borderRadius: '40%',
           overflow: 'hidden',
           '&:hover': {
             transform: 'scale(1.05)',
@@ -103,10 +111,22 @@ const ProfilePage = () => {
             '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.5)' },
             borderRadius: '50%',
             padding: '10px',
+            position: 'absolute',
+            top: '60%',
+            left: '50%',
+
           }}>
             <AddCircleOutlineIcon sx={{ color: '#FFF', fontSize: 30 }} />
           </IconButton>
         </label>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={navigateToDashboard}
+          sx={{ mt: 2 }}
+        >
+          Dashboard
+        </Button>
       </Box>
     </>
   );
