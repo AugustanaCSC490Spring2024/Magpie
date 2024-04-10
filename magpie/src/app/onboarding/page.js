@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState, useContext  } from 'react';
-import { db } from '../firebase'; // Make sure this points to your Firebase config
+import { db } from '../firebase'; 
 import { collection, getDocs, query, orderBy, writeBatch, doc, getDoc } from 'firebase/firestore';
-import { useRouter } from 'next/navigation'; // Corrected for Next.js router
-import { UserAuth  } from '../context/AuthContext'; // Adjust based on your actual import
+import { useRouter } from 'next/navigation'; 
+import { UserAuth  } from '../context/AuthContext'; 
 import { Button, Typography, CircularProgress, Box, FormControl, InputLabel, Select, MenuItem, TextField, Container, Paper, Stepper, Step, StepLabel, useTheme, useMediaQuery } from '@mui/material';
 
 const Onboarding = () => {
@@ -11,7 +11,7 @@ const Onboarding = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [responses, setResponses] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [hasSubmittedResponses, setHasSubmittedResponses] = useState(false); // New state to track submission
+  const [hasSubmittedResponses, setHasSubmittedResponses] = useState(false); 
   const router = useRouter();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -27,7 +27,6 @@ const Onboarding = () => {
       const querySnapshot = await getDocs(q);
       const fetchedQuestions = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   
-      // Attempt to fetch existing responses
       let existingResponses = {};
       const responsesRef = doc(db, 'userResponses', user.uid);
       const responsesDoc = await getDoc(responsesRef);
@@ -88,7 +87,7 @@ const Onboarding = () => {
     try {
       await batch.commit();
       console.log('Responses submitted successfully');
-      router.push('/dashboard'); // Adjust the routing as needed
+      router.push('/dashboard'); 
     } catch (error) {
       console.error('Error submitting responses:', error);
     }

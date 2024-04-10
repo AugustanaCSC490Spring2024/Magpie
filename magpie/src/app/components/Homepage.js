@@ -6,6 +6,9 @@ import "../globals.css";
 import { UserAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { doc, getDoc } from "firebase/firestore"; 
+import { db } from "../firebase"; 
+
 
 export default function Homepage() {
 
@@ -15,12 +18,22 @@ export default function Homepage() {
 
 
   useEffect(() => {
-    const checkAuthentication = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 50));
+    const redirectToDashboardIfNeeded = async () => {
+      if (user) {
+        const responsesRef = doc(db, 'userResponses', user.uid);
+        const responsesDoc = await getDoc(responsesRef);
+
+        if (responsesDoc.exists()) {
+          router.push('/dashboard');
+        } else {
+          router.push('/profile');
+        }
+      }
       setLoading(false);
     };
-    checkAuthentication();
-  }, [user]);
+
+    redirectToDashboardIfNeeded();
+  }, [user, router]);
 
   const handleSignIn = async () => {
     try {
@@ -30,54 +43,29 @@ export default function Homepage() {
     }
   };
 
-  return (
+  
+  // if (loading) {
+  //   return <div>Loading...</div>; // Optionally, show a loading spinner or similar
+  // }
 
-    <div class="header">
-      <nav>
-        <ul>
-          <li>About</li>
-          <li>
-          {loading ? null : !user ? (
-            <ul>
-              <button type="button" class="btn" onClick={handleSignIn}>Log in</button>
 
-            </ul>
-          ) : (
-            // <div className="user-greeting">
-            //   <p>Welcome, {user.displayName}</p>
-            //   <p onClick={handleSignOut}>
-            //     Sign out
-            //   </p>
-            // </div>
-
-            <>{router.push('/dashboard')}</>
-
-          )}
-          </li>
-        </ul>
-      </nav>
-      <div class="text-box">
-        <h1>Find your<br />Perfect roommate</h1>
-        <p class="secondarytext">Connect with other students that share your housing preferences.</p>
-        {loading ? null : !user ? (
-            
-            <button type="button" class="btn" onClick={handleSignIn}>Create an account</button>
-
-            
-          ) : (
-            // <div className="user-greeting">
-            //   <p>Welcome, {user.displayName}</p>
-            //   <p onClick={handleSignOut}>
-            //     Sign out
-            //   </p>
-            // </div>
-
-            <>{router.push('/dashboard')}</>
-
-          )}
+    return (
+      <div className="header">
+        <nav>
+          <ul>
+            <li>About</li>
+            <li>
+              {!user ? (
+                <button type="button" className="btn" onClick={handleSignIn}>Log in / Create an account</button>
+              ) : null}
+            </li>
+          </ul>
+        </nav>
+        <div className="text-box">
+          <h1>Find your<br />Perfect roommate</h1>
+          <p className="secondarytext">Connect with other students that share your housing preferences.</p>
+        </div>
       </div>
-    </div>
+    );
+  }
 
-
-  );
-}
