@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState, useContext  } from 'react';
 import { db } from '../firebase'; // Make sure this points to your Firebase config
-import { collection, getDocs, query, orderBy, writeBatch, doc } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, writeBatch, doc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation'; // Corrected for Next.js router
 import { UserAuth  } from '../context/AuthContext'; // Adjust based on your actual import
 import { Button, Typography, CircularProgress, Box, FormControl, InputLabel, Select, MenuItem, TextField, Container, Paper, Stepper, Step, StepLabel, useTheme, useMediaQuery } from '@mui/material';
@@ -11,6 +11,7 @@ const Onboarding = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [responses, setResponses] = useState({});
   const [isLoading, setIsLoading] = useState(true);
+  const [hasSubmittedResponses, setHasSubmittedResponses] = useState(false); // New state to track submission
   const router = useRouter();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -18,16 +19,38 @@ const Onboarding = () => {
   
 
   useEffect(() => {
-    const fetchQuestions = async () => {
+    const fetchQuestionsAndResponses = async () => {
       setIsLoading(true);
+  
+      // Fetch questions
       const q = query(collection(db, 'onboardingQuestions'), orderBy('order'));
       const querySnapshot = await getDocs(q);
-      setQuestions(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      const fetchedQuestions = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  
+      // Attempt to fetch existing responses
+      let existingResponses = {};
+      const responsesRef = doc(db, 'userResponses', user.uid);
+      const responsesDoc = await getDoc(responsesRef);
+      if (responsesDoc.exists()) {
+        existingResponses = Object.keys(responsesDoc.data().responses).reduce((acc, questionText) => {
+          // Find the question ID corresponding to the questionText
+          const question = fetchedQuestions.find(q => q.questionText === questionText);
+          setHasSubmittedResponses(true);
+          if (question) acc[question.id] = responsesDoc.data().responses[questionText];
+          return acc;
+        }, {});
+      }
+      
+      setQuestions(fetchedQuestions);
+      setResponses(existingResponses);
       setIsLoading(false);
     };
-
-    fetchQuestions();
-  }, []);
+  
+    if (user) {
+      fetchQuestionsAndResponses();
+    }
+  }, [user]);
+  
 
   const handleChange = (event, questionId) => {
     setResponses({ ...responses, [questionId]: event.target.value });
@@ -43,26 +66,36 @@ const Onboarding = () => {
 
   const handleSubmitResponses = async () => {
     if (!user) {
-      console.log('User must be logged in to submit responses.');
+      console.error('User must be logged in to submit responses.');
       return;
     }
-
+  
+    // Preparing the data for Firestore submission
+    const responsesForFirestore = Object.keys(responses).reduce((acc, questionId) => {
+      const questionText = questions.find(question => question.id === questionId).questionText;
+      acc[questionText] = responses[questionId];
+      return acc;
+    }, {});
+  
     const batch = writeBatch(db);
-    const responsesRef = doc(collection(db, 'userResponses'));
+    const responsesRef = doc(collection(db, 'userResponses'), user.uid); 
     batch.set(responsesRef, {
       userId: user.uid,
-      responses,
+      responses: responsesForFirestore,
       submittedAt: new Date(),
     });
-
+  
     try {
       await batch.commit();
       console.log('Responses submitted successfully');
-      router.push('/dashboard');
+      router.push('/dashboard'); // Adjust the routing as needed
     } catch (error) {
       console.error('Error submitting responses:', error);
     }
   };
+  
+  const headingText = hasSubmittedResponses ? "Edit Onboarding Responses" : "Start Onboarding";
+
 
   if (isLoading) {
     return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}><CircularProgress /></Box>;
@@ -81,12 +114,11 @@ const Onboarding = () => {
           ))}
         </Stepper>
         <Typography variant="h4" gutterBottom component="div" sx={{ fontWeight: 'bold', mb: 3 }}>
-          Onboarding
+          {headingText}
         </Typography>
         <Box sx={{ mb: 2 }}>
           <Typography variant="h6" gutterBottom>{currentQuestion.questionText}</Typography>
           <FormControl fullWidth margin="normal">
-            <InputLabel>{currentQuestion.questionText}</InputLabel>
             <Select
               value={responses[currentQuestion.id] || ''}
               onChange={(e) => handleChange(e, currentQuestion.id)}
