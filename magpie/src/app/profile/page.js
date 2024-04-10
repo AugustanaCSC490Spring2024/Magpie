@@ -6,10 +6,15 @@ import Onboarding from "../onboarding/page";
 const Profile = () => {
   return (
     <AuthContextProvider>
-      <Profilepage />
-      <Onboarding />
+      <div style={{ position: 'relative', zIndex: 0 }}> {/* Ensures content flow */}
+        <Profilepage />
+        <div style={{ paddingTop: '50vh' }}> {/* Pushes onboarding down or adjust as needed */}
+          <Onboarding />
+        </div>
+      </div>
     </AuthContextProvider>
   );
 };
+
 
 export default Profile;

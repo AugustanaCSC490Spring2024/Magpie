@@ -1,35 +1,54 @@
-import { useState, useEffect } from 'react';
-import { Container, Grid, Typography, IconButton } from '@mui/material';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { Container, Typography, Box, IconButton, styled } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; // Slightly different icon for a fresh look
 import { UserAuth } from '../context/AuthContext';
-import { db } from '../firebase'; // Import your Firestore database from where it's initialized
+import { db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
-const Profilepage = () => {
-  const router = useRouter();
+const InteractiveBackground = styled('div')(({ theme }) => ({
+  position: 'fixed', // Changed to 'fixed' to ensure it's always in the background
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  background: 'radial-gradient(circle, #1a2a6c, #b21f1f, #fdbb2d)',
+  clipPath: 'circle(25% at center)',
+  transition: 'clip-path 0.5s ease',
+  zIndex: -1, // Ensure this stays behind other content
+}));
+
+
+const ProfilePage = () => {
   const { user } = UserAuth();
-  // Initialize profileImage state with placeholder image
-  const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150x150.png?text=Profile');
+  const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150.png?text=Profile');
+
+  // Mouse move effect for background
+  useEffect(() => {
+    const updateBackground = (e) => {
+      const { clientX, clientY } = e;
+      const xPercent = clientX / window.innerWidth * 100;
+      const yPercent = clientY / window.innerHeight * 100;
+      document.querySelector('#interactiveBackground').style.clipPath = `circle(50% at ${xPercent}% ${yPercent}%)`;
+    };
+
+    window.addEventListener('mousemove', updateBackground);
+    return () => window.removeEventListener('mousemove', updateBackground);
+  }, []);
 
   useEffect(() => {
-    // Fetch the profile image URL from Firestore when the component loads
     const fetchProfileImage = async () => {
       if (user?.uid) {
         const docRef = doc(db, 'userProfiles', user.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           setProfileImage(docSnap.data().imageUrl);
-        } else {
-          // If there's no document for the user, keep or set the placeholder image
-          setProfileImage('https://via.placeholder.com/150x150.png?text=Profile');
         }
       }
     };
-
+  
     fetchProfileImage();
   }, [user]);
-
+  
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file && user?.uid) {
@@ -37,7 +56,6 @@ const Profilepage = () => {
       reader.onload = async (e) => {
         const imageUrl = e.target.result;
         setProfileImage(imageUrl);
-        // Store the image URL in Firestore
         await setDoc(doc(db, 'userProfiles', user.uid), { imageUrl });
       };
       reader.readAsDataURL(file);
@@ -45,50 +63,56 @@ const Profilepage = () => {
   };
 
   return (
-    <div className="profile-page">
-      {user && (
-        <Container maxWidth='xl'>
-          <div>
-            <h1>Welcome to your profile page, {user.displayName}!</h1>
-            <Grid container spacing={4} style={{ paddingLeft: 140, paddingRight: 10, paddingBottom: 80, paddingTop: 30 }}>
-              <Grid item xs={12} style={{ textAlign: 'center', alignItems: 'center', paddingRight: '15rem', position: 'relative' }}>
-                {/* Use the profileImage state for the image source */}
-                <img src={profileImage} style={{ width: '150px', height: '150px', borderRadius: '80px' }} alt="Profile" />
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  id="profile-image-upload"
-                  style={{ display: 'none' }}
-                />
-                <label htmlFor="profile-image-upload">
-                  <IconButton
-                    color="primary"
-                    component="span"
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 560,
-                      backgroundColor: 'white',
-                      borderRadius: '50%',
-                      transform: 'translate(50%, 50%)',
-                      height: '50px',
-                      width: '50px',
-                    }}
-                  >
-                    <AddCircleIcon style={{ fontSize: '3rem' }} />
-                  </IconButton>
-                </label>
-              </Grid>
-              <Grid item xs={12} style={{ textAlign: 'center', paddingRight: '15rem' }}>
-                <Typography variant={'h4'}>{user.displayName}</Typography>
-              </Grid>
-            </Grid>
-          </div>
-        </Container>
-      )}
-    </div>
+    <>
+      <InteractiveBackground id="interactiveBackground" />
+      <Box sx={{
+        position: 'absolute',
+        top: '25%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '90vw',
+        maxWidth: '600px',
+        background: 'rgba(255, 255, 255, 0.2)',
+        borderRadius: '15px',
+        padding: '20px',
+        backdropFilter: 'blur(10px)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+      }}>
+        <Typography variant="h4" sx={{ color: '#000', marginBottom: '20px' }}>
+          Welcome, {user?.displayName || 'Guest'}!
+        </Typography>
+        <Box sx={{
+          marginBottom: '20px',
+          borderRadius: '50%',
+          overflow: 'hidden',
+          '&:hover': {
+            transform: 'scale(1.05)',
+            transition: 'transform 0.5s ease',
+          }
+        }}>
+          <img src={profileImage} alt="Profile" style={{ width: '150px', height: '150px' }} />
+        </Box>
+        <input type="file" accept="image/*" onChange={handleImageUpload} id="profile-image-upload" style={{ display: 'none' }} />
+        <label htmlFor="profile-image-upload">
+          <IconButton color="primary" component="span" sx={{
+            backgroundColor: 'rgba(255, 255, 255, 0.3)',
+            '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.5)' },
+            borderRadius: '50%',
+            padding: '10px',
+          }}>
+            <AddCircleOutlineIcon sx={{ color: '#FFF', fontSize: 30 }} />
+          </IconButton>
+        </label>
+      </Box>
+    </>
   );
 };
 
-export default Profilepage;
+export default ProfilePage;
+
+
+
