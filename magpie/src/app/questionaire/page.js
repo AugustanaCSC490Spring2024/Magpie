@@ -145,14 +145,24 @@ function AdminPage() {
         finalOrder = maxOrder + 1; 
       } else {
         const orderConflict = questions.find(q => q.order === finalOrder && q.id !== id);
+        // Preemptively adjust orders to accommodate the edited question
         if (orderConflict) {
-          for (let question of questions.filter(q => q.order >= finalOrder && q.id !== id)) {
-            await updateDoc(doc(db, 'onboardingQuestions', question.id), {
-              ...question,
-              order: question.order + 1
+          // Determine direction of reordering
+          const isMovingForward = finalOrder > editQuestion.order;
+          const startOrder = isMovingForward ? editQuestion.order : finalOrder;
+          const endOrder = isMovingForward ? finalOrder : editQuestion.order;
+
+          // Adjust orders in the direction of the move
+          questions.filter(q => q.order >= startOrder && q.order <= endOrder && q.id !== id)
+            .forEach(async (question) => {
+              const newOrder = isMovingForward ? question.order - 1 : question.order + 1;
+              await updateDoc(doc(db, 'onboardingQuestions', question.id), {
+                ...question,
+                order: newOrder
+              });
             });
-          }
         }
+
       }
   
       try {
