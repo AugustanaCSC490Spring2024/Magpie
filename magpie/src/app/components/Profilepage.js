@@ -14,7 +14,7 @@ const InteractiveBackground = styled('div')(({ theme }) => ({
   left: 0,
   width: '100%',
   height: '100%',
-  background: 'radial-gradient(circle, #123312, #b312ff, #ffddee)',
+  background: 'radial-gradient(circle, #112233, #3344ff, #cceeff)',
   clipPath: 'circle(80% at center)',
   transition: 'clip-path 0.2s ease',
   zIndex: -1, 
