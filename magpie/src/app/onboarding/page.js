@@ -50,7 +50,6 @@ const Onboarding = () => {
     }
   }, [user]);
   
-
   const handleChange = (event, questionId) => {
     setResponses({ ...responses, [questionId]: event.target.value });
   };
@@ -103,7 +102,7 @@ const Onboarding = () => {
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Paper elevation={3} sx={{ p: isSmallScreen ? 2 : 4 }}>
         <Stepper activeStep={currentQuestionIndex} alternativeLabel nonLinear sx={{ mb: 4 }}>
           {questions.map((_, index) => (

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, IconButton, Button, styled } from '@mui/material';
+import { Container, Typography, Box, TextField, IconButton, Button, styled } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; 
 import { UserAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation'; 
+import { Snackbar, Alert } from '@mui/material';
+
 
 const InteractiveBackground = styled('div')(({ theme }) => ({
   position: 'fixed', 
@@ -13,8 +15,8 @@ const InteractiveBackground = styled('div')(({ theme }) => ({
   width: '100%',
   height: '100%',
   background: 'radial-gradient(circle, #123312, #b312ff, #ffddee)',
-  clipPath: 'circle(50% at center)',
-  transition: 'clip-path 0.8s ease',
+  clipPath: 'circle(80% at center)',
+  transition: 'clip-path 0.2s ease',
   zIndex: -1, 
 }));
 
@@ -22,7 +24,11 @@ const InteractiveBackground = styled('div')(({ theme }) => ({
 const ProfilePage = () => {
   const { user } = UserAuth();
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150.png?text=Profile');
+  const [bio, setBio] = useState(''); // State for bio
   const router = useRouter();
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
 
   const navigateToDashboard = () => {
     router.push('/dashboard'); 
@@ -50,12 +56,28 @@ const ProfilePage = () => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           setProfileImage(docSnap.data().imageUrl);
+          setBio(docSnap.data().bio || ''); 
+
         }
       }
     };
   
     fetchProfileImage();
   }, [user]);
+
+  const handleBioChange = (event) => {
+    setBio(event.target.value);
+  };
+
+  const saveProfile = async () => {
+    if (user?.uid) {
+      await setDoc(doc(db, 'userProfiles', user.uid), { bio, imageUrl: profileImage }, { merge: true });
+      setSnackbarMessage('Your bio has been saved!');
+      setOpenSnackbar(true); // Open the Snackbar with the message
+    }
+  };
+  
+
   
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -75,7 +97,7 @@ const ProfilePage = () => {
       <InteractiveBackground id="interactiveBackground" />
       <Box sx={{
         position: 'absolute',
-        top: '25%',
+        top: '30%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
         width: '90vw',
@@ -112,27 +134,56 @@ const ProfilePage = () => {
             borderRadius: '50%',
             padding: '10px',
             position: 'absolute',
-            top: '60%',
-            left: '50%',
+            top: '38%',
+            left: '55%',
 
           }}>
             <AddCircleOutlineIcon sx={{ color: '#FFF', fontSize: 30 }} />
           </IconButton>
         </label>
+        
+      
+        <TextField
+          label="Add Bio"
+          multiline
+          rows={4}
+          variant="filled"
+          value={bio}
+          onChange={handleBioChange}
+          fullWidth
+          sx={{ backgroundColor: 'rgba(255, 255, 255, 0.7)', borderRadius: 1 }}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={saveProfile} // Call saveProfile when clicking the button
+          
+          sx={{ mt: 2, display: 'inline-block', marginLeft: '10px' }}
+          >
+          Save Bio
+        </Button>
         <Button
           variant="contained"
           color="primary"
           onClick={navigateToDashboard}
-          sx={{ mt: 2 }}
-        >
+          sx={{ mt: 2, display: 'inline-block', marginLeft: '10px' }}
+          >
           Dashboard
         </Button>
       </Box>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+
     </>
   );
 };
 
 export default ProfilePage;
-
-
-
