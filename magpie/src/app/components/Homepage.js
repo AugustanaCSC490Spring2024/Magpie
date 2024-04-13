@@ -42,7 +42,14 @@ export default function Homepage() {
       console.log(error);
     }
   };
-
+  const handleAboutClick = async () => {
+    try {
+      // Redirect to the About page
+      router.push('/about');
+    } catch (error) {
+      console.log(error);
+    }
+  };
   
   // if (loading) {
   //   return <div>Loading...</div>; // Optionally, show a loading spinner or similar
@@ -53,7 +60,7 @@ export default function Homepage() {
       <div className="header">
         <nav>
           <ul>
-            <li>About</li>
+            <li><button type="button" className="btn" onClick={handleAboutClick}>About</button></li>
             <li>
               {!user ? (
                 <button type="button" className="btn" onClick={handleSignIn}>Log in / Create an account</button>
