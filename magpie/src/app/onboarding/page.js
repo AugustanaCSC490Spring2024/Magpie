@@ -55,12 +55,19 @@ const Onboarding = () => {
   };
 
   const handleNext = async () => {
+    const currentResponse = responses[questions[currentQuestionIndex].id];
+    if (!currentResponse) {
+      alert("Please answer the question before proceeding."); // Simple alert, consider a more integrated notification system
+      return;
+    }
+  
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(current => current + 1);
     } else {
       await handleSubmitResponses();
     }
   };
+  
 
   const handleSubmitResponses = async () => {
     if (!user) {

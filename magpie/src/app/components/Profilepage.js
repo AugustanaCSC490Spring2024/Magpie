@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Box, TextField, IconButton, Button, styled } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'; 
+import { Container, Typography, Box, TextField, IconButton, Button, styled, Snackbar, Alert } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { UserAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation'; 
-import { Snackbar, Alert } from '@mui/material';
-
 
 const InteractiveBackground = styled('div')(({ theme }) => ({
-  position: 'fixed', 
+  position: 'fixed',
   top: 0,
   left: 0,
   width: '100%',
@@ -17,68 +15,54 @@ const InteractiveBackground = styled('div')(({ theme }) => ({
   background: 'radial-gradient(circle, #112233, #3344ff, #cceeff)',
   clipPath: 'circle(80% at center)',
   transition: 'clip-path 0.2s ease',
-  zIndex: -1, 
+  zIndex: -1,
 }));
-
 
 const ProfilePage = () => {
   const { user } = UserAuth();
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150.png?text=Profile');
-  const [bio, setBio] = useState(''); // State for bio
+  const [bio, setBio] = useState('');
   const router = useRouter();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
 
-
-  const navigateToDashboard = () => {
-    router.push('/dashboard'); 
-  };
-
-  // Mouse move effect for background
   useEffect(() => {
-    const updateBackground = (e) => {
-      const { clientX, clientY } = e;
-      const xPercent = clientX / window.innerWidth * 100;
-      const yPercent = clientY / window.innerHeight * 100;
-      if (document.querySelector('#interactiveBackground')) {
-        document.querySelector('#interactiveBackground').style.clipPath = `circle(50% at ${xPercent}% ${yPercent}%)`;
-      }
-    };
-
-    window.addEventListener('mousemove', updateBackground);
-    return () => window.removeEventListener('mousemove', updateBackground);
-  }, []);
-
-  useEffect(() => {
-    const fetchProfileImage = async () => {
+    const fetchProfileData = async () => {
       if (user?.uid) {
         const docRef = doc(db, 'userProfiles', user.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setProfileImage(docSnap.data().imageUrl);
-          setBio(docSnap.data().bio || ''); 
-
+          const data = docSnap.data();
+          setProfileImage(data.imageUrl || 'https://via.placeholder.com/150.png?text=Profile');
+          setBio(data.bio || '');
+        } else {
+          await setDoc(docRef, {
+            name: user.displayName,
+            email: user.email,
+            imageUrl: profileImage,
+            bio: ''
+          });
         }
       }
     };
-  
-    fetchProfileImage();
-  }, [user]);
 
-  const handleBioChange = (event) => {
-    setBio(event.target.value);
-  };
+    fetchProfileData();
+  }, [user]);
 
   const saveProfile = async () => {
     if (user?.uid) {
-      await setDoc(doc(db, 'userProfiles', user.uid), { bio, imageUrl: profileImage }, { merge: true });
-      setSnackbarMessage('Your bio has been saved!');
-      setOpenSnackbar(true); // Open the Snackbar with the message
+      const userProfile = {
+        name: user.displayName,  
+        email: user.email,       
+        imageUrl: profileImage,
+        bio
+      };
+      await setDoc(doc(db, 'userProfiles', user.uid), userProfile, { merge: true });
+      setSnackbarMessage('Profile updated successfully!');
+      setOpenSnackbar(true);
     }
   };
-  
 
-  
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
     if (file && user?.uid) {
@@ -86,7 +70,7 @@ const ProfilePage = () => {
       reader.onload = async (e) => {
         const imageUrl = e.target.result;
         setProfileImage(imageUrl);
-        await setDoc(doc(db, 'userProfiles', user.uid), { imageUrl });
+        await setDoc(doc(db, 'userProfiles', user.uid), { imageUrl }, { merge: true });
       };
       reader.readAsDataURL(file);
     }
@@ -136,38 +120,34 @@ const ProfilePage = () => {
             position: 'absolute',
             top: '38%',
             left: '55%',
-
           }}>
             <AddCircleOutlineIcon sx={{ color: '#FFF', fontSize: 30 }} />
           </IconButton>
         </label>
-        
-      
         <TextField
           label="Add Bio"
           multiline
           rows={4}
           variant="filled"
           value={bio}
-          onChange={handleBioChange}
+          onChange={(e) => setBio(e.target.value)}
           fullWidth
           sx={{ backgroundColor: 'rgba(255, 255, 255, 0.7)', borderRadius: 1 }}
         />
         <Button
           variant="contained"
           color="primary"
-          onClick={saveProfile} // Call saveProfile when clicking the button
-          
+          onClick={saveProfile}
           sx={{ mt: 2, display: 'inline-block', marginLeft: '10px' }}
-          >
+        >
           Save Bio
         </Button>
         <Button
           variant="contained"
           color="primary"
-          onClick={navigateToDashboard}
+          onClick={() => router.push('/dashboard')}
           sx={{ mt: 2, display: 'inline-block', marginLeft: '10px' }}
-          >
+        >
           Dashboard
         </Button>
       </Box>
@@ -181,7 +161,6 @@ const ProfilePage = () => {
           {snackbarMessage}
         </Alert>
       </Snackbar>
-
     </>
   );
 };

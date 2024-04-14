@@ -10,7 +10,7 @@ const capitalizeFirstLetter = (string) => {
       return word.charAt(0).toUpperCase() + word.slice(1);
     }).join(' ');
   }
-const Dashboardpage = () => {
+  const Dashboardpage = (props) => {
 
     const { user, logOut, isAdmin } = UserAuth();
 
@@ -35,6 +35,7 @@ const Dashboardpage = () => {
         setModalOpen(val);
     }
     return (
+        
         <Container maxWidth='xl' >
         <Grid container spacing={2} style={{ paddingLeft: 140, paddingRight: 10, paddingBottom: 80, paddingTop: 30 }}>
             <Grid item xs={10}>
@@ -66,19 +67,20 @@ const Dashboardpage = () => {
                                 <Grid item xs={12} sx={{ margin: 'auto' }}>
                                     <Contactbutton user={user} ></Contactbutton>
                                 </Grid>
-
                             </Grid>
-
                         </Card>
-                    </Grid>
+                    </Grid>    
                 )
 
             })}
 
         </Grid>
+        {props.children} 
         </Container>
+        
 
     )
+    {props.children} 
 
 }
 

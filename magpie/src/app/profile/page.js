@@ -6,9 +6,9 @@ import Onboarding from "../onboarding/page";
 const Profile = () => {
   return (
     <AuthContextProvider>
-      <div style={{ position: 'relative', zIndex: 0 }}> {/* Ensures content flow */}
+      <div style={{ position: 'relative', zIndex: 0 }}> 
         <Profilepage />
-        <div style={{ paddingTop: '85vh' }}> {/* Pushes onboarding down or adjust as needed */}
+        <div style={{ paddingTop: '85vh' }}> 
           <Onboarding />
         </div>
       </div>
