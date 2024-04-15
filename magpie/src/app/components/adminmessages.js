@@ -9,7 +9,7 @@ function AdminMessages({ userId, onClose }) {
     const [newMessage, setNewMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [userName, setUserName] = useState('');
-    const { user } = UserAuth(); // Assuming this context provides admin user info
+    const { user } = UserAuth();
 
     useEffect(() => {
         async function fetchData() {
@@ -19,44 +19,35 @@ function AdminMessages({ userId, onClose }) {
                     setUserName(userDoc.data().name);
                 } else {
                     console.log("No user profile found");
-                    return; // Exit if no user profile found
+                    return;
                 }
     
                 const messagesRef = collection(db, 'adminMessages');
                 const q = query(
                     messagesRef,
-                    where("userId", "==", userId),
-                    where("senderId", "in", [user.uid, userId]),
+                    where("userId", "in", [userId, user.uid]), // Includes both user IDs
+                    where("senderId", "in", [userId, user.uid]), // Includes both sender IDs
                     orderBy('createdAt')
                 );
     
                 const unsubscribe = onSnapshot(q, (snapshot) => {
-                    if (snapshot.empty) {
-                        console.log("No messages found for this user.");
-                        setMessages([]); // Clear messages if none are found
-                    } else {
-                        const fetchedMessages = snapshot.docs.map(doc => {
-                            return {
-                                id: doc.id,
-                                ...doc.data()
-                            };
-                        });
-                        setMessages(fetchedMessages);
-                    }
+                    const fetchedMessages = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    setMessages(fetchedMessages.sort((a, b) => a.createdAt - b.createdAt)); // Sort messages by createdAt
                 }, error => {
                     console.error("Firestore error:", error);
                 });
     
                 return () => unsubscribe();
             } else {
-                setMessages([]); // Clear messages when there is no user or user change
+                setMessages([]);
             }
         }
     
         fetchData();
     }, [userId, user]);
-    
-    
 
     const sendMessage = async () => {
         if (user && newMessage.trim() !== '') {
@@ -75,8 +66,16 @@ function AdminMessages({ userId, onClose }) {
         }
     };
 
+
     return (
-        <Container maxWidth="sm">
+        <Container maxWidth="sm" sx={{
+            position: 'fixed',
+            right: 0,
+            top: 0,
+            height: '100vh',
+            zIndex: 1300,
+            overflow: 'auto'
+        }}>
             <Box sx={{ position: 'relative' }}>
                 <IconButton onClick={onClose} sx={{ position: 'absolute', right: 0, top: 0 }}>
                     <CloseIcon />
@@ -88,10 +87,10 @@ function AdminMessages({ userId, onClose }) {
                     <Box key={msg.id} sx={{
                         display: 'flex',
                         flexDirection: 'column',
-                        alignItems: msg.isAdmin ? 'flex-end' : 'flex-start',
+                        alignItems: msg.senderId === user.uid ? 'flex-end' : 'flex-start',
                         mb: 1,
                         p: 1,
-                        bgcolor: msg.isAdmin ? '#DCF8C6' : '#FFFFFF',
+                        bgcolor: msg.senderId === user.uid ? '#D6EAF8' : '#E2EFDA', // Change colors as needed
                         borderRadius: '20px',
                         maxWidth: '70%',
                         wordWrap: 'break-word'
