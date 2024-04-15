@@ -19,6 +19,20 @@ const InteractiveBackground = styled('div')(({ theme }) => ({
   zIndex: -1,
 }));
 
+const Overlay = styled('div')(({ theme }) => ({
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Semi-transparent black background
+  zIndex: 1000,  // High z-index to ensure it covers other components
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}));
+
+
 const ProfilePage = () => {
   const { user } = UserAuth();
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150.png?text=Profile');
@@ -129,22 +143,24 @@ const ProfilePage = () => {
   return (
     <>
       <InteractiveBackground />
+      {selectedUserId && <Overlay />}
       <Box sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        position: 'absolute',
-        top: '30%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: '90vw',
-        maxWidth: '1000px',
-        background: 'rgba(255, 255, 255, 0.2)',
-        borderRadius: '15px',
-        padding: '20px',
-        backdropFilter: 'blur(10px)',
-        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-        border: '1px solid rgba(255, 255, 255, 0.3)',
-      }}>
+      display: 'flex',
+      flexDirection: 'row',
+      position: 'absolute',
+      top: '30%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: '90vw',
+      maxWidth: '1000px',
+      background: 'rgba(255, 255, 255, 0.2)',
+      borderRadius: '15px',
+      padding: '20px',
+      backdropFilter: 'blur(10px)',
+      boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+      border: '1px solid rgba(255, 255, 255, 0.3)',
+      zIndex: 1,  // Ensure this is below the Overlay
+    }}>
         {/* Profile Info Section */}
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
           <Typography variant="h4" sx={{ marginBottom: '20px' }}>
@@ -190,10 +206,11 @@ const ProfilePage = () => {
         </List>
     </Box>
 )}
+</Box>
 {selectedUserId && (
-    <Box sx={{ position: 'absolute', bottom: 20, width: '100%', paddingTop: '20px' }}>
-        <AdminMessages userId={selectedUserId} messages={conversation} onClose={() => setSelectedUserId(null)} />
-    </Box>
+     <Box sx={{ position: 'fixed', bottom: 20, width: '100%', paddingTop: '20px', zIndex: 1010 }}>
+      <AdminMessages userId={selectedUserId} messages={conversation} onClose={() => setSelectedUserId(null)} />
+     </Box>
 )}
         <Button
           variant="contained"
@@ -203,7 +220,7 @@ const ProfilePage = () => {
         >
           {inboxOpen ? 'Close Inbox' : 'Open Inbox'}
         </Button>
-      </Box>
+      
     </>
   );
 };

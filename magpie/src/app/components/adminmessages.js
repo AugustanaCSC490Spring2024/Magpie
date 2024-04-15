@@ -77,10 +77,25 @@ function AdminMessages({ userId, onClose }) {
             overflow: 'auto'
         }}>
             <Box sx={{ position: 'relative' }}>
-                <IconButton onClick={onClose} sx={{ position: 'absolute', right: 0, top: 0 }}>
+                <IconButton onClick={onClose} sx={{ position: 'absolute', right: 5, top: 12 }}>
                     <CloseIcon />
                 </IconButton>
-                <Typography variant="h5" sx={{ mt: 4, mb: 2 }}>Messaging {userName || 'User'}</Typography>
+                <Box sx={{
+  mt: 4,
+  mb: 2,
+  p: 2,
+  borderRadius: 2,
+  boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+  background: 'linear-gradient(135deg, rgba(126,132,233,1) 0%, rgba(255,105,180,1) 100%)',
+  color: 'white',  // Ensures text color is white for high contrast
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center'
+}}>
+  <Typography variant="h5" sx={{ fontFamily: "'Roboto', sans-serif", fontWeight: 'bold' }}>
+    Messaging {userName || 'User'}
+  </Typography>
+</Box>
             </Box>
             <Box sx={{ my: 4, bgcolor: '#f0f0f0', p: 2, borderRadius: 2, boxShadow: 3 }}>
                 {messages.map((msg) => (

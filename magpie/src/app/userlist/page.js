@@ -31,13 +31,17 @@ function UserList() {
     const handleSelectUser = (userId) => {
         setSelectedUserId(userId);
     };
+    const handleClose = () => {
+        setSelectedUserId(null);  // This sets the selectedUserId to null, which should close the AdminMessages
+    };
+    
 
     return (
         <AuthContextProvider>
             <Container maxWidth="sm" sx={{
                 position: 'fixed', // Makes the container fixed position
-                left: 80, // Align to the right side
-                top: 0, // Start from the top
+                left: 170, // Align to the right side
+                top: 20, // Start from the top
                 width: '50vw', // Manage the width to make it look like a sidebar
                 height: '100vh', // Full viewport height
                 overflowY: 'auto', // Adds vertical scroll to the container
@@ -57,7 +61,7 @@ function UserList() {
                         </ListItem>
                     ))}
                 </List>
-                {selectedUserId && <AdminMessages userId={selectedUserId} />}
+                {selectedUserId && <AdminMessages userId={selectedUserId} onClose={handleClose} />}
             </Container>
         </AuthContextProvider>
     );
