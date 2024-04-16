@@ -7,7 +7,7 @@ function AdminDashboard() {
   const router = useRouter();
 
   const navigateToCustomizeQuestionnaire = () => {
-    router.push('/questionnaire');
+    router.push('/questionaire');
   };
 
   const navigateToUserList = () => {
