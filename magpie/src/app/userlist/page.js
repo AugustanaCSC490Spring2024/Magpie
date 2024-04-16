@@ -41,7 +41,7 @@ function UserList() {
             <Container maxWidth="sm" sx={{
                 position: 'fixed', // Makes the container fixed position
                 left: 170, // Align to the right side
-                top: 20, // Start from the top
+                top: 80, // Start from the top
                 width: '50vw', // Manage the width to make it look like a sidebar
                 height: '100vh', // Full viewport height
                 overflowY: 'auto', // Adds vertical scroll to the container
