@@ -22,23 +22,20 @@ export default function Homepage() {
               const userProfileRef = doc(db, 'userProfiles', user.uid);
               const docSnap = await getDoc(userProfileRef);
               if (docSnap.exists()) {
-                  setHasProfile(true);
+                router.push('/AdminPage'); // Navigate to AdminPage if the profile exists
               } else {
-                  setHasProfile(false);
+                router.push('/adminProfile'); // Redirect to the Admin Profile page to create profile
               }
+          }else if (user) {
+              router.push('/profile');
+           
           }
       };
       fetchProfile();
   }, [user, isAdmin]);
 
   
-    if (isAdmin && !hasProfile) {
-        router.push('/adminProfile'); // Redirect to the Admin Profile page to create profile
-    } else if (isAdmin && hasProfile) {
-        router.push('/AdminPage'); // Navigate to AdminPage if the profile exists
-    } else if (user){
-        router.push('/profile');
-    }
+    
       
   const handleSignIn = async () => {
     try {

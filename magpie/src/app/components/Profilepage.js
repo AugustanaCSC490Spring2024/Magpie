@@ -54,29 +54,33 @@ const ProfilePage = () => {
     if (user?.uid) {
         const fetchMessages = () => {
             const messagesRef = collection(db, 'adminMessages');
-            // Query to fetch messages where the current user is involved and isAdmin is true
             const q = query(messagesRef, where("userId", "==", user.uid), where("isAdmin", "==", true));
             onSnapshot(q, (snapshot) => {
                 const userMessages = {};
                 snapshot.docs.forEach(doc => {
                     const data = doc.data();
-                    // Store messages by senderId for initial listing
+                    console.log(data); // Log each message data
                     if (!userMessages[data.senderId]) {
-                        userMessages[data.senderId] = { messages: [], senderName: data.senderName, lastMessage: data.text };
+                        userMessages[data.senderId] = {
+                            messages: [],
+                            senderName: data.senderName,
+                            lastMessage: data.text,
+                            lastMessageCreatedAt: data.createdAt || null // Ensure this is always set, even as null if missing
+                        };
+                    }
+                    if (!userMessages[data.senderId].lastMessageCreatedAt || (data.createdAt && data.createdAt.seconds > userMessages[data.senderId].lastMessageCreatedAt.seconds)) {
+                        userMessages[data.senderId].lastMessage = data.text;
+                        userMessages[data.senderId].lastMessageCreatedAt = data.createdAt;
                     }
                     userMessages[data.senderId].messages.push({ ...data, id: doc.id });
                 });
-                // Extract minimal data for the list view
-                setMessages(Object.values(userMessages).map(user => ({
-                    senderId: user.messages[0].senderId,
-                    senderName: user.senderName,
-                    lastMessage: user.messages[user.messages.length - 1].text
-                })));
+                setMessages(Object.values(userMessages));
             });
         };
         fetchMessages();
     }
 }, [user]);
+
 
 
 
@@ -99,6 +103,19 @@ const ProfilePage = () => {
       });
     }
   }, [user]);
+
+  const toggleInbox = () => {
+    if (!inboxOpen) {
+        // Sort messages when opening the inbox, safely checking for undefined values
+        const sortedMessages = [...messages].sort((a, b) => {
+            if (!a.lastMessageCreatedAt || !b.lastMessageCreatedAt) return 0;
+            return b.lastMessageCreatedAt.seconds - a.lastMessageCreatedAt.seconds;
+        });
+        setMessages(sortedMessages);
+    }
+    setInboxOpen(!inboxOpen);
+};
+
 
   const saveProfile = async () => {
     if (user?.uid) {
@@ -222,7 +239,7 @@ const ProfilePage = () => {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => setInboxOpen(!inboxOpen)}
+          onClick={toggleInbox}
           sx={{ position: 'fixed', bottom: 20, right: 20 }}
         >
           {inboxOpen ? 'Close Inbox' : 'Open Inbox'}
