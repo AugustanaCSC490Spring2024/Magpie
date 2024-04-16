@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Users } from "../api/users";
 import Contactbutton from "./Contactbutton";
+
 const capitalizeFirstLetter = (string) => {
     return string.toLowerCase().split(' ').map(word => {
       return word.charAt(0).toUpperCase() + word.slice(1);
@@ -37,6 +38,7 @@ const Dashboardpage = () => {
     return (
         <Container maxWidth='xl' >
         <Grid container spacing={2} style={{ paddingLeft: 140, paddingRight: 10, paddingBottom: 80, paddingTop: 30 }}>
+           
             <Grid item xs={10}>
             {user && <Typography variant="h6">Welcome <span style={{ fontFamily: 'Arial' }}>{user.displayName}</span></Typography>}
             </Grid>
