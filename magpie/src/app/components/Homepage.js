@@ -12,8 +12,6 @@ export default function Homepage() {
 
   const { user, logOut, isAdmin, googleSignIn } = UserAuth();
   const router = useRouter();
-  const [hasProfile, setHasProfile] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
 
   useEffect(() => {
@@ -53,9 +51,7 @@ export default function Homepage() {
     }
   };
   
-  // if (loading) {
-  //   return <div>Loading...</div>; // Optionally, show a loading spinner or similar
-  // }
+
 
 
     return (
