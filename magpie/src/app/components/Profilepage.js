@@ -6,6 +6,10 @@ import { db } from '../firebase';
 import { doc, getDoc, setDoc, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import AdminMessages from '../components/adminmessages'; 
+import { Snackbar } from '@mui/material'; 
+import Alert from '@mui/material/Alert';
+
+
 
 const InteractiveBackground = styled('div')(({ theme }) => ({
   position: 'fixed',
@@ -42,6 +46,8 @@ const ProfilePage = () => {
   const [inboxOpen, setInboxOpen] = useState(false);
   const router = useRouter();
   const [conversation, setConversation] = useState([]);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
 
   useEffect(() => {
@@ -107,6 +113,7 @@ const ProfilePage = () => {
       setOpenSnackbar(true);
     }
   };
+  
 
 
   const handleImageUpload = (event) => {
@@ -220,6 +227,12 @@ const ProfilePage = () => {
         >
           {inboxOpen ? 'Close Inbox' : 'Open Inbox'}
         </Button>
+
+        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
+      <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+        {snackbarMessage}
+      </Alert>
+    </Snackbar>
       
     </>
   );
