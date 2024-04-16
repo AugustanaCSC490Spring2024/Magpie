@@ -1,7 +1,5 @@
-// In AdminDashboard.js
-
 import { Container, Typography, Button, Box } from '@mui/material';
-import { useRouter } from 'next/navigation'; // Ensure this is 'next/router', not 'next/navigation'
+import { useRouter } from 'next/navigation'; 
 
 function AdminDashboard() {
   const router = useRouter();
@@ -11,26 +9,25 @@ function AdminDashboard() {
   };
 
   const navigateToUserList = () => {
-    router.push('/userlist'); // This will be the route for showing all users
+    router.push('/userlist');
   };
 
-  const navigateToMessages = () => {
-    router.push('/adminmessages'); // This will be the route for messaging interface
+  const navigateToProfile = () => {
+    router.push('/adminProfile'); // This will navigate to the admin profile page
   };
-
-  
 
   const buttonStyle = {
     borderRadius: '30px',
     padding: '12px 24px',
+    margin: '10px',
     fontSize: '1rem',
     fontWeight: '600',
     cursor: 'pointer',
     outline: 'none',
-    backgroundColor: '#3f51b5', // Set the background color for both buttons
-    color: '#fff', // Set the text color for both buttons
+    backgroundColor: '#3f51b5',
+    color: '#fff',
     '&:hover': {
-      backgroundColor: '#ffeb3b', // Change the background color on hover
+      backgroundColor: '#ffeb3b',
     }
   };
   
@@ -38,23 +35,9 @@ function AdminDashboard() {
     <Container maxWidth="sm">
       <Box textAlign="center" marginTop={10}>
         <Typography variant="h4" gutterBottom>Welcome to Admin Dashboard</Typography>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          onClick={navigateToCustomizeQuestionnaire}
-          sx={buttonStyle}
-          style={{ marginRight: '10px' }} 
-        >
-          Customize Questionnaire
-        </Button>
-        <Button 
-          variant="contained" 
-          color="primary" // Change color to "primary"
-          onClick={navigateToUserList} 
-          sx={buttonStyle}
-        >
-          All Users
-        </Button>
+        <Button variant="contained" color="primary" onClick={navigateToCustomizeQuestionnaire} sx={buttonStyle} style={{ marginRight: '10px' }}>Customize Questionnaire</Button>
+        <Button variant="contained" color="primary" onClick={navigateToUserList} sx={buttonStyle} style={{ marginRight: '10px' }}>All Users</Button>
+        <Button variant="contained" color="primary" onClick={navigateToProfile} sx={buttonStyle}>Profile</Button>
       </Box>
     </Container>
   );

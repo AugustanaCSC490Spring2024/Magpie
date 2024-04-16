@@ -106,7 +106,7 @@ const ProfilePage = () => {
         name: user.displayName,
         email: user.email,
         imageUrl: profileImage,
-        bio
+        bio : bio
       };
       await setDoc(doc(db, 'userProfiles', user.uid), userProfile, { merge: true });
       setSnackbarMessage('Profile updated successfully!');

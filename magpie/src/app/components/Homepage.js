@@ -1,7 +1,4 @@
 "use client";
-import Image from "next/image";
-// import styles from "./page.module.css";
-import Navbar from "./Navbar";
 import "../globals.css";
 import { UserAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
@@ -10,30 +7,39 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase"; 
 
 
+
 export default function Homepage() {
 
+  const { user, logOut, isAdmin } = UserAuth();
   const router = useRouter();
-  const { user, googleSignIn, logOut } = UserAuth();
-  const [loading, setLoading] = useState(true);
+  const [hasProfile, setHasProfile] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
 
   useEffect(() => {
-    const redirectToDashboardIfNeeded = async () => {
-      if (user) {
-        const responsesRef = doc(db, 'userResponses', user.uid);
-        const responsesDoc = await getDoc(responsesRef);
+      const fetchProfile = async () => {
+          if (user && isAdmin) {
+              const userProfileRef = doc(db, 'userProfiles', user.uid);
+              const docSnap = await getDoc(userProfileRef);
+              if (docSnap.exists()) {
+                  setHasProfile(true);
+              } else {
+                  setHasProfile(false);
+              }
+          }
+      };
+      fetchProfile();
+  }, [user, isAdmin]);
 
-        if (responsesDoc.exists()) {
-          router.push('/dashboard');
-        } else {
-          router.push('/profile');
-        }
+  useEffect(() => {
+      if (isAdmin && !hasProfile) {
+          router.push('/adminProfile'); // Redirect to the Admin Profile page to create profile
+      } else if (isAdmin && hasProfile) {
+          router.push('/AdminPage'); // Navigate to AdminPage if the profile exists
+      } else{
+        router.push('/profile');
       }
-      setLoading(false);
-    };
-
-    redirectToDashboardIfNeeded();
-  }, [user, router]);
+  }, [isAdmin, hasProfile, router]);
 
   const handleSignIn = async () => {
     try {
@@ -75,3 +81,4 @@ export default function Homepage() {
       </div>
     );
   }
+
