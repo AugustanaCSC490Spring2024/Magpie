@@ -29,8 +29,8 @@ const Overlay = styled('div')(({ theme }) => ({
   left: 0,
   width: '100%',
   height: '100%',
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',  // Semi-transparent black background
-  zIndex: 1000,  // High z-index to ensure it covers other components
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',  
+  zIndex: 1000,  
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
