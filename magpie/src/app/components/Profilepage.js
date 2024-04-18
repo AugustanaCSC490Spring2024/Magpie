@@ -155,7 +155,7 @@ const ProfilePage = () => {
       display: 'flex',
       flexDirection: 'row',
       position: 'absolute',
-      top: '30%',
+      top: '32%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
       width: '90vw',
@@ -195,13 +195,14 @@ const ProfilePage = () => {
           <Button variant="contained" color="primary" onClick={saveProfile} sx={{ mt: 2 }}>
             Save Bio
           </Button>
-          <Button variant="contained" color="primary" onClick={() => router.push('/dashboard')} sx={{ mt: 2 }}>
+          {/* <Button variant="contained" color="primary" onClick={() => router.push('/dashboard')} sx={{ mt: 2 }}>
             Dashboard
-          </Button>
+          </Button> */}
         </Box>
+      
         {inboxOpen && (
-    <Box sx={{ flex: 1, overflow: 'auto', maxHeight: '90vh', marginTop: '20px' }}>
-        <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
+          <Box flex={1} sx={{ overflow: 'auto', maxHeight: '90vh', width: '100%', bgcolor: 'background.paper' }}>
+          <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             {messages.map((msg) => (
                 <ListItem key={msg.senderId} button onClick={() => handleAdminSelect(msg.senderId)}>
                     <ListItemAvatar>
@@ -212,8 +213,10 @@ const ProfilePage = () => {
             ))}
         </List>
     </Box>
+
 )}
 </Box>
+
 {selectedUserId && (
      <Box sx={{ position: 'fixed', bottom: 20, width: '100%', paddingTop: '20px', zIndex: 1010 }}>
       <AdminMessages userId={selectedUserId} messages={conversation} onClose={() => setSelectedUserId(null)} />

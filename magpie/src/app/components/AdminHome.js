@@ -1,7 +1,10 @@
 import { Container, Typography, Button, Box } from '@mui/material';
 import { useRouter } from 'next/navigation'; 
-
+import { UserAuth } from '../context/AuthContext';
 function AdminDashboard() {
+
+  const { user, logOut } = UserAuth();
+
   const router = useRouter();
 
   const navigateToCustomizeQuestionnaire = () => {
@@ -37,6 +40,7 @@ function AdminDashboard() {
   return (
     <Container maxWidth="sm">
       <Box textAlign="center" marginTop={10}>
+        <Button variant="contained" color="secondary" onClick={() => {logOut(); router.push('/')}}>{'log out'}</Button>
         <Typography variant="h4" gutterBottom>Welcome to Admin Dashboard</Typography>
         <Button variant="contained" color="primary" onClick={navigateToCustomizeQuestionnaire} sx={buttonStyle} style={{ marginRight: '10px' }}>Customize Questionnaire</Button>
         <Button variant="contained" color="primary" onClick={navigateToUserList} sx={buttonStyle} style={{ marginRight: '10px' }}>All Users</Button>

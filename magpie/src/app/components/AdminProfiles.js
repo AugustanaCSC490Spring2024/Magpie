@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box, TextField, Button, Typography, Avatar, IconButton, Container, Paper,
-  List, ListItem, ListItemAvatar, ListItemText, Snackbar, Alert
+  List, ListItem, ListItemAvatar, ListItemText, Snackbar, Alert, useTheme, ThemeProvider, createTheme
 } from '@mui/material';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import { UserAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { doc, getDoc, setDoc, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import AdminMessages from '../components/adminmessages'; // Ensure this component is properly imported
+import AdminMessages from '../components/adminmessages';
 
 function AdminProfile() {
   const { user } = UserAuth();
@@ -21,8 +21,25 @@ function AdminProfile() {
   const router = useRouter();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [profileSaved, setProfileSaved] = useState(false); // True means no unsaved changes
+  const [profileSaved, setProfileSaved] = useState(false);
 
+  const theme = useTheme();
+  const [mode, setMode] = useState('light');
+
+  const colorMode = useMemo(() => ({
+    toggleColorMode: () => {
+      setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+    },
+  }), []);
+
+  const themeConfig = createTheme({
+    palette: {
+      mode,
+      primary: { main: mode === 'light' ? '#1122ff' : '#90caf9' },
+      secondary: { main: mode === 'light' ? '#eac235' : '#fbc02d' },
+      background: { default: mode === 'light' ? '#fff122' : '#212121' },
+    },
+  });
 
   useEffect(() => {
     if (user?.uid) {
@@ -74,6 +91,7 @@ function AdminProfile() {
     setSelectedUserId(userId);
     setConversation(messages.find(msg => msg.userId === userId)?.messages || []);
   };
+
   const handleBackToDashboard = () => {
     if (!profileSaved) {
       setOpenSnackbar(true);
@@ -82,7 +100,6 @@ function AdminProfile() {
       router.push('/AdminPage');
     }
   };
-  
 
   const saveProfile = async () => {
     if (user?.uid) {
@@ -90,14 +107,15 @@ function AdminProfile() {
         name: user.displayName,
         email: user.email,
         imageUrl: profileImage,
-        bio : bio
+        bio: bio
       };
       await setDoc(doc(db, 'userProfiles', user.uid), userProfile, { merge: true });
-      setProfileSaved(true); // Update state to reflect changes have been saved
+      setProfileSaved(true);
       setSnackbarMessage('Profile updated successfully!');
       setOpenSnackbar(true);
     }
   };
+
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file && user?.uid) {
@@ -106,68 +124,62 @@ function AdminProfile() {
         const imageUrl = e.target.result;
         setProfileImage(imageUrl);
         setDoc(doc(db, 'userProfiles', user.uid), { imageUrl }, { merge: true });
-
       };
       reader.readAsDataURL(file);
     }
   };
 
   return (
-    <Container maxWidth="lg" sx={{ backgroundColor: '#f4f1eb', minHeight: '100vh', pt: 3, display: 'flex', flexDirection: 'row' }}>
-      <Box flex={inboxOpen ? 3 : 1} sx={{ transition: 'all 0.3s ease' }}>
-        <Paper elevation={3} sx={{
-            mt: 4,
-            p: 3,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: 2,
-            background: 'linear-gradient(5deg, #002233, #eac235)',
-            width: '100%', // Ensure full width usage when inbox is closed
-        }}>
-          <Typography variant="h4" sx={{ marginBottom: '20px' }}>Welcome, {user?.displayName || 'Guest'}! </Typography>
-          <Avatar src={profileImage} sx={{ width: 150, height: 150, mb: 2 }} />
-          <IconButton color="primary" component="label" sx={{ mb: 2 }}>
-            <input hidden accept="image/*" type="file" onChange={handleImageUpload} />
-             <PhotoCamera sx={{ fontSize: 48 }} />
+    <ThemeProvider theme={themeConfig}>
+      <Container maxWidth="lg" sx={{ minHeight: '100vh', pt: 3, display: 'flex', flexDirection: 'row', backgroundColor: theme.palette.background.default }}>
+        <Box flex={inboxOpen ? 3 : 1} sx={{ transition: 'all 0.3s ease' }}>
+          <Paper elevation={3} sx={{
+              mt: 4,
+              p: 3,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 2,
+              background: theme.palette.primary.main,
+          }}>
+            <Typography variant="h4" sx={{ color: theme.palette.background.default, marginBottom: '20px' }}>Welcome, {user?.displayName || 'Guest'}!</Typography>
+            <Avatar src={profileImage} sx={{ width: 150, height: 150, mb: 2 }} />
+            <IconButton color="primary" component="label" sx={{ mb: 2 }}>
+              <input hidden accept="image/*" type="file" onChange={handleImageUpload} />
+              <PhotoCamera sx={{ fontSize: 48 }} />
             </IconButton>
-
-          <TextField label="Add Bio" multiline rows={4} variant="filled" value={bio} onChange={e => setBio(e.target.value)} fullWidth sx={{ backgroundColor: 'rgba(255, 255, 255, 0.7)', borderRadius: 1 }} />
-          <Button variant="contained" color="primary" onClick={saveProfile} sx={{ mt: 2 }}>Save Bio</Button>
-          <Button variant="outlined" onClick={handleBackToDashboard} sx={{ mt: 1, color: '#ffffff', borderColor: '#ffffff' }}>
-            Back to Dashboard
-          </Button>
-
-        </Paper>
-      </Box>
-      {inboxOpen && (
-        <Box flex={1} sx={{ overflow: 'auto', maxHeight: '90vh', width: '100%', bgcolor: 'background.paper' }}>
-          <List>
-            {messages.map(msg => (
-              <ListItem key={msg.userId} button onClick={() => handleAdminSelect(msg.userId)}>
-                <ListItemAvatar>
-                  <Avatar>{msg.senderName.charAt(0)}</Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={`Chat with ${msg.senderName}`} secondary={msg.lastMessage} />
-              </ListItem>
-            ))}
-          </List>
+            <TextField label="Add Bio" multiline rows={4} variant="filled" value={bio} onChange={e => setBio(e.target.value)} fullWidth sx={{ backgroundColor: 'rgba(255, 255, 255, 0.7)', borderRadius: 1 }} />
+            <Button variant="contained" color="primary" onClick={saveProfile} sx={{ mt: 2 }}>Save Bio</Button>
+            <Button variant="outlined" onClick={handleBackToDashboard} sx={{ mt: 1, color: theme.palette.background.default, borderColor: theme.palette.background.default }}>
+              Back to Dashboard
+            </Button>
+          </Paper>
         </Box>
-      )}
-      <Button variant="contained" color="primary" onClick={() => setInboxOpen(!inboxOpen)} sx={{ position: 'fixed', bottom: 20, right: 20 }}>
-        {inboxOpen ? 'Close Inbox' : 'Open Inbox'}
-      </Button>
-      {selectedUserId && <AdminMessages userId={selectedUserId} messages={conversation} onClose={() => setSelectedUserId(null)} />}
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-        <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>{snackbarMessage}</Alert>
-      </Snackbar>
-      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
-  <Alert onClose={() => setOpenSnackbar(false)} severity={profileSaved ? "success" : "warning"} sx={{ width: '100%' }}>
-    {snackbarMessage}
-  </Alert>
-</Snackbar>
-
-    </Container>
+        {inboxOpen && (
+          <Box flex={1} sx={{ overflow: 'auto', maxHeight: '90vh', width: '100%', bgcolor: 'background.paper' }}>
+            <List>
+              {messages.map(msg => (
+                <ListItem key={msg.userId} button onClick={() => handleAdminSelect(msg.userId)}>
+                  <ListItemAvatar>
+                    <Avatar>{msg.senderName.charAt(0)}</Avatar>
+                  </ListItemAvatar>
+                  <ListItemText primary={`${msg.senderName}`} secondary={msg.lastMessage} />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
+        <Button variant="contained" color="primary" onClick={() => setInboxOpen(!inboxOpen)} sx={{ position: 'fixed', bottom: 20, right: 20 }}>
+          {inboxOpen ? 'Close Inbox' : 'Open Inbox'}
+        </Button>
+        {selectedUserId && <AdminMessages userId={selectedUserId} messages={conversation} onClose={() => setSelectedUserId(null)} />}
+        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
+          <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
+      </Container>
+    </ThemeProvider>
   );
 };
 

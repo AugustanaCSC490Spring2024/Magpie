@@ -2,9 +2,10 @@
 import AdminHome from "../components/AdminHome";
 import React from 'react';
 import "../globals.css";
-
+import { AuthContextProvider } from "../context/AuthContext";
 const AdminPage = () => {
   return (
+    <AuthContextProvider>
     <div style={{ 
       backgroundImage: 'linear-gradient(135deg, #003087, #ffb914)',
       minHeight: '100vh',
@@ -39,6 +40,7 @@ const AdminPage = () => {
         }}>Augustana College &copy; {new Date().getFullYear()}</p>
       </div>
     </div>
+    </AuthContextProvider>
   );
 };
 

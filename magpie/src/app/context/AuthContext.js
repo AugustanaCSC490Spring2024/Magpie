@@ -14,7 +14,6 @@ export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
 
-
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({
