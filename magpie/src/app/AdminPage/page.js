@@ -24,6 +24,7 @@ const AdminPage = () => {
         textAlign: 'center'
       }}>
         <img src="/augustana-logo.png" alt="Augustana College Logo" style={{
+          borderRadius: '50%',
           width: '200px',
           marginBottom: '20px'
         }} />
