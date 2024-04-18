@@ -3,8 +3,8 @@ import "../globals.css";
 import { UserAuth } from "../context/AuthContext";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { doc, getDoc } from "firebase/firestore"; 
-import { db } from "../firebase"; 
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../firebase";
 
 
 
@@ -17,28 +17,31 @@ export default function Homepage() {
 
 
   useEffect(() => {
-      const fetchProfile = async () => {
-          if (user && isAdmin) {
-              const userProfileRef = doc(db, 'userProfiles', user.uid);
-              const docSnap = await getDoc(userProfileRef);
-              if (docSnap.exists()) {
-                  setHasProfile(true);
-              } else {
-                  setHasProfile(false);
-              }
-          }
-      };
-      fetchProfile();
+    const fetchProfile = async () => {
+      if (user && isAdmin) {
+        const userProfileRef = doc(db, 'userProfiles', user.uid);
+        const docSnap = await getDoc(userProfileRef);
+        if (docSnap.exists()) {
+          setHasProfile(true);
+        } else {
+          setHasProfile(false);
+        }
+      }
+    };
+    fetchProfile();
   }, [user, isAdmin]);
 
   useEffect(() => {
+    if (user) {
       if (isAdmin && !hasProfile) {
-          router.push('/adminProfile'); // Redirect to the Admin Profile page to create profile
+        router.push('/adminProfile'); // Redirect to the Admin Profile page to create profile
       } else if (isAdmin && hasProfile) {
-          router.push('/AdminPage'); // Navigate to AdminPage if the profile exists
-      } else{
+        router.push('/AdminPage'); // Navigate to AdminPage if the profile exists
+      } else if (!isAdmin) {
         router.push('/profile');
       }
+    }
+
   }, [isAdmin, hasProfile, router]);
 
   const handleSignIn = async () => {
@@ -56,29 +59,29 @@ export default function Homepage() {
       console.log(error);
     }
   };
-  
+
   // if (loading) {
   //   return <div>Loading...</div>; // Optionally, show a loading spinner or similar
   // }
 
 
-    return (
-      <div className="header">
-        <nav>
-          <ul>
-            <li><button type="button" className="btn" onClick={handleAboutClick}>About</button></li>
-            <li>
-              {!user ? (
-                <button type="button" className="btn" onClick={handleSignIn}>Log in / Create an account</button>
-              ) : null}
-            </li>
-          </ul>
-        </nav>
-        <div className="text-box">
-          <h1>Find your<br />Perfect roommate</h1>
-          <p className="secondarytext">Connect with other students that share your housing preferences.</p>
-        </div>
+  return (
+    <div className="header">
+      <nav>
+        <ul>
+          <li><button type="button" className="btn" onClick={handleAboutClick}>About</button></li>
+          <li>
+            {!user ? (
+              <button type="button" className="btn" onClick={handleSignIn}>Log in / Create an account</button>
+            ) : null}
+          </li>
+        </ul>
+      </nav>
+      <div className="text-box">
+        <h1>Find your<br />Perfect roommate</h1>
+        <p className="secondarytext">Connect with other students that share your housing preferences.</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 

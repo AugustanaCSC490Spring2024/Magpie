@@ -48,9 +48,11 @@ const Dashboardpage = (props) => {
             try {
                 const db = getFirestore();
                 const usersCollection = collection(db, "userProfiles");
+                const usersCollection2 = collection(db, "userResponses");
                 const userSnapshot = await getDocs(usersCollection);
                 const userList = userSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setUsers(userList);
+                console.log(usersCollection2);
             } catch (error) {
                 console.error("Failed to fetch user data:", error);
             }

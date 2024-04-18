@@ -8,16 +8,11 @@ import {
 import { auth } from "../firebase";
 
 const AuthContext = createContext();
-<<<<<<< HEAD
 export const adminEmails = ["aymanesghier22@augustana.edu"];
-=======
-export const adminEmails = ['ilyasjamil20@augustana.edu'];
->>>>>>> 641593f641c8a6f7a46c6a5ad1ee00418428372f
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
-
 
   const googleSignIn = () => {
     const provider = new GoogleAuthProvider();

@@ -2,6 +2,9 @@ import * as React from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Grid, AppBar, Box, Toolbar, IconButton, Typography, Menu, Avatar, Button, Tooltip, MenuItem, Container } from "@mui/material";
+import { UserAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState} from 'react';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Dashboard', 'Logout'];
@@ -9,6 +12,7 @@ const settings = ['Profile', 'Dashboard', 'Logout'];
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [loading, setLoading] = useState(true);
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -24,6 +28,28 @@ function ResponsiveAppBar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+    const { user, logOut } = UserAuth();
+
+    const handleSignOut = () => {
+        if (user){
+            logOut();
+            router.push('/#');
+        }else{
+            router.push('/#');
+
+
+        }
+    }
+    const router = useRouter();
+
+
+    useEffect(() => {
+        const checkAuthentication = async () => {
+          await new Promise((resolve) => setTimeout(resolve, 50));
+          setLoading(false);
+        };
+        checkAuthentication();
+      }, [user]);
 
     return (
         <AppBar position="absolute">
@@ -77,11 +103,17 @@ function ResponsiveAppBar() {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                        <Typography textAlign="center">{setting}</Typography>
-                                    </MenuItem>
-                                ))}
+
+                                <MenuItem onClick={handleCloseUserMenu}>
+                                    <Typography textAlign="center">{'Profile'}</Typography>
+                                </MenuItem>
+                                <MenuItem onClick={handleCloseUserMenu}>
+                                    <Typography textAlign="center">{'Dashboard'}</Typography>
+                                </MenuItem>
+                                <MenuItem onClick={handleSignOut}>
+                                    <Typography textAlign="center">{'Log out'}</Typography>
+                                </MenuItem>
+
                             </Menu>
                         </Box>
                     </Toolbar>
