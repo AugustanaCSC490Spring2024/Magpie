@@ -4,11 +4,11 @@ import { getFirestore, collection, getDocs } from "firebase/firestore";
 const weights = {
   "What is your gender?": 5,
   "What's your major?": 3,
-  "What is your current academic year status?": 2,
+  "What is your current academic year status?": 5,
   "What residence hall would you prefer to move to?": 2,
   "Are you currently or willing to be involved in Greek life?": 1,
   "Are you involved in or planning to participate in varsity sports?": 1,
-  "How clean do you intend to keep the room?": 2,
+  "How clean do you intend to keep the room?": 3,
   "How close do you want to be with your roommate?": 4,
   "Are you comfortable with a roommate who drinks?": 3,
   "How often do you plan to invite people to your place?": 2,
