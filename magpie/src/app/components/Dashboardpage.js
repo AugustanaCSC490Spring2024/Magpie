@@ -192,6 +192,7 @@ const DashboardPage = () => {
               <InputLabel>Residence Hall</InputLabel>
               <Select value={filters.residenceHall} name="residenceHall" onChange={handleFilterChange}>
               <MenuItem value="">Any</MenuItem>
+
               <MenuItem value="No Preference">No Preference</MenuItem>
 <MenuItem value="Seminary Hall">Seminary Hall</MenuItem>
 <MenuItem value="Andreen Hall">Andreen Hall</MenuItem>
