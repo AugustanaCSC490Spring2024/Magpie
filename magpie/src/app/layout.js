@@ -8,12 +8,14 @@ import { AuthContextProvider } from "./context/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
+
+  const noBar = ['/', '/AdminPage', '/about', '/adminProfile', '/userlist', '/hsAgree', '/questionaire'];
   return (
 
       <html lang="en">
         <body>
           <AuthContextProvider>
-          {usePathname() !== '/' ? <ResponsiveAppBar></ResponsiveAppBar> : false}
+          {!noBar.includes(usePathname()) ? <ResponsiveAppBar></ResponsiveAppBar> : false}
           </AuthContextProvider>
           {children}</body>
       </html>

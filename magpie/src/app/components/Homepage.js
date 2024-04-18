@@ -10,11 +10,9 @@ import { db } from "../firebase";
 
 export default function Homepage() {
 
-  const { user, logOut, isAdmin } = UserAuth();
+  const { user, logOut, isAdmin, googleSignIn } = UserAuth();
   const router = useRouter();
-  const [hasProfile, setHasProfile] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
+  console.log(user);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -22,27 +20,20 @@ export default function Homepage() {
         const userProfileRef = doc(db, 'userProfiles', user.uid);
         const docSnap = await getDoc(userProfileRef);
         if (docSnap.exists()) {
-          setHasProfile(true);
+          router.push('/AdminPage'); // Navigate to AdminPage if the profile exists
         } else {
-          setHasProfile(false);
+          router.push('/adminProfile'); // Redirect to the Admin Profile page to create profile
         }
+      } else if (user) {
+        router.push('/profile');
+
       }
     };
     fetchProfile();
   }, [user, isAdmin]);
 
-  useEffect(() => {
-    if (user) {
-      if (isAdmin && !hasProfile) {
-        router.push('/adminProfile'); // Redirect to the Admin Profile page to create profile
-      } else if (isAdmin && hasProfile) {
-        router.push('/AdminPage'); // Navigate to AdminPage if the profile exists
-      } else if (!isAdmin) {
-        router.push('/profile');
-      }
-    }
 
-  }, [isAdmin, hasProfile, router]);
+
 
   const handleSignIn = async () => {
     try {
@@ -60,9 +51,7 @@ export default function Homepage() {
     }
   };
 
-  // if (loading) {
-  //   return <div>Loading...</div>; // Optionally, show a loading spinner or similar
-  // }
+
 
 
   return (
@@ -71,9 +60,9 @@ export default function Homepage() {
         <ul>
           <li><button type="button" className="btn" onClick={handleAboutClick}>About</button></li>
           <li>
-            {!user ? (
-              <button type="button" className="btn" onClick={handleSignIn}>Log in / Create an account</button>
-            ) : null}
+
+            <button type="button" className="btn" onClick={handleSignIn}>Log in / Create an account</button>
+
           </li>
         </ul>
       </nav>

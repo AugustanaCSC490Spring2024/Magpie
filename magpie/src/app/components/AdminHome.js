@@ -1,7 +1,10 @@
 import { Container, Typography, Button, Box } from '@mui/material';
 import { useRouter } from 'next/navigation'; 
-
+import { UserAuth } from '../context/AuthContext';
 function AdminDashboard() {
+
+  const { user, logOut } = UserAuth();
+
   const router = useRouter();
 
   const navigateToCustomizeQuestionnaire = () => {
@@ -13,7 +16,10 @@ function AdminDashboard() {
   };
 
   const navigateToProfile = () => {
-    router.push('/adminProfile'); // This will navigate to the admin profile page
+    router.push('/adminProfile'); 
+  };
+  const navigateToHousingAgreement = () => {
+    router.push('/hsAgree'); 
   };
 
   const buttonStyle = {
@@ -34,10 +40,13 @@ function AdminDashboard() {
   return (
     <Container maxWidth="sm">
       <Box textAlign="center" marginTop={10}>
+        <Button variant="contained" color="secondary" onClick={() => {logOut(); router.push('/')}}>{'log out'}</Button>
         <Typography variant="h4" gutterBottom>Welcome to Admin Dashboard</Typography>
         <Button variant="contained" color="primary" onClick={navigateToCustomizeQuestionnaire} sx={buttonStyle} style={{ marginRight: '10px' }}>Customize Questionnaire</Button>
         <Button variant="contained" color="primary" onClick={navigateToUserList} sx={buttonStyle} style={{ marginRight: '10px' }}>All Users</Button>
         <Button variant="contained" color="primary" onClick={navigateToProfile} sx={buttonStyle}>Profile</Button>
+        <Button variant="contained" color="primary" onClick={navigateToHousingAgreement} sx={buttonStyle}>Housing Agreement</Button>
+
       </Box>
     </Container>
   );

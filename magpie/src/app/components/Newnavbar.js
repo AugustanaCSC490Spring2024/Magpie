@@ -4,7 +4,8 @@ import AdbIcon from '@mui/icons-material/Adb';
 import { Grid, AppBar, Box, Toolbar, IconButton, Typography, Menu, Avatar, Button, Tooltip, MenuItem, Container } from "@mui/material";
 import { UserAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
+import { getFirestore, doc, getDoc, collection, getDocs } from 'firebase/firestore';
 
 const pages = ['Products', 'Pricing', 'Blog'];
 const settings = ['Profile', 'Dashboard', 'Logout'];
@@ -13,6 +14,7 @@ function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [loading, setLoading] = useState(true);
+
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -30,11 +32,17 @@ function ResponsiveAppBar() {
     };
     const { user, logOut } = UserAuth();
 
+    const uid = user?.uid;
+    // const db = getFirestore();
+    // const userProfiles = collection(db, 'userProfiles');
+    // const query = query(userProfiles, where('uid', '==', uid));
+    
+
     const handleSignOut = () => {
-        if (user){
+        if (user) {
             logOut();
             router.push('/#');
-        }else{
+        } else {
             router.push('/#');
 
 
@@ -45,11 +53,11 @@ function ResponsiveAppBar() {
 
     useEffect(() => {
         const checkAuthentication = async () => {
-          await new Promise((resolve) => setTimeout(resolve, 50));
-          setLoading(false);
+            await new Promise((resolve) => setTimeout(resolve, 50));
+            setLoading(false);
         };
         checkAuthentication();
-      }, [user]);
+    }, [user]);
 
     return (
         <AppBar position="absolute">
@@ -104,10 +112,10 @@ function ResponsiveAppBar() {
                                 onClose={handleCloseUserMenu}
                             >
 
-                                <MenuItem onClick={handleCloseUserMenu}>
+                                <MenuItem onClick={() => { router.push('/profile') }}>
                                     <Typography textAlign="center">{'Profile'}</Typography>
                                 </MenuItem>
-                                <MenuItem onClick={handleCloseUserMenu}>
+                                <MenuItem onClick={() => { router.push('/dashboard') }}>
                                     <Typography textAlign="center">{'Dashboard'}</Typography>
                                 </MenuItem>
                                 <MenuItem onClick={handleSignOut}>
