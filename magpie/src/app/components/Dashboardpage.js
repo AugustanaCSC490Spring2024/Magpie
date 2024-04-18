@@ -76,25 +76,22 @@ const DashboardPage = (props) => {
         </Grid>
         {users.map((userProfile, index) => (
           <Grid item xs={4} key={userProfile.id}>
-            <Card style={{ textAlign: 'center', padding: '2.4rem', width: '15rem', height: '38rem', borderRadius: '15px' }}>
+            <Card style={{ textAlign: 'center', padding: '2.4rem', width: '15rem', height: 'auto', borderRadius: '15px' }}>
               <Grid container spacing={3}>
                 <Grid item xs={12} sx={{ margin: 'auto' }}>
-                  <img src={`https://via.placeholder.com/150x150.png?text=${index}`} style={{ width: '150px', height: '150px', borderRadius: '15px' }} alt={`User ${userProfile.name || "Name not available"}`}></img>
+                  <img src={userProfile.imageUrl || `https://via.placeholder.com/150x150.png?text=No+Image`} style={{ width: '150px', height: '150px', borderRadius: '15px' }} alt={`User ${userProfile.name || "Name not available"}`}></img>
                 </Grid>
                 <Grid item xs={12} sx={{ margin: 'auto' }}>
                   <Typography variant={'h4'}>{userProfile.name || "Name not available"}</Typography>
                 </Grid>
                 <Grid item xs={12}>
-                  <Typography variant={'h6'}>{userProfile.major || "Major not available"}</Typography>
+                  <Typography>{userProfile.bio || "Bio not available"}</Typography>
                 </Grid>
                 <Grid item xs={12} sx={{ margin: 'auto' }}>
-                  <Typography>{userProfile.year || "Year not available"}</Typography>
+                  <Typography>{userProfile.email || "Email not available"}</Typography>
                 </Grid>
                 <Grid item xs={12} sx={{ margin: 'auto' }}>
                   <Typography>Match: {matchingScores[userProfile.id] ? `${matchingScores[userProfile.id].toFixed(1)}%` : "Calculating..."}</Typography>
-                </Grid>
-                <Grid item xs={12} sx={{ margin: 'auto' }}>
-                  <ContactButton user={userProfile} />
                 </Grid>
               </Grid>
             </Card>
@@ -104,5 +101,6 @@ const DashboardPage = (props) => {
     </Container>
   );
 }
+
 
 export default DashboardPage;
