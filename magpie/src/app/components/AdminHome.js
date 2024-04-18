@@ -13,7 +13,10 @@ function AdminDashboard() {
   };
 
   const navigateToProfile = () => {
-    router.push('/adminProfile'); // This will navigate to the admin profile page
+    router.push('/adminProfile'); 
+  };
+  const navigateToHousingAgreement = () => {
+    router.push('/hsAgree'); 
   };
 
   const buttonStyle = {
@@ -38,6 +41,8 @@ function AdminDashboard() {
         <Button variant="contained" color="primary" onClick={navigateToCustomizeQuestionnaire} sx={buttonStyle} style={{ marginRight: '10px' }}>Customize Questionnaire</Button>
         <Button variant="contained" color="primary" onClick={navigateToUserList} sx={buttonStyle} style={{ marginRight: '10px' }}>All Users</Button>
         <Button variant="contained" color="primary" onClick={navigateToProfile} sx={buttonStyle}>Profile</Button>
+        <Button variant="contained" color="primary" onClick={navigateToHousingAgreement} sx={buttonStyle}>Housing Agreement</Button>
+
       </Box>
     </Container>
   );
