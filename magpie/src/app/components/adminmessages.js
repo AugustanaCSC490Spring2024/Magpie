@@ -71,7 +71,7 @@ function AdminMessages({ userId, onClose }) {
         <Container maxWidth="sm" sx={{
             position: 'fixed',
             right: 0,
-            top: 0,
+            top: 40,
             height: '100vh',
             zIndex: 1300,
             overflow: 'auto'
