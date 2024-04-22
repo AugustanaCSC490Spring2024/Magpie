@@ -1,26 +1,25 @@
 /* CSS */
 .dropdown {
-  color: white;
   position: relative;
   overflow: hidden; /* Ensures the dropdown is contained within the rounded borders */
   padding-bottom: 10px; /* Optional: Adjust as needed */
-  width: 1050px; /* Fixed width for the dropdown */
-  font-weight: bold;
+  width: 100%; /* Adjust the width as needed */
   padding: 10px;
   margin: 0 auto; /* Center horizontally */
+  font-size: 18px;
+  font-family: "Inter", sans-serif;
 }
 
-/* Styling for select element */
 select {
-  padding: 10px 20px; /* Adjust padding as needed */
-  font-size: 18px; /* Adjust font size as needed */
+  padding: 10px 20px; 
+  min-width: 100%;
+  font-size: 18px; 
   border: none;
   cursor: pointer;
-  width: 100%;
-  text-align: center;
+  text-align: center; /* Center the text within the select */
   background-color: #116466;
   border-radius: 80px;
-}
-.dropdown select option {
-  color: black;
+  color: white;
+  margin: 0; /* Remove any default margin */
+  
 }

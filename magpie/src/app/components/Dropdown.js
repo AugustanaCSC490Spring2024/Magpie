@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../styles/Dropdown.css'; // Correct import statement for CSS file
 
-const Dropdown = ({ options = [] }) => { // Ensure options has a default value of an empty array
+const Dropdown = ({ options = [] }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleOptionSelect = (event) => {
@@ -12,7 +12,9 @@ const Dropdown = ({ options = [] }) => { // Ensure options has a default value o
 
   return (
     <div className="dropdown">
+      <h2>Commonly Asked Questions</h2> {/* Header for commonly asked questions */}
       <select onChange={handleOptionSelect}>
+        <option value="">Select an option</option> {/* Add a default option */}
         {options.map(option => (
           <option key={option.value} value={option.value}>{option.label}</option>
         ))}
