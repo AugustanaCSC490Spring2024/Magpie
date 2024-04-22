@@ -1,30 +1,26 @@
 /* CSS */
 .dropdown {
-    position: relative;
-    display: inline-block;
-    border-radius: 80px; /* Adjust the radius as needed */
-    overflow: hidden; /* Ensures the dropdown is contained within the rounded borders */
-    padding-bottom: 10px;
-    width: 35%;
-    font-weight: bold;
-  }
-  .dropdown:hover {
-    background-color: black; /* Change color on hover */
-    color: white;
-    transition: 0.8s;
-  }
+  color: white;
+  position: relative;
+  overflow: hidden; /* Ensures the dropdown is contained within the rounded borders */
+  padding-bottom: 10px; /* Optional: Adjust as needed */
+  width: 1050px; /* Fixed width for the dropdown */
+  font-weight: bold;
+  padding: 10px;
+  margin: 0 auto; /* Center horizontally */
+}
 
-  
-  select {
-    /* appearance: none; Removes the default dropdown arrow */
-    padding: 10px 20px; /* Adjust padding as needed */
-    font-size: 18px; /* Adjust font size as needed */
-    border: none;
-    border-radius: 80px; /* Matches the parent's border-radius */
-    cursor: pointer;
-    width: 100%;
-    text-align: left;
-  }
-  
-  
-  
+/* Styling for select element */
+select {
+  padding: 10px 20px; /* Adjust padding as needed */
+  font-size: 18px; /* Adjust font size as needed */
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  background-color: #116466;
+  border-radius: 80px;
+}
+.dropdown select option {
+  color: black;
+}

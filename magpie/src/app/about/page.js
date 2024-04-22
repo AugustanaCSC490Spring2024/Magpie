@@ -1,9 +1,13 @@
 // pages/about.js
+"use client";
 import React from 'react';
-import { Header, AboutSection, CreatorCard, CreatorCard2, GettingStartedSection, Dropdown, PlaceholderImage} from '../components/About';
+import { Header, AboutSection, CreatorCard, CreatorCard2, GettingStartedSection, PlaceholderImage} from '../components/About';
 import '../styles/styles.css'; 
+import { useRouter } from 'next/navigation'; 
+import Dropdown from '../components/Dropdown';
 
 const AboutPage = () => {
+  const router = useRouter()
   const options = [
     {
       value: 'Complete the Questionnaire',
@@ -26,6 +30,9 @@ const AboutPage = () => {
       description: "Once you find someone interesting, send them a friend request to initiate communication. You can chat, share messages, and build friendships.",
     },
   ];
+  const handleHomeButtonClick = () => {
+    router.push('/'); 
+  };
   return (
     <div className="about-page">
       <Header title="About Us" />
@@ -37,15 +44,13 @@ const AboutPage = () => {
         <CreatorCard name="Ilyas Jamil" title="Back-End Developer" />
       </div>
       <GettingStartedSection />
-      <h1>Commonly Asked Questions</h1>
-      {options.map((option) => (
-        <Dropdown key={option.value} options={[option]} />
-      ))}
-      <button>Home Page</button> {/* Button that doesn't do anything */}
+      {options.map((option, index) => (
+  <Dropdown key={index} option={[option]} />
+))}
+      <button type="button" className="button" onClick={handleHomeButtonClick} >Home Page</button>
     </div>
     
   );
 };
 
 export default AboutPage;
- 

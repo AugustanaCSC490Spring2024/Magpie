@@ -1,28 +1,34 @@
+
 import React from 'react';
 import Image from 'next/image';
 import catImage1 from '../../../public/cat1.jpg';
 import catImage2 from '../../../public/cat2.jpg';
 import './../styles/Dropdown.css';
+import roomate1 from '../../../public/Roomate1.jpg';
+import roomate2 from '../../../public/Roomate2.jpg';
+
+
+
+
 export const Header = ({ title }) => (
   <div className="section">
     <h1>{title}</h1>
   </div>
 );
 
-export const PlaceholderImage = ({ src, alt }) => (
-    
-  <img src={src} alt={alt} style={{ width: '800px', height: '400px', objectFit: 'cover', borderRadius: '80px' }} />
-  
-);  
-
-
 export const AboutSection = () => (
     <div className="section">
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{color: 'white', display: 'flex', alignItems: 'center' }}>
         <div style={{ marginLeft: '10%' ,  marginRight: '10%' }}>
-          <PlaceholderImage src={"https://via.placeholder.com/1000x400"} alt="Placeholder 1" />
+          <Image src={roomate1} 
+          placeholder='blur'
+          quality={100} 
+          width={700}
+          style={{ borderRadius: '15px' }}
+          height={350}
+          alt="roomate1" />
         </div>
-        <div style={{marginLeft: '10%', marginRight: '10%'}}>
+        <div style={{ marginLeft: '10%', marginRight: '10%'}}>
           <p>
           Roommixer revolutionizes college roommate selection by connecting you with compatible roommates based on shared interests and preferences. No more random assignments or compatibility issues – just seamless connections for a harmonious college experience. Join Roommixer today and find your perfect roommate match effortlessly!
           </p>
@@ -35,13 +41,27 @@ export const AboutSection = () => (
 At Roommixer, we're not just about finding roommates – we're about fostering a community where every student feels supported and understood. Our mission is to create inclusive living environments where diversity is celebrated and friendships thrive. Join us in building a brighter, more connected college experience where everyone belongs.
           </p>
         </div>
-        <div style={{ marginLeft: '10%' , marginRight: '10%'}}>
-          <PlaceholderImage src={"https://via.placeholder.com/1000x400"} alt="Placeholder 2" />
+        <div style={{borderRadius: '5%', marginLeft: '10%' , marginRight: '10%'}}>
+          <Image
+          src= {roomate2} 
+          style={{ borderRadius: '15px' }}
+          width={700}
+          height={350}
+          placeholder='blur'
+          quality={100} 
+          alt="roomate2" />
         </div>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', marginTop: '20px' }}>
         <div style={{  marginLeft: '10%' , marginRight: '10%' }}>
-          <PlaceholderImage src={"https://via.placeholder.com/1000x400"} alt="Placeholder 3" />
+        <Image
+          src= {roomate2} 
+          style={{ borderRadius: '15px' }}
+          width={700}
+          height={350}
+          placeholder='blur'
+          quality={100} 
+          alt="roomate2" />
         </div>
         <div style={{marginLeft: '10%', marginRight: '10%'}}>
           <p>
@@ -81,13 +101,13 @@ export const GettingStartedSection = () => (
   
 );
 
-export const Dropdown = ({ options }) => (
-    <div className="dropdown">
-      <select>
-        {options.map(option => (
-          <option key={option.value} value={option.value}>{option.label}</option>
-        ))}
-      </select>
-    </div>
-  );
+// export const Dropdown = ({ options }) => (
+//     <div className="dropdown">
+//       <select>
+//         {options.map(option => (
+//           <option key={option.value} value={option.value}>{option.label}</option>
+//         ))}
+//       </select>
+//     </div>
+//   );
   

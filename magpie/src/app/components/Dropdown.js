@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
-import './Dropdown.css';
+import '../styles/Dropdown.css'; // Correct import statement for CSS file
 
-const Dropdown = ({ options }) => {
+const Dropdown = ({ options = [] }) => { // Ensure options has a default value of an empty array
   const [selectedOption, setSelectedOption] = useState(null);
 
   const handleOptionSelect = (event) => {
