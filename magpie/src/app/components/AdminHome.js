@@ -11,7 +11,7 @@ function AdminDashboard() {
 
   useEffect(() => {
     if (user && !isAdmin) {
-      router.push('/'); 
+      router.push('/profile'); 
     }
   }, [user, isAdmin, router]);
 
