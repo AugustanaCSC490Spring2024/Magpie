@@ -1,11 +1,21 @@
 import { Container, Typography, Button, Box } from '@mui/material';
 import { useRouter } from 'next/navigation'; 
 import { UserAuth } from '../context/AuthContext';
+import { useEffect } from 'react';
+
 function AdminDashboard() {
 
-  const { user, logOut } = UserAuth();
-
+  const { user, logOut, isAdmin } = UserAuth();
   const router = useRouter();
+
+
+  useEffect(() => {
+    if (user && !isAdmin) {
+      router.push('/'); 
+    }
+  }, [user, isAdmin, router]);
+
+
 
   const navigateToCustomizeQuestionnaire = () => {
     router.push('/questionaire');
@@ -40,7 +50,6 @@ function AdminDashboard() {
   return (
     <Container maxWidth="sm">
       <Box textAlign="center" marginTop={10}>
-        {/* <Typography variant="h4" gutterBottom>Welcome to Admin Dashboard</Typography> */}
         <Button variant="contained" color="primary" onClick={navigateToCustomizeQuestionnaire} sx={buttonStyle} style={{ marginRight: '10px' }}>Customize Questionnaire</Button>
         <Button variant="contained" color="primary" onClick={navigateToUserList} sx={buttonStyle} style={{ marginRight: '10px' }}>All Users</Button>
         <Button variant="contained" color="primary" onClick={navigateToProfile} sx={buttonStyle}>Profile</Button>
