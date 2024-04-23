@@ -36,7 +36,8 @@ function hsAgree() {
             reader.onload = async (e) => {
                 const fileDataURL = e.target.result;
                 try {
-                    const docRef = doc(firestore, "housingAgreement", file.name);
+                    // Use a different collection name here
+                    const docRef = doc(firestore, "hsagree", file.name); // Change to the correct collection
                     await setDoc(docRef, { fileDataURL, fileName: file.name }, { merge: true });
                     console.log('Document successfully written with Data URL!');
                     alert('Upload successful!');
@@ -51,6 +52,7 @@ function hsAgree() {
             alert('No file selected. Please select a file to upload.');
         }
     };
+    
 
     const handleFileSelect = () => {
         fileInputRef.current.click();
@@ -131,3 +133,5 @@ function hsAgree() {
 }
 
 export default hsAgree;
+
+
