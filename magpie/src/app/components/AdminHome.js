@@ -40,13 +40,14 @@ function AdminDashboard() {
   return (
     <Container maxWidth="sm">
       <Box textAlign="center" marginTop={10}>
-        <Button variant="contained" color="secondary" onClick={() => {logOut(); router.push('/')}}>{'log out'}</Button>
-        <Typography variant="h4" gutterBottom>Welcome to Admin Dashboard</Typography>
+        {/* <Typography variant="h4" gutterBottom>Welcome to Admin Dashboard</Typography> */}
         <Button variant="contained" color="primary" onClick={navigateToCustomizeQuestionnaire} sx={buttonStyle} style={{ marginRight: '10px' }}>Customize Questionnaire</Button>
         <Button variant="contained" color="primary" onClick={navigateToUserList} sx={buttonStyle} style={{ marginRight: '10px' }}>All Users</Button>
         <Button variant="contained" color="primary" onClick={navigateToProfile} sx={buttonStyle}>Profile</Button>
         <Button variant="contained" color="primary" onClick={navigateToHousingAgreement} sx={buttonStyle}>Housing Agreement</Button>
-
+      <Box display="flex" flexDirection="column" alignItems="center" marginTop={2} gap={2}>
+        <Button variant="contained" color="secondary" onClick={() => {logOut(); router.push('/')}}>{'log out'}</Button>
+      </Box>
       </Box>
     </Container>
   );
