@@ -115,7 +115,8 @@ const DashboardPage = () => {
             <FormControl fullWidth>
               <InputLabel>Major</InputLabel>
               <Select value={filters.major} name="major" onChange={handleFilterChange}>
-                <MenuItem value="Undecided">Undecided</MenuItem>
+                <MenuItem value="">Any</MenuItem>
+               <MenuItem value="Undecided">Undecided</MenuItem>
                 <MenuItem value="Biology">Biology</MenuItem>
                 <MenuItem value="Psychology">Psychology</MenuItem>
                 <MenuItem value="Business Administration and Management">Business Administration and Management</MenuItem>
