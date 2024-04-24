@@ -9,29 +9,12 @@ import { db } from '../firebase';
 import { doc, getDoc, setDoc, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import AdminMessages from '../components/adminmessages';
-import { CircularProgress } from '@mui/material';
 
 
 function AdminProfile() {
-  const { user, logOut, isAdmin } = UserAuth();
+  const { user, logOut } = UserAuth();
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user && !isAdmin) {
-      router.push('/profile'); 
-    } else {
-      setTimeout(() => {
-        setLoading(false);
-      }, 3000);
-    }
-  }, [user, isAdmin, router]);
-
-  if (loading) {
-    return <CircularProgress />;
-
-  }
-  
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150.png?text=Profile');
   const [bio, setBio] = useState('');
   const [messages, setMessages] = useState([]);

@@ -1,23 +1,23 @@
 "use client";
 import React, { useState, useRef, useEffect } from 'react';
 import { Button, Container, Grid, Paper, Typography, IconButton } from '@mui/material';
-import { useDropzone } from 'react-dropzone';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { doc, setDoc } from 'firebase/firestore';
-import { firestore } from '../firebase'; 
+import { useDropzone } from 'react-dropzone';
+import { getStorage, ref as storageRef, uploadBytes } from 'firebase/storage';
 
 function hsAgree() {
     const [files, setFiles] = useState([]);
     const fileInputRef = useRef(null);
 
     const onDrop = acceptedFiles => {
-        setFiles(acceptedFiles.map(file => ({
-            ...file,
-            preview: URL.createObjectURL(file),
-            isPdf: file.type === 'application/pdf'
-        })));
-    };
-
+      setFiles(acceptedFiles.map(file => ({
+          file: file,  // Store the file object itself
+          preview: URL.createObjectURL(file),
+          isPdf: file.type === 'application/pdf',
+          name: file.name  // Explicitly store the name
+      })));
+  };
+  
     useEffect(() => {
         return () => files.forEach(file => URL.revokeObjectURL(file.preview));
     }, [files]);
@@ -26,31 +26,36 @@ function hsAgree() {
 
     const removeFile = file => () => {
         URL.revokeObjectURL(file.preview);
-        setFiles(files.filter(f => f !== file));
+        setFiles(currentFiles => currentFiles.filter(f => f !== file));
+    };
+
+    const handleFileChange = (event) => {
+        const newFiles = Array.from(event.target.files).map(file => ({
+            ...file,
+            preview: URL.createObjectURL(file),
+            isPdf: file.type === 'application/pdf'
+        }));
+        setFiles(newFiles);
     };
 
     const handleUploadClick = () => {
-        if (fileInputRef.current.files.length > 0) {
-            const file = fileInputRef.current.files[0];
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                const fileDataURL = e.target.result;
-                try {
-                    const docRef = doc(firestore, "housingAgreement", file.name);
-                    await setDoc(docRef, { fileDataURL, fileName: file.name }, { merge: true });
-                    console.log('Document successfully written with Data URL!');
-                    alert('Upload successful!');
-                } catch (error) {
-                    console.error("Error writing document: ", error);
-                    alert('Error during upload.');
-                }
-            };
-            reader.onerror = error => console.error('Error reading file:', error);
-            reader.readAsDataURL(file);
-        } else {
-            alert('No file selected. Please select a file to upload.');
-        }
-    };
+      if (files.length > 0) {
+          const file = files[0].file;  // Using the first file from the array
+          const storage = getStorage();
+          const storageReference = storageRef(storage, `housingAgreements/agreement.pdf`);  // Static name for all uploads
+  
+          uploadBytes(storageReference, file).then((snapshot) => {
+              console.log('Uploaded a blob or file!');
+              alert('Upload successful!');
+          }).catch((error) => {
+              console.error('Upload failed:', error);
+              alert('Error during upload.');
+          });
+      } else {
+          alert('No file selected. Please select a file to upload.');
+      }
+  };
+  
 
     const handleFileSelect = () => {
         fileInputRef.current.click();
@@ -58,7 +63,7 @@ function hsAgree() {
 
     return (
         <Container component="main" maxWidth="lg">
-             <Typography variant="h4" component="h1" style={{ margin: '20px 0', textAlign: 'center' }}>
+            <Typography variant="h4" component="h1" style={{ margin: '20px 0', textAlign: 'center' }}>
                 Please upload the housing agreement
             </Typography>
             <Paper {...getRootProps()} style={{
@@ -108,7 +113,8 @@ function hsAgree() {
                 type="file"
                 ref={fileInputRef}
                 style={{ display: 'none' }}
-                onChange={() => {}}
+                onChange={handleFileChange}
+                multiple
             />
             <Button
                 variant="contained"
