@@ -40,10 +40,10 @@ function UserList() {
         <AuthContextProvider>
             <Container maxWidth="sm" sx={{
                 position: 'fixed', // Makes the container fixed position
-                left: 170, // Align to the right side
-                top: 80, // Start from the top
-                width: '50vw', // Manage the width to make it look like a sidebar
-                height: '100vh', // Full viewport height
+                left: 30, // Align to the right side
+                top: 30, // Start from the top
+                width: '80vw', // Manage the width to make it look like a sidebar
+                height: '200vh', // Full viewport height
                 overflowY: 'auto', // Adds vertical scroll to the container
                 zIndex: 1200 // Ensure it's above other content but below modal dialogs
             }}>
