@@ -1,10 +1,9 @@
 "use client";
-import React from 'react';
-import { Container, Typography, Button, Grid } from '@mui/material';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import "../globals.css";
 
-const TourHallsPage = () => {
-  const halls = [
+const halls = [
     { name: "Seminary Hall", url: "https://example.com/seminary" },
     { name: "Andreen Hall", url: "https://matterport.com/discover/space/47DZGWAqyCu" },
     { name: "Swanson Commons", url: "https://matterport.com/discover/space/xsyncVsCagZ" },
@@ -13,48 +12,63 @@ const TourHallsPage = () => {
     { name: "Naeseth Townhouses", url: "https://example.com/naeseth" },
     { name: "Parkander", url: "https://matterport.com/discover/space/mkmTUsfHCLU" },
     { name: "Arbaugh", url: "https://example.com/arbaugh" }
-  ];
+];
 
-  const itemVariants = {
-    initial: {
-      scale: 1,
-      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
-    },
-    hover: {
-      scale: 1.1,
-      boxShadow: '0 12px 24px rgba(0, 0, 0, 0.2)'
-    }
-  };
+const Tour = () => {
+    const [isOpen, setOpen] = useState(false);
+    const [bubbles, setBubbles] = useState([]);
 
-  return (
-    <Container maxWidth="lg" style={{ marginTop: '40px' }}>
-      <Typography variant="h3" style={{ fontWeight: 'bold', marginBottom: '30px', marginTop: '100px', textAlign: 'center' }}>
-        Tour These Residential Halls
-      </Typography>
-      <Grid container spacing={3} justifyContent="center">
-        {halls.map((hall, index) => (
-          <Grid item key={index} xs={12} sm={6} md={4} style={{ display: 'flex', justifyContent: 'center' }}>
-            <motion.div
-              variants={itemVariants}
-              initial="initial"
-              whileHover="hover"
-              style={{
-                textAlign: 'center',
-                padding: '20px',
-                borderRadius: '10px',
-                maxWidth: '300px'
-              }}
-            >
-              <Typography variant="h5" style={{ marginBottom: '20px' }}>{hall.name}</Typography>
-              <Button variant="contained" color="primary" href={hall.url} target="_blank" rel="noopener noreferrer">
-                Take a Tour
-              </Button>
-            </motion.div>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
-  );
+    // Generate random bubbles
+    useEffect(() => {
+        const newBubbles = Array.from({ length: 30 }, (_, i) => ({
+            id: i,
+            size: ['small', 'medium', 'large'][Math.floor(Math.random() * 3)],
+            left: `${Math.floor(Math.random() * 100)}vw`
+        }));
+        setBubbles(newBubbles);
+    }, []);
+
+    const toggleDoor = () => setOpen(!isOpen);
+
+    return (
+        <div className="tour-container">
+            {/* <motion.h1
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5, duration: 1.0 }}
+                        style={{ textAlign: 'center', color: '#fff', fontSize: '2.5rem', marginTop: '8px', paddingTop:'50px' }}>
+                        Tour the Residential Halls
+                    </motion.h1> */}
+            {bubbles.map(bubble => (
+                <div key={bubble.id} className={`bubble ${bubble.size}`} style={{ left: bubble.left }}></div>
+            ))}
+            {!isOpen && (
+                <motion.div className="door"
+                    initial={{ rotateY: 0 }}
+                    animate={{ rotateY: 360 }}
+                    transition={{ duration: 3, ease: "easeInOut" }}
+                    onClick={toggleDoor}>
+                    CLICK TO FULLY OPEN AND START TOURING
+                </motion.div>
+            )}
+            {isOpen && (
+                <>
+                    
+                    <div className="hallway">
+                        {halls.map((hall, index) => (
+                            <motion.div key={index} className={`hall ${index % 2 === 0 ? 'left' : 'right'}`}
+                                initial={{ opacity: 0, y: 70 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
+                                whileHover={{ scale: 1.1, boxShadow: "0 15px 30px rgba(0, 0, 0, 0.4)" }}>
+                                <a href={hall.url} target="_blank" rel="noopener noreferrer">{hall.name}</a>
+                            </motion.div>
+                        ))}
+                    </div>
+                </>
+            )}
+        </div>
+    );
 };
 
-export default TourHallsPage;
+export default Tour;
