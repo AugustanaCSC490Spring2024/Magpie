@@ -170,7 +170,7 @@ const ProfilePage = () => {
     }}>
         {/* Profile Info Section */}
         <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
-          <Typography variant="h4" sx={{ marginBottom: '20px' }}>
+          <Typography variant="h4" className="welcome" sx={{ marginBottom: '20px' }}>
             Welcome, {user?.displayName || 'Guest'}!
           </Typography>
           <Box sx={{ marginBottom: '20px', borderRadius: '40%', overflow: 'hidden' }}>
