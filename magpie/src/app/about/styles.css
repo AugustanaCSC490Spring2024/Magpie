@@ -49,7 +49,16 @@
     height: 300px;
     object-fit: cover;
     border-radius: 50%;
+    transition: transform 0.2s ease-in-out;
   }
+  .creator-card img:hover{
+    transform: scale(1.2); /* Adjust the scale factor as needed */
+  }
+  .image-container:hover {
+    transform: scale(1.2); /* Adjust the scale factor as needed */
+    transition: 1s;
+  }
+  
   
   .button {
     padding: 10px;

@@ -12,31 +12,26 @@ const ContactUs = () => {
     setMessage(event.target.value);
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
-    try {
-      const response = await fetch('aaronyo2002@gmail.com', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, message }),
-      });
-      if (response.ok) {
-        console.log('Email sent!');
-        // Optionally, display a success message to the user
-      } else {
-        console.error('Failed to send email:', response.statusText);
-        // Optionally, display an error message to the user
-      }
-      // Reset form fields
+    const subject = 'Contact Us Form Submission';
+    const body = `Email: ${email}%0D%0A%0D%0AMessage: ${message}`;
+    const mailtoLink = `mailto:aaronyo2002@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  
+    // Attempt to open the default email client with the pre-populated email
+    const opened = window.open(mailtoLink, '_self');
+    if (!opened || opened.closed || typeof opened.closed === 'undefined') {
+      console.error('Failed to open email client.');
+      // Optionally, display an error message to the user
+    } else {
+      console.log('Email client opened successfully.');
+      // Optionally, display a success message to the user
+      // Reset form fields (optional)
       setEmail('');
       setMessage('');
-    } catch (error) {
-      console.error('Failed to send email:', error);
-      // Optionally, display an error message to the user
     }
   };
+  
 
   return (
     <div className="contact-us">
