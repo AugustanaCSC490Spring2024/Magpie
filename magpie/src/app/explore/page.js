@@ -1,14 +1,7 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from 'react';
-import { UserAuth } from '../context/AuthContext';
-import { db } from '../firebase'; // Adjust this path to your Firebase configuration file
-import {
-  collection,
-  getDocs,
-  addDoc,
-  deleteDoc,
-  doc,
-} from 'firebase/firestore';
+import { db } from '../firebase';
+import { collection, getDoc, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import {
   Box,
   Button,
@@ -21,24 +14,34 @@ import {
   IconButton,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { UserAuth } from '../context/AuthContext';
+import "../globals.css";
 
 function ExplorePage() {
   const [reviews, setReviews] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
+  const { user } = UserAuth();
+  const [currentUserProfile, setCurrentUserProfile] = useState(null);
   const [newComment, setNewComment] = useState('');
   const [newRating, setNewRating] = useState(2.5);
+  const [editMode, setEditMode] = useState(false);
+  const [editReviewId, setEditReviewId] = useState(null);
 
   useEffect(() => {
+    if (user) fetchUserProfile();
     fetchReviews();
-    fetchCurrentUser();
-  }, []);
+  }, [user]);
 
-  const fetchCurrentUser = async () => {
-    // Fetch the current user data; replace 'currentUserId' with the actual logged-in user ID
-    const userSnapshot = await getDocs(collection(db, 'userProfiles'));
-    const users = userSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    const currentUserData = users.find(user => user.userId === 'currentUserId'); // Adjust 'currentUserId'
-    setCurrentUser(currentUserData);
+  const fetchUserProfile = async () => {
+    if (!user) return;
+    const userDocRef = doc(db, 'userProfiles', user.uid);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      setCurrentUserProfile(userDoc.data());
+    } else {
+      console.log('No profile found for the current user');
+      setCurrentUserProfile(null);
+    }
   };
 
   const fetchReviews = async () => {
@@ -51,14 +54,24 @@ function ExplorePage() {
   };
 
   const handlePostReview = async () => {
-    if (!newComment.trim()) return;
-    await addDoc(collection(db, 'reviews'), {
-      userName: currentUser.name,
+    if (!newComment.trim() || !currentUserProfile) return;
+    const reviewData = {
+      userName: currentUserProfile.name,
       comment: newComment,
       rating: newRating,
-      userId: currentUser.userId,
-      imageUrl: currentUser.imageUrl,
-    });
+      userId: user.uid,
+      imageUrl: currentUserProfile.imageUrl,
+      timestamp: new Date(),
+    };
+
+    if (editMode) {
+      await updateDoc(doc(db, 'reviews', editReviewId), reviewData);
+      setEditMode(false);
+      setEditReviewId(null);
+    } else {
+      await addDoc(collection(db, 'reviews'), reviewData);
+    }
+
     setNewComment('');
     setNewRating(2.5);
     fetchReviews();
@@ -69,11 +82,21 @@ function ExplorePage() {
     fetchReviews();
   };
 
+  const handleEditReview = (review) => {
+    setNewComment(review.comment);
+    setNewRating(review.rating);
+    setEditReviewId(review.id);
+    setEditMode(true);
+  };
+
   return (
     <Container>
-      <Typography variant="h4" sx={{ mb: 4 }}>
-        Explore Reviews
-      </Typography>
+    <div class="text-container">
+  <h4 class="reviews-title">
+    Reviews --  Leave a rating and share your experience
+  </h4>
+  </div>
+  
       <Box component="form" noValidate autoComplete="off" sx={{ mb: 5 }}>
         <Rating
           name="simple-controlled"
@@ -92,7 +115,7 @@ function ExplorePage() {
           margin="normal"
         />
         <Button variant="contained" color="primary" onClick={handlePostReview}>
-          Comment
+          {editMode ? 'Update' : 'Comment'}
         </Button>
       </Box>
       {reviews.map((review) => (
@@ -102,11 +125,19 @@ function ExplorePage() {
             <Typography variant="subtitle1">{review.userName}</Typography>
             <Rating name="read-only" value={review.rating} readOnly />
             <Typography variant="body2">{review.comment}</Typography>
+            <Typography variant="caption" color="text.secondary">
+              Posted on: {review.timestamp.toDate().toLocaleString()}
+            </Typography>
           </Box>
-          {currentUser && currentUser.userId === review.userId && (
-            <IconButton onClick={() => handleDeleteReview(review.id)}>
-              <DeleteIcon />
-            </IconButton>
+          {currentUserProfile && user.uid === review.userId && (
+            <Box>
+              <IconButton onClick={() => handleEditReview(review)}>
+                <EditIcon />
+              </IconButton>
+              <IconButton onClick={() => handleDeleteReview(review.id)}>
+                <DeleteIcon />
+              </IconButton>
+            </Box>
           )}
         </Paper>
       ))}

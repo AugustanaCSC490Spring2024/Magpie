@@ -512,3 +512,38 @@ nav ul button{
 }
 
 
+.text-container {
+  text-align: center;
+  font-size: 30px;
+  margin-bottom: 40px;
+}
+
+.reviews-title {
+  color: linear-gradient(45deg, #6e7dff, #88fe92);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+  font-weight: bold;
+  margin-bottom: 0px; 
+  margin-top: 110px; 
+  font-size: 40px;
+}
+
+
+
+.reviews-title::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: url('../../public/ink_splash.png');
+  opacity: 0.2;
+  mix-blend-mode: multiply;
+}
+
+.reviews-title:hover{
+  transform: scale(1.05);
+  transition: transform 0.5s;
+}
+
