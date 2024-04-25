@@ -117,7 +117,7 @@ function ResponsiveAppBar() {
                                 </MenuItem>
                                 <MenuItem onClick={() => { router.push('/tour') }}>
                                     <Typography textAlign="center">{'Tour Halls'}</Typography>
-                                </MenuItem>
+                                </MenuItem>      
                                 <MenuItem onClick={handleSignOut}>
                                     <Typography textAlign="center">{'Log out'}</Typography>
                                 </MenuItem>

@@ -218,9 +218,7 @@ nav ul li {
   align-items: center; /* Vertically center the content */
   list-style: none;
   margin: 10px 30px; /* Adjust margin as necessary */
-  /* Optional: specify a fixed width and height for each li to better visualize the centering */
-  /* width: 120px; */
-  /* height: 40px; */
+
 }
 
 .logo{
@@ -235,9 +233,13 @@ nav ul li a{
   font-size: 17px;
   letter-spacing: 1px;
 }
+
+
 nav ul li a:hover{
 color: #2F80ED; 
 }
+
+
 nav ul button{
   outline: none;
   border: none;
@@ -249,17 +251,23 @@ nav ul button{
   padding: 14px 40px;
   cursor: pointer;
 }
+
+
 .text-box{
   margin-top: 16%;
   font-size: 22px;
 
 }
+
+
 .text-box h1{
   font-size: 85px;
   font-weight: 600;
   line-height: 100px;
   margin-bottom: 10px;
 }
+
+
 .text-box .btn{
   outline: none;
   border: none;

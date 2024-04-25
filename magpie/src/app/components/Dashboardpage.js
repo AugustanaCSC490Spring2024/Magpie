@@ -241,7 +241,7 @@ const DashboardPage = () => {
                      <Typography variant="h7">{userProfile.email || "Email not available"}</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                      <Typography>Match: {matchingScores[userProfile.id] ? `${matchingScores[userProfile.id].toFixed(1)}%` : "Calculating..."}</Typography>
+                      <Typography>Match: {matchingScores[userProfile.id] ? `${matchingScores[userProfile.id].toFixed(1)}%` : "not available"}</Typography>
 
                     </Grid>
 
