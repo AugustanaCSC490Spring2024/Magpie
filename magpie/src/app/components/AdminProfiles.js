@@ -11,14 +11,21 @@ import { useRouter } from 'next/navigation';
 import AdminMessages from '../components/adminmessages';
 
 function AdminProfile() {
-  const { user } = UserAuth();
+  const { user, logOut, isAdmin } = UserAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user && !isAdmin) {
+      router.push('/'); 
+    }
+  }, [user, isAdmin, router]);
+  
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150.png?text=Profile');
   const [bio, setBio] = useState('');
   const [messages, setMessages] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [inboxOpen, setInboxOpen] = useState(false);
   const [conversation, setConversation] = useState([]);
-  const router = useRouter();
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [profileSaved, setProfileSaved] = useState(false);

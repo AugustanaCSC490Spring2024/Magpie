@@ -3,7 +3,9 @@ import AdminHome from "../components/AdminHome";
 import React from 'react';
 import "../globals.css";
 import { AuthContextProvider } from "../context/AuthContext";
-const AdminPage = () => {
+
+
+const AdminPage = () => {  
   return (
     <AuthContextProvider>
     <div style={{ 
