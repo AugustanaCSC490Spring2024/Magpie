@@ -51,13 +51,6 @@ const Navbar = () => {
           </li>
         </ul>
       ) : (
-        // <div className="user-greeting">
-        //   <p>Welcome, {user.displayName}</p>
-        //   <p onClick={handleSignOut}>
-        //     Sign out
-        //   </p>
-        // </div>
-        
            <>{router.push('/dashboard')}</>
           
       )}

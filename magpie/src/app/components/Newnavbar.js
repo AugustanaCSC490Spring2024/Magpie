@@ -117,7 +117,10 @@ function ResponsiveAppBar() {
                                 </MenuItem>
                                 <MenuItem onClick={() => { router.push('/tour') }}>
                                     <Typography textAlign="center">{'Tour Halls'}</Typography>
-                                </MenuItem>      
+                                </MenuItem>   
+                                <MenuItem onClick={() => { router.push('/rentals') }}>
+                                    <Typography textAlign="center">{'Rentals'}</Typography>
+                                </MenuItem>     
                                 <MenuItem onClick={() => { router.push('/reviews') }}>
                                     <Typography textAlign="center">{'Reviews'}</Typography>
                                 </MenuItem>  
