@@ -26,6 +26,7 @@ function ExplorePage() {
   const [newRating, setNewRating] = useState(2.5);
   const [editMode, setEditMode] = useState(false);
   const [editReviewId, setEditReviewId] = useState(null);
+  const [averageRating, setAverageRating] = useState(null);
 
   useEffect(() => {
     if (user) fetchUserProfile();
@@ -51,6 +52,12 @@ function ExplorePage() {
       ...doc.data(),
     }));
     setReviews(loadedReviews);
+    if (loadedReviews.length > 0) {
+      const total = loadedReviews.reduce((acc, review) => acc + review.rating, 0);
+      setAverageRating(total / loadedReviews.length);
+    } else {
+      setAverageRating(null);
+    }
   };
 
   const handlePostReview = async () => {
@@ -91,12 +98,17 @@ function ExplorePage() {
 
   return (
     <Container>
-    <div class="text-container">
-  <h4 class="reviews-title">
-    Reviews --  Leave a rating and share your experience
-  </h4>
-  </div>
-  
+      <div className="text-container">
+        <h4 className="reviews-title">
+          Reviews --  Leave a rating and share your experience
+        </h4>
+        {averageRating !== null && (
+          <Typography variant="h6" gutterBottom>
+            Average Rating: {averageRating.toFixed(1)} <Rating value={averageRating} readOnly />
+          </Typography>
+        )}
+      </div>
+
       <Box component="form" noValidate autoComplete="off" sx={{ mb: 5 }}>
         <Rating
           name="simple-controlled"

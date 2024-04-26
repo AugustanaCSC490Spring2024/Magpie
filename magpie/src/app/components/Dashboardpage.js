@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Button, Card, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Container, Grid, Button, Card, Typography, FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material';
 import { UserAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
@@ -19,6 +19,7 @@ const DashboardPage = () => {
     academicYear: '',
     residenceHall: ''
   });
+  const [searchQuery, setSearchQuery] = useState('');
 
   const cardVariants = {
     offscreen: {
@@ -65,8 +66,6 @@ const DashboardPage = () => {
       const response = responsesData.find(r => r.id === doc.id);
       return { id: doc.id, ...doc.data(), responses: response ? response.responses : {} };
     });
-    console.log(userList);
-
 
     const filteredUsers = userList.filter(u => u.id !== user.uid);
     if (isMounted) {
@@ -91,17 +90,31 @@ const DashboardPage = () => {
     }));
   };
 
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
   const filteredUsers = users.filter(user => {
     return (!filters.gender || user.responses['What is your gender?'] === filters.gender) &&
       (!filters.major || user.responses["What's your major?"] === filters.major) &&
       (!filters.academicYear || user.responses['What is your current academic year status?'] === filters.academicYear) &&
-      (!filters.residenceHall || user.responses['What residence hall would you prefer to move to?'] === filters.residenceHall);
+      (!filters.residenceHall || user.responses['What residence hall would you prefer to move to?'] === filters.residenceHall) &&
+      (!searchQuery || user.name.toLowerCase().includes(searchQuery.toLowerCase()));
   });
 
   return (
     <StyledEngineProvider injectFirst>
       <Container maxWidth="xl">
         <Grid container spacing={3} alignItems="center" sx={{ marginTop: '50px' }}>
+        <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Search by name"
+              variant="outlined"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </Grid>
           <Grid item xs={3}>
             <FormControl fullWidth>
               <InputLabel>Gender</InputLabel>
