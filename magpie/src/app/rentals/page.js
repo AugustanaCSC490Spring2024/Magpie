@@ -61,20 +61,25 @@ const handleSubmit = async (event) => {
             // If the address is valid and results are found, proceed with form submission
             if (editMode) {
                 await updateDoc(doc(db, "listings", editId), {
-                    ...formData,
-                    userId: user.uid,
-                    userEmail: user.email
-                });
-                setEditMode(false);
-                setEditId(null);
+                  ...formData,
+                  userId: user.uid,
+                  userEmail: user.email
+              });
+              const updatedListings = listings.map(listing => listing.id === editId ? { ...listing, ...formData } : listing);
+              setListings(updatedListings);
+              setEditMode(false);
+              setEditId(null);
+                
                 alert("Listing updated successfully!");
             } else {
-                await addDoc(collection(db, "listings"), {
-                    ...formData,
-                    userId: user.uid,
-                    userEmail: user.email
-                });
-                alert("Listing created successfully!");
+              const newDoc = await addDoc(collection(db, "listings"), {
+                ...formData,
+                userId: user.uid,
+                userEmail: user.email
+            });
+            alert("Listing created successfully!");
+            const newListings = [{ id: newDoc.id, ...formData }, ...listings];
+            setListings(newListings);
             }
             setFormData({ address: '', rent: '', numRoommates: '', notes: '', imageUrl: '' });
             setOpen(false);
@@ -114,6 +119,9 @@ const handleSubmit = async (event) => {
     const handleDelete = async (id) => {
         await deleteDoc(doc(db, "listings", id));
         alert("Listing deleted successfully!");
+        const filteredListings = listings.filter(listing => listing.id !== id);
+        setListings(filteredList);
+
     };
 
     return (
