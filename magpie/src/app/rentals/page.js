@@ -10,6 +10,8 @@ import Email from '@mui/icons-material/Email';
 import Edit from '@mui/icons-material/Edit';
 import Delete from '@mui/icons-material/Delete';
 import { UserAuth } from '../context/AuthContext';
+import axios from 'axios';
+
 
 function Listing() {
     const { user } = UserAuth();
@@ -41,12 +43,27 @@ function Listing() {
         }));
     };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        if (user) {
+
+const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!user) {
+        alert("You must be logged in to create or update a listing.");
+        return;
+    }
+
+    const apiKey = '79f9041fba124e94912b720262d03976'; 
+    const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(formData.address)}&key=${apiKey}`;
+
+    try {
+        const response = await axios.get(url);
+        if (response.data.results && response.data.results.length > 0) {
+            // If the address is valid and results are found, proceed with form submission
             if (editMode) {
                 await updateDoc(doc(db, "listings", editId), {
-                    ...formData
+                    ...formData,
+                    userId: user.uid,
+                    userEmail: user.email
                 });
                 setEditMode(false);
                 setEditId(null);
@@ -62,9 +79,15 @@ function Listing() {
             setFormData({ address: '', rent: '', numRoommates: '', notes: '', imageUrl: '' });
             setOpen(false);
         } else {
-            alert("You must be logged in to create or update a listing.");
+            // Here is the case where the address is not found or invalid
+            alert("The address entered could not be verified. Please check the address and try again.");
         }
-    };
+    } catch (error) {
+        console.error("Failed to validate address: ", error);
+        alert("Error validating address. Please try again.");
+    }
+};
+
 
     const handleOpen = (listing = null) => {
         if (listing) {
