@@ -234,7 +234,7 @@ const handleSubmit = async (event) => {
                                     <IconButton
                                         color="primary"
                                         component="span"
-                                        onClick={() => window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${listing.userEmail}`, '_blank')}
+                                        onClick={() => window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${listing.userEmail}&su=About%20Housing%20Listing:%20${encodeURIComponent(listing.address)}`, '_blank')}
                                         sx={{ '&:hover': { backgroundColor: 'rgba(255, 235, 59, 0.2)' } }}
                                     >
                                         <Email />
