@@ -5,17 +5,17 @@ import {
   InputAdornment, IconButton, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 import { db } from '../firebase';
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, getDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import Email from '@mui/icons-material/Email';
 import Edit from '@mui/icons-material/Edit';
 import Delete from '@mui/icons-material/Delete';
 import { UserAuth } from '../context/AuthContext';
 import axios from 'axios';
 
-
 function Listing() {
     const { user } = UserAuth();
     const [listings, setListings] = useState([]);
+    const [currentUserProfile, setCurrentUserProfile] = useState(null);
     const [formData, setFormData] = useState({
         address: '',
         rent: '',
@@ -28,12 +28,29 @@ function Listing() {
     const [editId, setEditId] = useState(null);
 
     useEffect(() => {
+        if (user) fetchUserProfile();
+        fetchListings();
+      }, [user]);
+
+
         const fetchListings = async () => {
             const querySnapshot = await getDocs(collection(db, "listings"));
             setListings(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
         };
         fetchListings();
-    }, []);
+    
+
+    const fetchUserProfile = async () => {
+        if (!user) return;
+        const userDocRef = doc(db, 'userProfiles', user.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          setCurrentUserProfile(userDoc.data());
+        } else {
+          console.log('No profile found for the current user');
+          setCurrentUserProfile(null);
+        }
+      };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -43,58 +60,49 @@ function Listing() {
         }));
     };
 
-
-const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!user) {
-        alert("You must be logged in to create or update a listing.");
-        return;
-    }
-
-    const apiKey = '79f9041fba124e94912b720262d03976'; 
-    const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(formData.address)}&key=${apiKey}`;
-
-    try {
-        const response = await axios.get(url);
-        if (response.data.results && response.data.results.length > 0) {
-            // If the address is valid and results are found, proceed with form submission
-            if (editMode) {
-                await updateDoc(doc(db, "listings", editId), {
-                  ...formData,
-                  userId: user.uid,
-                  userEmail: user.email
-              });
-              const updatedListings = listings.map(listing => listing.id === editId ? { ...listing, ...formData } : listing);
-              setListings(updatedListings);
-              setEditMode(false);
-              setEditId(null);
-                
-             alert("Listing updated successfully!");
-            } else { 
-              const newDoc = await addDoc(collection(db, "listings"), {
-                ...formData,
-                userId: user.uid,
-                userEmail: user.email
-            });
-            alert("Listing created successfully!");
-            setFormData({ address: '', rent: '', numRoommates: '', notes: '', imageUrl: '' });
-            setOpen(false);
-            const newListings = [{ id: newDoc.id, ...formData }, ...listings];
-            setListings(newListings);
-            
-            }
-            
-        } else {
-            // Here is the case where the address is not found or invalid
-            alert("The address entered could not be verified. Please check the address and try again.");
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        if (!user) {
+            alert("You must be logged in to create or update a listing.");
+            return;
         }
-    } catch (error) {
-        console.error("Failed to validate address: ", error);
-        alert("Error validating address. Please try again.");
-    }
-};
 
+        const apiKey = '79f9041fba124e94912b720262d03976'; 
+        const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(formData.address)}&key=${apiKey}`;
+
+        try {
+            const response = await axios.get(url);
+            if (response.data.results && response.data.results.length > 0) {
+                if (editMode) {
+                    await updateDoc(doc(db, "listings", editId), {
+                      ...formData,
+                      userId: user.uid,
+                      userEmail: user.email
+                  });
+                  alert("Listing updated successfully!");
+                  setListings(listings.map(listing => listing.id === editId ? { ...listing, ...formData } : listing));
+                  setEditMode(false);
+                  setEditId(null);
+                } else { 
+                  const newDoc = await addDoc(collection(db, "listings"), {
+                    ...formData,
+                    userId: user.uid,
+                    userEmail: user.email
+                });
+                alert("Listing created successfully!");
+                setListings([{ id: newDoc.id, ...formData }, ...listings]);
+                setFormData({ address: '', rent: '', numRoommates: '', notes: '', imageUrl: '' });
+                setOpen(false);
+                }
+                
+            } else {
+                alert("The address entered could not be verified. Please check the address and try again.");
+            }
+        } catch (error) {
+            console.error("Failed to validate address: ", error);
+            alert("Error validating address. Please try again.");
+        }
+    };
 
     const handleOpen = (listing = null) => {
         if (listing) {
@@ -119,11 +127,9 @@ const handleSubmit = async (event) => {
     };
 
     const handleDelete = async (id) => {
-        await deleteDoc(doc(db, "listings", id));
         alert("Listing deleted successfully!");
-        const filteredListings = listings.filter(listing => listing.id !== id);
-        setListings(filteredListings);
-
+        await deleteDoc(doc(db, "listings", id));
+        setListings(listings.filter(listing => listing.id !== id));
     };
 
     return (
@@ -215,7 +221,7 @@ const handleSubmit = async (event) => {
                                 ><Typography variant="body2" sx={{ color: '#999' }}>{listing.notes}</Typography>
                             </CardContent>
                             <CardActions>
-                                {user.uid === listing.userId ? (
+                                {currentUserProfile && user.uid === listing.userId ?(
                                     <>
                                         <IconButton
                                             color="primary"
@@ -250,5 +256,7 @@ const handleSubmit = async (event) => {
         </Container>
     );
 }
+
+
 
 export default Listing;
