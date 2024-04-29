@@ -67,16 +67,13 @@ function ResponsiveAppBar() {
                     <Toolbar disableGutters>
                         <Typography
                             variant="h6"
-                            noWrap
-                            component="a"
-                            href="#app-bar-with-responsive-menu"
+                            className="logo"
                             sx={{
                                 mr: 2,
                                 display: { xs: 'none', md: 'flex' },
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
                                 letterSpacing: '.3rem',
-                                color: 'inherit',
                                 textDecoration: 'none',
                             }}
                         >
@@ -120,7 +117,14 @@ function ResponsiveAppBar() {
                                 </MenuItem>
                                 <MenuItem onClick={() => { router.push('/tour') }}>
                                     <Typography textAlign="center">{'Tour Halls'}</Typography>
-                                </MenuItem>
+                                </MenuItem>   
+                                <MenuItem onClick={() => { router.push('/rentals') }}>
+                                    <Typography textAlign="center">{'Rentals'}</Typography>
+                                </MenuItem>     
+                                <MenuItem onClick={() => { router.push('/reviews') }}>
+                                    <Typography textAlign="center">{'Reviews'}</Typography>
+                                </MenuItem>  
+                                
                                 <MenuItem onClick={handleSignOut}>
                                     <Typography textAlign="center">{'Log out'}</Typography>
                                 </MenuItem>
