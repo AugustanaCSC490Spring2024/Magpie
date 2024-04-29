@@ -1,19 +1,29 @@
 import { Container, Typography, Button, Box } from '@mui/material';
 import { useRouter } from 'next/navigation'; 
 import { UserAuth } from '../context/AuthContext';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { CircularProgress } from '@mui/material';
+
 
 function AdminDashboard() {
 
   const { user, logOut, isAdmin } = UserAuth();
   const router = useRouter();
-
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user && !isAdmin) {
-      router.push('/'); 
+      router.push('/profile'); 
+    } else {
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     }
   }, [user, isAdmin, router]);
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
 
 

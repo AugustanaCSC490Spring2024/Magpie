@@ -115,7 +115,8 @@ const DashboardPage = () => {
             <FormControl fullWidth>
               <InputLabel>Major</InputLabel>
               <Select value={filters.major} name="major" onChange={handleFilterChange}>
-                <MenuItem value="Undecided">Undecided</MenuItem>
+                <MenuItem value="">Any</MenuItem>
+               <MenuItem value="Undecided">Undecided</MenuItem>
                 <MenuItem value="Biology">Biology</MenuItem>
                 <MenuItem value="Psychology">Psychology</MenuItem>
                 <MenuItem value="Business Administration and Management">Business Administration and Management</MenuItem>
@@ -212,7 +213,20 @@ const DashboardPage = () => {
               viewport={{ once: true, amount: 0.8 }}
               variants={cardVariants}
             >
-              <Card style={{ textAlign: 'center', padding: '2.4rem', maxWidth: '16rem', borderRadius: '15px', minHeight: '25rem'}}>
+              <Card style={{ 
+  textAlign: 'center', 
+  padding: '2.4rem', 
+  maxWidth: '16rem', 
+  borderRadius: '15px', 
+  minHeight: '25rem', 
+  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)', 
+  transition: 'transform 0.3s', 
+  backgroundImage: 'linear-gradient(to bottom right, #ffffff, #f0f0f0)', 
+  border: '1px solid #e0e0e0',
+  ':hover': {
+    transform: 'scale(1.05)'
+  }
+}}>
                 <img src={userProfile.imageUrl || `https://via.placeholder.com/150x150.png?text=No+Image`} alt={`User ${userProfile.name}`} style={{ width: '150px', height: '150px', borderRadius: '15px', margin: 'auto' }} />
                 <Typography variant="h4">{userProfile.name || "Name not available"}</Typography>
                 <Typography>{userProfile.bio || "Bio not available"}</Typography>
