@@ -26,6 +26,9 @@ function AdminDashboard() {
   }
 
 
+  const navigateToHome = () => {
+    router.push('/'); 
+  };
 
   const navigateToCustomizeQuestionnaire = () => {
     router.push('/questionaire');
@@ -69,7 +72,8 @@ function AdminDashboard() {
         <Button variant="contained" color="primary" onClick={navigateToHousingAgreement} sx={buttonStyle}>Housing Agreement</Button>
         <Button variant="contained" color="primary" onClick={navigateToReviews} sx={buttonStyle}>Reviews</Button>
 
-      <Box display="flex" flexDirection="column" alignItems="center" marginTop={2} gap={2}>
+      <Box display="flex" flexDirection="row" alignItems="center" justifyContent={'center'} marginTop={2} gap={2}>
+      <Button variant="contained" color="secondary" onClick={navigateToHome}>Home</Button>
         <Button variant="contained" color="secondary" onClick={() => {logOut(); router.push('/')}}>{'log out'}</Button>
       </Box>
       </Box>
