@@ -50,9 +50,6 @@ export default function Homepage() {
     }
   };
 
-
-
-
   return (
     <div className="header">
       <nav>

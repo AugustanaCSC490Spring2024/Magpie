@@ -108,7 +108,9 @@ function ResponsiveAppBar() {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-
+                                <MenuItem onClick={() => { router.push('/') }}>
+                                    <Typography textAlign="center">{'Home'}</Typography>
+                                </MenuItem>
                                 <MenuItem onClick={() => { router.push('/profile') }}>
                                     <Typography textAlign="center">{'Profile'}</Typography>
                                 </MenuItem>
