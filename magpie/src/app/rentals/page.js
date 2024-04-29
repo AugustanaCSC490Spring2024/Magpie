@@ -90,9 +90,10 @@ function Listing() {
                     userEmail: user.email
                 });
                 alert("Listing created successfully!");
-                setListings([{ id: newDoc.id, ...formData }, ...listings]);
-                setFormData({ address: '', rent: '', numRoommates: '', notes: '', imageUrl: '' });
                 setOpen(false);
+                await setListings([{ id: newDoc.id, ...formData }, ...listings]);
+                setFormData({ address: '', rent: '', numRoommates: '', notes: '', imageUrl: '' });
+                
                 }
                 
             } else {
