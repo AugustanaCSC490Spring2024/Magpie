@@ -1,73 +1,74 @@
 "use client";
-import React, { useEffect, useState, useContext  } from 'react';
-import { db } from '../firebase'; 
+import React, { useEffect, useState, useContext } from 'react';
+import { db } from '../firebase';
 import { collection, getDocs, query, orderBy, writeBatch, doc, getDoc } from 'firebase/firestore';
-import { useRouter } from 'next/navigation'; 
-import { UserAuth  } from '../context/AuthContext'; 
-import { Button, Typography, CircularProgress, Box, FormControl, InputLabel, Select, MenuItem, TextField, Container, Paper, Stepper, Step, StepLabel, useTheme, useMediaQuery } from '@mui/material';
+import { useRouter } from 'next/navigation';
+import { UserAuth } from '../context/AuthContext';
+import { Button, Typography, CircularProgress, Box, FormControl, FormControlLabel, Checkbox, Container, Paper, Stepper, Step, StepLabel, useTheme, useMediaQuery, Select, MenuItem } from '@mui/material';
 
 const Onboarding = () => {
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [responses, setResponses] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [hasSubmittedResponses, setHasSubmittedResponses] = useState(false); 
+  const [hasSubmittedResponses, setHasSubmittedResponses] = useState(false);
   const router = useRouter();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const { user } = UserAuth();
-  
 
   useEffect(() => {
     const fetchQuestionsAndResponses = async () => {
       setIsLoading(true);
-  
-      // Fetch questions
+
       const q = query(collection(db, 'onboardingQuestions'), orderBy('order'));
       const querySnapshot = await getDocs(q);
       const fetchedQuestions = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  
       let existingResponses = {};
+
       const responsesRef = doc(db, 'userResponses', user.uid);
       const responsesDoc = await getDoc(responsesRef);
       if (responsesDoc.exists()) {
-        existingResponses = Object.keys(responsesDoc.data().responses).reduce((acc, questionText) => {
-          // Find the question ID corresponding to the questionText
-          const question = fetchedQuestions.find(q => q.questionText === questionText);
-          setHasSubmittedResponses(true);
-          if (question) acc[question.id] = responsesDoc.data().responses[questionText];
-          return acc;
-        }, {});
+        existingResponses = responsesDoc.data().responses;
+        setHasSubmittedResponses(true);
       }
-      
+
       setQuestions(fetchedQuestions);
       setResponses(existingResponses);
       setIsLoading(false);
     };
-  
+
     if (user) {
       fetchQuestionsAndResponses();
     }
   }, [user]);
-  
-  const handleChange = (event, questionId) => {
-    setResponses({ ...responses, [questionId]: event.target.value });
+
+
+  // Renamed from handleChange to handleResponseChange, and also uses to fetch the array of responses in the responses field which includes visibility that is passed in as property that checks the checkbox
+  const handleResponseChange = (event, questionId, property) => {
+    const updatedResponses = {
+      ...responses,
+      [questionId]: {
+        ...responses[questionId],
+        [property]: property === 'visibility' ? event.target.checked : event.target.value
+      }
+    };
+    setResponses(updatedResponses);
   };
 
   const handleNext = async () => {
     const currentResponse = responses[questions[currentQuestionIndex].id];
-    if (!currentResponse) {
-      alert("Please answer the question before proceeding."); // Simple alert, consider a more integrated notification system
+    if (!currentResponse || currentResponse.response === undefined) {
+      alert("Please answer the question before proceeding.");
       return;
     }
-  
+
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(current => current + 1);
     } else {
       await handleSubmitResponses();
     }
   };
-  
 
   const handleSubmitResponses = async () => {
     if (!user) {
@@ -75,15 +76,17 @@ const Onboarding = () => {
       return;
     }
   
-    // Preparing the data for Firestore submission
     const responsesForFirestore = Object.keys(responses).reduce((acc, questionId) => {
-      const questionText = questions.find(question => question.id === questionId).questionText;
-      acc[questionText] = responses[questionId];
+      acc[questionId] = {
+        ...responses[questionId],
+        // Here, I am setting visibility default to false if user left the visbility unchecked
+        visibility: responses[questionId].visibility || false  
+      };
       return acc;
     }, {});
   
     const batch = writeBatch(db);
-    const responsesRef = doc(collection(db, 'userResponses'), user.uid); 
+    const responsesRef = doc(db, 'userResponses', user.uid);
     batch.set(responsesRef, {
       userId: user.uid,
       responses: responsesForFirestore,
@@ -93,14 +96,14 @@ const Onboarding = () => {
     try {
       await batch.commit();
       console.log('Responses submitted successfully');
-      router.push('/dashboard'); 
+      router.push('/dashboard');
     } catch (error) {
       console.error('Error submitting responses:', error);
     }
   };
   
-  const headingText = hasSubmittedResponses ? "Edit Onboarding Responses" : "Start Onboarding";
 
+  const headingText = hasSubmittedResponses ? "Edit Onboarding Responses" : "Start Onboarding";
 
   if (isLoading) {
     return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}><CircularProgress /></Box>;
@@ -125,13 +128,17 @@ const Onboarding = () => {
           <Typography variant="h6" gutterBottom>{currentQuestion.questionText}</Typography>
           <FormControl fullWidth margin="normal">
             <Select
-              value={responses[currentQuestion.id] || ''}
-              onChange={(e) => handleChange(e, currentQuestion.id)}
+              value={responses[currentQuestion.id]?.response || ''}
+              onChange={(e) => handleResponseChange(e, currentQuestion.id, 'response')}
             >
               {currentQuestion.options.map((option, index) => (
                 <MenuItem key={index} value={option}>{option}</MenuItem>
               ))}
             </Select>
+            <FormControlLabel
+              control={<Checkbox checked={responses[currentQuestion.id]?.visibility || false} onChange={(e) => handleResponseChange(e, currentQuestion.id, 'visibility')} />}
+              label="Make response visible"
+            />
           </FormControl>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>

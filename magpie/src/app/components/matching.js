@@ -51,14 +51,14 @@ export async function getMatchingScores(currentUserUID) {
     return [];
   }
 
-  const matchingScores = users.map(user => {
-    if (user.responses) { // Ensure other user responses exist
+  const matchingIdsAndScores = users.map(user => {
+    if (user.responses) { 
       return {
         userId: user.userId,
         matchPercentage: calculateMatch(currentUser, user, questions)
       };
     }
-  }).filter(score => score && score.userId !== currentUserUID); // Exclude the current user and undefined scores
+  }).filter(userIdAndScore => userIdAndScore && userIdAndScore.userId !== currentUserUID);
 
-  return matchingScores;
+  return matchingIdsAndScores;
 }
