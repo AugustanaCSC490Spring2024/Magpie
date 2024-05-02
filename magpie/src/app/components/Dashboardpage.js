@@ -105,8 +105,11 @@ const DashboardPage = () => {
   return (
     <StyledEngineProvider injectFirst>
       <Container maxWidth="xl">
-        <Grid container spacing={3} alignItems="center" sx={{ marginTop: '50px' }}>
-        <Grid item xs={12}>
+        
+      <Typography variant="h3" sx={{fontFamily: 'poppins, sans-serif', marginTop: '100px', marginBottom: '20px', textAlign: 'center'}}>Dashboard Overview</Typography>
+
+        <Grid container spacing={3} alignItems="center">
+        <Grid item xs={3}>
             <TextField
               fullWidth
               label="Search by name"
@@ -128,64 +131,6 @@ const DashboardPage = () => {
           </Grid>
           <Grid item xs={3}>
             <FormControl fullWidth>
-              <InputLabel>Major</InputLabel>
-              <Select value={filters.major} name="major" onChange={handleFilterChange}>
-                <MenuItem value="">Any</MenuItem>
-                <MenuItem value="Undecided">Undecided</MenuItem>
-                <MenuItem value="Biology">Biology</MenuItem>
-                <MenuItem value="Psychology">Psychology</MenuItem>
-                <MenuItem value="Business Administration and Management">Business Administration and Management</MenuItem>
-                <MenuItem value="Accounting">Accounting</MenuItem>
-                <MenuItem value="Finance">Finance</MenuItem>
-                <MenuItem value="Speech communication and rhetoric">Speech communication and rhetoric</MenuItem>
-                <MenuItem value="Marketing/ Marketing management">Marketing/ Marketing management</MenuItem>
-                <MenuItem value="Neuroscience">Neuroscience</MenuItem>
-                <MenuItem value="Political science and government">Political science and government</MenuItem>
-                <MenuItem value="Communication sciences and disorders">Communication sciences and disorders</MenuItem>
-                <MenuItem value="Sociology">Sociology</MenuItem>
-                <MenuItem value="Computer Science">Computer Science</MenuItem>
-                <MenuItem value="Environmental Studies">Environmental Studies</MenuItem>
-                <MenuItem value="Hispanic and Latin American Languages, Literatures">Hispanic and Latin American Languages, Literatures</MenuItem>
-                <MenuItem value="English language and literature">English language and literature</MenuItem>
-                <MenuItem value="Economics">Economics</MenuItem>
-                <MenuItem value="International business/trade/commerce">International business/trade/commerce</MenuItem>
-                <MenuItem value="Elementary education and teaching">Elementary education and teaching</MenuItem>
-                <MenuItem value="Music teacher education">Music teacher education</MenuItem>
-                <MenuItem value="Graphic design">Graphic design</MenuItem>
-                <MenuItem value="Philosophy">Philosophy</MenuItem>
-                <MenuItem value="History">History</MenuItem>
-                <MenuItem value="Journalism">Journalism</MenuItem>
-                <MenuItem value="Biochemistry">Biochemistry</MenuItem>
-                <MenuItem value="Public health">Public health</MenuItem>
-                <MenuItem value="Applied mathematics">Applied mathematics</MenuItem>
-                <MenuItem value="Geography">Geography</MenuItem>
-                <MenuItem value="Creative writing">Creative writing</MenuItem>
-                <MenuItem value="Art history">Art history</MenuItem>
-                <MenuItem value="Mathematics teacher education">Mathematics teacher education</MenuItem>
-                <MenuItem value="Theatre Arts">Theatre Arts</MenuItem>
-                <MenuItem value="Studio Arts">Studio Arts</MenuItem>
-                <MenuItem value="Music">Music</MenuItem>
-                <MenuItem value="French language and literature">French language and literature</MenuItem>
-                <MenuItem value="Anthropology">Anthropology</MenuItem>
-                <MenuItem value="English/language arts teacher education">English/language arts teacher education</MenuItem>
-                <MenuItem value="Engineering physics/applied physics">Engineering physics/applied physics</MenuItem>
-                <MenuItem value="Mathematics">Mathematics</MenuItem>
-                <MenuItem value="Chemistry">Chemistry</MenuItem>
-                <MenuItem value="History teacher education">History teacher education</MenuItem>
-                <MenuItem value="German language and literature">German language and literature</MenuItem>
-                <MenuItem value="Asian studies">Asian studies</MenuItem>
-                <MenuItem value="Science teacher education">Science teacher education</MenuItem>
-                <MenuItem value="Physics">Physics</MenuItem>
-                <MenuItem value="Women's studies">Women's studies</MenuItem>
-                <MenuItem value="Art teacher education">Art teacher education</MenuItem>
-                <MenuItem value="Classics and classical languages, literatures, and linguistics">Classics and classical languages, literatures, and linguistics</MenuItem>
-                <MenuItem value="Scandinavian Studies">Scandinavian Studies</MenuItem>
-
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={3}>
-            <FormControl fullWidth>
               <InputLabel>Academic Year</InputLabel>
               <Select value={filters.academicYear} name="academicYear" onChange={handleFilterChange}>
                 <MenuItem value="">Any</MenuItem>
@@ -198,7 +143,7 @@ const DashboardPage = () => {
           </Grid>
           <Grid item xs={3}>
             <FormControl fullWidth>
-              <InputLabel>Residence Hall</InputLabel>
+              <InputLabel>Residence Preference</InputLabel>
               <Select value={filters.residenceHall} name="residenceHall" onChange={handleFilterChange}>
                 <MenuItem value="">Any</MenuItem>
                 <MenuItem value="No Preference">No Preference</MenuItem>
