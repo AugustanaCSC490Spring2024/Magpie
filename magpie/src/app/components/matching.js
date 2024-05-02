@@ -19,9 +19,9 @@ function calculateMatch(user1, user2, questions) {
     const questionOptions = question.options;
     totalWeight += weight;
 
-    const response1 = user1.responses[question.questionText];
-    const response2 = user2.responses[question.questionText];
-
+    const response1 = user1.responses[question.id]?.response;
+    const response2 = user2.responses[question.id]?.response;
+    console.log(user1, user2);
     if (response1 && response2) {
       if (response1 === response2) {
         score += weight;
@@ -52,7 +52,7 @@ export async function getMatchingScores(currentUserUID) {
   }
 
   const matchingIdsAndScores = users.map(user => {
-    if (user.responses) { 
+    if (user.responses) {
       return {
         userId: user.userId,
         matchPercentage: calculateMatch(currentUser, user, questions)
