@@ -29,36 +29,31 @@ export default function Homepage() {
     }
   };
   
-
-
-
-
   const handleSignIn = async () => {
     try {
-      await googleSignIn();
-      fetchProfile();
+      googleSignIn();
+      await fetchProfile();
     } catch (error) {
       console.log(error);
     }
   };
-  const handleAboutClick = async () => {
-    try {
-      // Redirect to the About page
-      router.push('/about');
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
+  // const handleAboutClick = async () => {
+  //   try {
+  //     // Redirect to the About page
+  //     router.push('/about');
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div className="header">
       <nav>
         <ul>
-          <li><button type="button" className="btn" onClick={handleAboutClick}>About</button></li>
+          {/* <li><button type="button" className="btn" onClick={handleAboutClick}>About</button></li> */}
           <li>
-
             <button type="button" className="btn" onClick={handleSignIn}>Log in / Create an account</button>
-
           </li>
         </ul>
       </nav>

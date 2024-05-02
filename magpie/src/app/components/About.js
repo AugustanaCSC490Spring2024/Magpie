@@ -13,7 +13,7 @@ import '../styles/styles.css'
 
 export const Header = ({ title }) => (
   <div className="section">
-    <h1>{title}</h1>
+    <h1 style={{ marginTop: '40px' }}>{title}</h1>
   </div>
 );
 

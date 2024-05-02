@@ -78,8 +78,6 @@ const ProfilePage = () => {
     }
 }, [user]);
 
-
-
   useEffect(() => {
     if (user?.uid) {
       const docRef = doc(db, 'userProfiles', user.uid);
@@ -114,8 +112,6 @@ const ProfilePage = () => {
     }
   };
   
-
-
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     if (file && user?.uid) {
@@ -195,11 +191,7 @@ const ProfilePage = () => {
           <Button variant="contained" color="primary" onClick={saveProfile} sx={{ mt: 2 }}>
             Save Bio
           </Button>
-          {/* <Button variant="contained" color="primary" onClick={() => router.push('/dashboard')} sx={{ mt: 2 }}>
-            Dashboard
-          </Button> */}
         </Box>
-      
         {inboxOpen && (
           <Box flex={1} sx={{ overflow: 'auto', maxHeight: '90vh', width: '100%', bgcolor: 'background.paper' }}>
           <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
