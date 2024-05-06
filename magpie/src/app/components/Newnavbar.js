@@ -28,9 +28,6 @@ function ResponsiveAppBar() {
     const { user, logOut } = UserAuth();
 
     const uid = user?.uid;
-    // const db = getFirestore();
-    // const userProfiles = collection(db, 'userProfiles');
-    // const query = query(userProfiles, where('uid', '==', uid));
     
 
     const handleSignOut = () => {
@@ -100,25 +97,22 @@ function ResponsiveAppBar() {
                                 }}
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
-                            >
-                                <MenuItem onClick={() => { router.push('/') }}>
-                                    <Typography textAlign="center">{'Home'}</Typography>
-                                </MenuItem>
+                            > 
                                 <MenuItem onClick={() => { router.push('/about') }}>
                                     <Typography textAlign="center">{'About'}</Typography>
-                                </MenuItem> 
+                                </MenuItem>
                                 <MenuItem onClick={() => { router.push('/profile') }}>
                                     <Typography textAlign="center">{'Profile'}</Typography>
                                 </MenuItem>
                                 <MenuItem onClick={() => { router.push('/dashboard') }}>
                                     <Typography textAlign="center">{'Dashboard'}</Typography>
                                 </MenuItem>
-                                <MenuItem onClick={() => { router.push('/tour') }}>
-                                    <Typography textAlign="center">{'Tour Halls'}</Typography>
-                                </MenuItem>   
                                 <MenuItem onClick={() => { router.push('/rentals') }}>
                                     <Typography textAlign="center">{'Rentals'}</Typography>
                                 </MenuItem>     
+                                <MenuItem onClick={() => { router.push('/tour') }}>
+                                    <Typography textAlign="center">{'Tour Halls'}</Typography>
+                                </MenuItem>   
                                 <MenuItem onClick={() => { router.push('/reviews') }}>
                                     <Typography textAlign="center">{'Reviews'}</Typography>
                                 </MenuItem>  
