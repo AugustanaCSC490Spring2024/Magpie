@@ -458,7 +458,6 @@ nav ul button{
   transition: transform 0.5s;
 }
 
-/* Contacts Section */
 .contacts-section {
   padding: 100px;
   color: #333;
@@ -561,4 +560,3 @@ nav ul button{
     font-size: 0.8rem;
   }
 }
-
