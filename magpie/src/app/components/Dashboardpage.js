@@ -54,53 +54,60 @@ const DashboardPage = () => {
     }
   }, [user, isMounted]);
 
+// This function now retrieves question IDs from the 'onboardingQuestions' collection to use as keys for accessing user responses. This is necessary
+// due to a schema change where responses are now stored with question IDs as keys. 
+
   const fetchUsersAndScores = async () => {
     const db = getFirestore();
     const usersCollection = collection(db, 'userProfiles');
     const responsesCollection = collection(db, 'userResponses');
+    const questionsCollection = collection(db, 'onboardingQuestions');
+
+    const questionsSnapshot = await getDocs(questionsCollection);
+    const questionMap = questionsSnapshot.docs.reduce((acc, doc) => {
+      acc[doc.data().questionText] = doc.id;
+      return acc;
+    }, {});
 
     const userSnapshot = await getDocs(usersCollection);
     const responsesSnapshot = await getDocs(responsesCollection);
-    const responsesData = responsesSnapshot.docs.map(doc => ({ id: doc.id, responses: doc.data().responses }));
+    const responsesData = responsesSnapshot.docs.map(doc => ({
+        id: doc.id,
+        responses: doc.data().responses
+    }));
     const userList = userSnapshot.docs.map(doc => {
-      const response = responsesData.find(r => r.id === doc.id);
-      return { id: doc.id, ...doc.data(), responses: response ? response.responses : {} };
+        const response = responsesData.find(r => r.id === doc.id);
+        return {
+            id: doc.id,
+            ...doc.data(),
+            responses: response ? response.responses : {}
+        };
     });
 
     const filteredUsers = userList.filter(u => u.id !== user.uid);
     if (isMounted) {
-      setUsers(filteredUsers);
+        setUsers(filteredUsers);
     }
 
     const scores = await getMatchingScores(user.uid);
     const scoresMap = scores.reduce((acc, score) => {
-      acc[score.userId] = score.matchPercentage;
-      return acc;
+        acc[score.userId] = score.matchPercentage;
+        return acc;
     }, {});
     if (isMounted) {
-      setMatchingScores(scoresMap);
+        setMatchingScores(scoresMap);
     }
-  };
+};
 
-  const handleFilterChange = (event) => {
-    const { name, value } = event.target;
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const filteredUsers = users.filter(user => {
-    return (!filters.gender || user.responses['What is your gender?'] === filters.gender) &&
-      (!filters.major || user.responses["What's your major?"] === filters.major) &&
-      (!filters.academicYear || user.responses['What is your current academic year status?'] === filters.academicYear) &&
-      (!filters.residenceHall || user.responses['What residence hall would you prefer to move to?'] === filters.residenceHall) &&
+// This filter logic is applied to the array of users to match against specified filters and search queries.
+const filteredUsers = users.filter(user => {
+    return (!filters.gender || user.responses[questionMap['What is your gender?']]?.response === filters.gender) &&
+      (!filters.major || user.responses[questionMap["What's your major?"]]?.response === filters.major) &&
+      (!filters.academicYear || user.responses[questionMap['What is your current academic year status?']]?.response === filters.academicYear) &&
+      (!filters.residenceHall || user.responses[questionMap['What residence hall would you prefer to move to?']]?.response === filters.residenceHall) &&
       (!searchQuery || user.name.toLowerCase().includes(searchQuery.toLowerCase()));
-  });
+});
+
 
   return (
     <StyledEngineProvider injectFirst>
