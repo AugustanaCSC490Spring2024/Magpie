@@ -58,10 +58,11 @@ export default function Homepage() {
     <div className="header">
       <nav>
         <ul>
-          <li><button type="button" className="btn" onClick={handleAboutClick}>About</button></li>
+           <li><button onClick={handleAboutClick}>About</button></li>
+
           <li>
 
-            <button type="button" className="btn" onClick={handleSignIn}>Log in / Create an account</button>
+            <button type="button" className="btn" onClick={handleSignIn}>Log in</button>
 
           </li>
         </ul>

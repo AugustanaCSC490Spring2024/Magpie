@@ -6,6 +6,7 @@ import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { getMatchingScores } from './matching';
 import { motion } from 'framer-motion';
 import { StyledEngineProvider } from '@mui/material/styles';
+import UserProfileCard from './userProfileCard';
 
 const DashboardPage = () => {
   const { user, logOut, isAdmin } = UserAuth();
@@ -68,9 +69,9 @@ const DashboardPage = () => {
     console.log(userList);
 
 
-    const filteredUsers = userList.filter(u => u.id !== user.uid);
+    const usersWithoutSelf = userList.filter(u => u.id !== user.uid);
     if (isMounted) {
-      setUsers(filteredUsers);
+      setUsers(usersWithoutSelf);
     }
 
     const scores = await getMatchingScores(user.uid);
@@ -205,7 +206,7 @@ const DashboardPage = () => {
           </Grid>
         </Grid>
 
-        <Grid container spacing={2} style={{ padding: '30px 10px 80px 140px', marginTop: '20px' }}>
+        <Grid container spacing={2} style={{ paddingLeft: '3%', marginTop: '20px' }}>
 
           {filteredUsers.map((userProfile, index) => (
             <Grid item xs={4} key={userProfile.id}>
@@ -215,38 +216,8 @@ const DashboardPage = () => {
                 viewport={{ once: true, amount: 0.8 }}
                 variants={cardVariants}
               >
-                <Card style={{
-                  textAlign: 'center',
-                  padding: '2.4rem',
-                  maxWidth: '25rem',
-                  borderRadius: '15px',
-                  minHeight: '25rem',
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                  transition: 'transform 0.3s',
-                  backgroundImage: 'linear-gradient(to bottom right, #ffffff, #f0f0f0)',
-                  border: '1px solid #e0e0e0',
-                  ':hover': {
-                    transform: 'scale(1.05)'
-                  }
-                }}>
-                  <Grid container spacing={2} style={{ marginRight: '30px' }}>
-                    <Grid item xs={12}>
-                      <img src={userProfile.imageUrl || `https://via.placeholder.com/150x150.png?text=No+Image`} alt={`User ${userProfile.name}`} style={{ width: '150px', height: '150px', borderRadius: '15px', margin: 'auto' }} />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography variant="h4" sx={{fontFamily: 'poppins, sans-serif'}}>{userProfile.name || "Name not available"}</Typography>
-                    </Grid>
-
-                    <Grid item xs={12} align="center">
-                     <Typography variant="h7">{userProfile.email || "Email not available"}</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                      <Typography>Match: {matchingScores[userProfile.id] ? `${matchingScores[userProfile.id].toFixed(1)}%` : "Calculating..."}</Typography>
-
-                    </Grid>
-
-                  </Grid>
-                </Card>
+                <UserProfileCard userProfile={userProfile} matchingScores={matchingScores}></UserProfileCard>
+               
               </motion.div>
             </Grid>
           ))}
