@@ -94,7 +94,7 @@ export const CreatorCard2 = ({ name, title }) => (
       <h3>{name}</h3>
       <p>{title}</p>
     </div>
-  );
+);
 export const GettingStartedSection = () => (
   <div className="section">
     {/* Getting started section content */}
