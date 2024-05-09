@@ -6,11 +6,32 @@ import {
 } from '@mui/material';
 import { db } from '../firebase';
 import { collection, addDoc, getDocs, getDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
-import Email from '@mui/icons-material/Email';
-import Edit from '@mui/icons-material/Edit';
-import Delete from '@mui/icons-material/Delete';
+import EmailIcon from '@mui/icons-material/Email'; 
+import EditIcon from '@mui/icons-material/Edit'; 
+import DeleteIcon from '@mui/icons-material/Delete'; 
 import { UserAuth } from '../context/AuthContext';
 import axios from 'axios';
+import { styled } from '@mui/system';
+
+const PrimaryButton = styled(Button)(({ theme }) => ({
+    backgroundImage: 'linear-gradient(45deg, #003DA5 30%, #002D80 90%)',
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    boxShadow: '0 3px 5px 2px rgba(0, 123, 255, .3)',
+    '&:hover': {
+      backgroundImage: 'linear-gradient(45deg, #002D80 30%, #003DA5 90%)',
+    }
+}));
+
+const SecondaryButton = styled(Button)(({ theme }) => ({
+    backgroundImage: 'linear-gradient(45deg, #FDB913 30%, #E0A800 90%)',
+    color: '#000000',
+    fontWeight: 'bold',
+    boxShadow: '0 3px 5px 2px rgba(255, 193, 7, .3)',
+    '&:hover': {
+      backgroundImage: 'linear-gradient(45deg, #E0A800 30%, #FDB913 90%)',
+    }
+}));
 
 function Listing() {
     const { user } = UserAuth();
@@ -30,15 +51,12 @@ function Listing() {
     useEffect(() => {
         if (user) fetchUserProfile();
         fetchListings();
-      }, [user]);
+    }, [user]);
 
-
-        const fetchListings = async () => {
-            const querySnapshot = await getDocs(collection(db, "listings"));
-            setListings(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-        };
-        fetchListings();
-    
+    const fetchListings = async () => {
+        const querySnapshot = await getDocs(collection(db, "listings"));
+        setListings(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    };
 
     const fetchUserProfile = async () => {
         if (!user) return;
@@ -50,7 +68,7 @@ function Listing() {
           console.log('No profile found for the current user');
           setCurrentUserProfile(null);
         }
-      };
+    };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -78,24 +96,22 @@ function Listing() {
                       ...formData,
                       userId: user.uid,
                       userEmail: user.email
-                  });
-                  alert("Listing updated successfully!");
-                  setListings(listings.map(listing => listing.id === editId ? { ...listing, ...formData } : listing));
-                  setEditMode(false);
-                  setEditId(null);
+                    });
+                    alert("Listing updated successfully!");
+                    setListings(listings.map(listing => listing.id === editId ? { ...listing, ...formData } : listing));
+                    setEditMode(false);
+                    setEditId(null);
                 } else { 
-                  const newDoc = await addDoc(collection(db, "listings"), {
-                    ...formData,
-                    userId: user.uid,
-                    userEmail: user.email
-                });
-                alert("Listing created successfully!");
-                setOpen(false);
-                await setListings([{ id: newDoc.id, ...formData }, ...listings]);
-                setFormData({ address: '', rent: '', numRoommates: '', notes: '', imageUrl: '' });
-                
+                    const newDoc = await addDoc(collection(db, "listings"), {
+                      ...formData,
+                      userId: user.uid,
+                      userEmail: user.email
+                    });
+                    alert("Listing created successfully!");
+                    setOpen(false);
+                    await setListings([{ id: newDoc.id, ...formData }, ...listings]);
+                    setFormData({ address: '', rent: '', numRoommates: '', notes: '', imageUrl: '' });
                 }
-                
             } else {
                 alert("The address entered could not be verified. Please check the address and try again.");
             }
@@ -134,21 +150,35 @@ function Listing() {
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 12, backgroundColor: '#f0f0f0', py: 3 }}>
-            <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: '#333', textShadow: '1px 1px 2px rgba(0,0,0,0.1)' }}>
+        <Container maxWidth="md" sx={{
+          mt: 12,
+          py: 3,
+          background: 'linear-gradient(to right top, #003DA5, #FDB913)',
+          color: '#fff',
+          textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
+          position: 'relative',
+          overflow: 'hidden',
+          '&:before': {
+            content: '"Augustana College"',
+            position: 'absolute',
+            bottom: 10,
+            right: 10,
+            fontSize: '4rem',
+            color: 'rgba(255, 255, 255, 0.1)',
+            fontWeight: 'bold',
+            zIndex: -1
+          }
+        }}>
+            <Typography variant="h4" gutterBottom sx={{
+              fontWeight: 'bold', 
+              textShadow: '1px 1px 2px rgba(0,0,0,0.1)'
+            }}>
                 Housing Listings
             </Typography>
-            <Button variant="contained" color="primary" onClick={() => handleOpen()} sx={{
-                mb: 2,
-                backgroundColor: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-                boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-                '&:hover': {
-                    backgroundColor: 'linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%)'
-                }
-            }}>
+            <PrimaryButton onClick={() => handleOpen()} sx={{ mb: 2 }}>
                 Create New Listing
-            </Button>
-            <Dialog open={open} onClose={handleClose} sx={{ '& .MuiDialog-paper': { boxShadow: '0 4px 20px 2px rgba(0, 0, 0, .15)' } }}>
+            </PrimaryButton>
+            <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>{editMode ? "Edit Listing" : "Create a New Listing"}</DialogTitle>
                 <form onSubmit={handleSubmit}>
                     <DialogContent>
@@ -197,12 +227,12 @@ function Listing() {
                         />
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose} color="primary">
+                        <SecondaryButton onClick={handleClose}>
                             Cancel
-                        </Button>
-                        <Button type="submit" color="primary">
+                        </SecondaryButton>
+                        <PrimaryButton type="submit">
                             {editMode ? "Update Listing" : "Create Listing"}
-                        </Button>
+                        </PrimaryButton>
                     </DialogActions>
                 </form>
             </Dialog>
@@ -210,33 +240,35 @@ function Listing() {
                 {listings.map(listing => (
                     <Grid item xs={12} md={6} key={listing.id}>
                         <Card sx={{
+                            transition: '0.3s',
                             boxShadow: '0px 8px 20px rgba(0,0,0,0.12)',
                             '&:hover': {
-                                boxShadow: '0px 10px 25px rgba(0,0,0,0.2)'
+                                transform: 'scale(1.03)',
+                                boxShadow: '0px 16px 40px rgba(0,0,0,0.2)'
                             }
                         }}>
                             <CardContent>
-                                <Typography variant="h5" sx={{ color: '#333', fontWeight: 'medium' }}>{listing.address}</Typography
-                                ><Typography variant="body1" sx={{ color: '#555' }}>${listing.rent} / month</Typography
-                                ><Typography variant="body2" sx={{ color: '#777' }}>{listing.numRoommates} roommates needed</Typography
-                                ><Typography variant="body2" sx={{ color: '#999' }}>{listing.notes}</Typography>
+                                <Typography variant="h5" sx={{ color: '#333', fontWeight: 'medium' }}>{listing.address}</Typography>
+                                <Typography variant="body1" sx={{ color: '#555' }}>${listing.rent} / month</Typography>
+                                <Typography variant="body2" sx={{ color: '#777' }}>{listing.numRoommates} roommates needed</Typography>
+                                <Typography variant="body2" sx={{ color: '#999' }}>{listing.notes}</Typography>
                             </CardContent>
                             <CardActions>
-                                {currentUserProfile && user.uid === listing.userId ?(
+                                {currentUserProfile && user.uid === listing.userId ? (
                                     <>
                                         <IconButton
                                             color="primary"
                                             onClick={() => handleOpen(listing)}
                                             sx={{ '&:hover': { backgroundColor: 'rgba(76, 175, 80, 0.2)' } }}
                                         >
-                                            <Edit />
+                                            <EditIcon />
                                         </IconButton>
                                         <IconButton
                                             color="secondary"
                                             onClick={() => handleDelete(listing.id)}
                                             sx={{ '&:hover': { backgroundColor: 'rgba(244, 67, 54, 0.2)' } }}
                                         >
-                                            <Delete />
+                                            <DeleteIcon />
                                         </IconButton>
                                     </>
                                 ) : (
@@ -246,7 +278,7 @@ function Listing() {
                                         onClick={() => window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${listing.userEmail}&su=About%20Housing%20Listing:%20${encodeURIComponent(listing.address)}`, '_blank')}
                                         sx={{ '&:hover': { backgroundColor: 'rgba(255, 235, 59, 0.2)' } }}
                                     >
-                                        <Email />
+                                        <EmailIcon />
                                     </IconButton>
                                 )}
                             </CardActions>
@@ -257,7 +289,5 @@ function Listing() {
         </Container>
     );
 }
-
-
-
+    
 export default Listing;
