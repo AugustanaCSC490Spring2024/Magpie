@@ -4,7 +4,7 @@ import "../globals.css";
 const Contacts = () => {
   return (
     <div className="contacts-section" id="contact">
-      <h1 style={{fontSize: '50px', color: 'blue'}}>Contact Us</h1>
+      <h1 style={{fontSize: '50px', color: 'White'}}>Contact Us</h1>
       <div className="contact-form">
         <h3>Send a Message</h3>
         <form action="https://formsubmit.co/tesfaelnatan@gmail.com" method="POST">

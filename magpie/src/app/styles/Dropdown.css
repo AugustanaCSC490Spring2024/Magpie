@@ -1,25 +1,27 @@
-/* CSS */
-.dropdown {
-  position: relative;
-  overflow: hidden; /* Ensures the dropdown is contained within the rounded borders */
-  padding-bottom: 10px; /* Optional: Adjust as needed */
-  width: 100%; /* Adjust the width as needed */
-  padding: 10px;
-  margin: 0 auto; /* Center horizontally */
-  font-size: 18px;
-  font-family: "Inter", sans-serif;
-}
 
-select {
-  padding: 10px 20px; 
+.dropdown-select {
+
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 10px; 
+  width: 100%; 
+  padding: 10px 20px;
   min-width: 100%;
   font-size: 18px; 
   border: none;
   cursor: pointer;
-  text-align: center; /* Center the text within the select */
+  text-align: center;
   background-color: #116466;
   border-radius: 80px;
   color: white;
-  margin: 0; /* Remove any default margin */
+  margin: 0;
+}
+
+.description-container {
   
+  padding: 20px; 
+  margin-top: 10px; 
+  border-radius: 15px;
+  text-align: center;
+  background-color: #116466;
 }
