@@ -1,17 +1,14 @@
-/* CSS */
-.dropdown {
-  position: relative;
-  overflow: hidden; /* Ensures the dropdown is contained within the rounded borders */
-  padding-bottom: 10px; /* Optional: Adjust as needed */
-  width: 100%; /* Adjust the width as needed */
-  padding: 10px;
-  margin: 0 auto; /* Center horizontally */
-  font-size: 18px;
-  font-family: "Inter", sans-serif;
+.dropdown-container {
+  /* Style the container for overall appearance (e.g., border, padding) */
 }
 
-select {
-  padding: 10px 20px; 
+.dropdown-select {
+  /* Provided styles for the select element */
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 10px; /* Adjust as needed */
+  width: 100%; /* Adjust the width as needed */
+  padding: 10px 20px;
   min-width: 100%;
   font-size: 18px; 
   border: none;
@@ -20,5 +17,18 @@ select {
   background-color: #116466;
   border-radius: 80px;
   color: white;
-  margin: 0; 
+  margin: 0;
+}
+
+.description-container {
+  /* Style the description container for background, padding, etc. */
+  padding: 20px; /* Example for padding */
+  margin-top: 10px; /* Example for spacing between select and description */
+  border-radius: 15px;
+  text-align: center;
+  background-color: #116466;
+}
+
+.description-text {
+  /* Style the description text for font size, line height, etc. */
 }
