@@ -1,6 +1,6 @@
 /* styles.css */
 .about-page {
-    background-color: #1F2833;
+    background: linear-gradient(to top, #09203f 0%, #537895 100%);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -20,6 +20,9 @@
     border-color: black;
     color:white;
     font-family: "Inter", sans-serif;
+  }
+  .profile-Button{
+    padding-top: 30px;
   }
   .creators {
     display: flex;

@@ -1,8 +1,10 @@
 "use client";
 import React from 'react';
-import { Header, AboutSection, CreatorCard, CreatorCard2, GettingStartedSection} from '../components/About';
+import { Header, AboutSection, CreatorCard, GettingStartedSection} from '../components/About';
 import '../styles/styles.css'; 
 import Link from 'next/link'; 
+import catImage1 from '../../../public/cat1.jpg';
+import catImage2 from '../../../public/cat2.jpg';
 import Dropdown from '../components/Dropdown';
 import ContactUs from '../components/ContactUs';
 
@@ -35,17 +37,17 @@ const AboutPage = () => {
       <Header title="About Us" />
       <AboutSection />
       <div className="creators">
-        <CreatorCard2 name="Aaron Afework" title="Front-End Designer"/>
-        <CreatorCard name="Aymane Sghier" title="UX/UI Designer"  />
-        <CreatorCard name="Elnatan Tesfa" title="Lead Developer"  />
-        <CreatorCard name="Ilyas Jamil" title="Back-End Developer" />
+        <CreatorCard name="Aaron Afework" title="Front-End Designer" image = {catImage1}/>
+        <CreatorCard name="Aymane Sghier" title="UX/UI Designer" image = {catImage1} />
+        <CreatorCard name="Elnatan Tesfa" title="Lead Developer"  image = {catImage1}/>
+        <CreatorCard name="Ilyas Jamil" title="Back-End Developer" image = {catImage1}/>
       </div>
       <GettingStartedSection />
       <ContactUs /> 
       <div className="dropdown-container">
         <Dropdown options={options} /> 
       </div>
-      <Link href="/profile">
+      <Link className='profile-Button' href="/profile">
         <button type="button" className="button">Profile</button>
       </Link>
     </div>
