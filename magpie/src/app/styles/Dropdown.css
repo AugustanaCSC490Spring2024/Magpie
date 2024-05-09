@@ -1,13 +1,10 @@
-.dropdown-container {
-  /* Style the container for overall appearance (e.g., border, padding) */
-}
 
 .dropdown-select {
-  /* Provided styles for the select element */
+
   position: relative;
   overflow: hidden;
-  padding-bottom: 10px; /* Adjust as needed */
-  width: 100%; /* Adjust the width as needed */
+  padding-bottom: 10px; 
+  width: 100%; 
   padding: 10px 20px;
   min-width: 100%;
   font-size: 18px; 
@@ -21,14 +18,10 @@
 }
 
 .description-container {
-  /* Style the description container for background, padding, etc. */
-  padding: 20px; /* Example for padding */
-  margin-top: 10px; /* Example for spacing between select and description */
+  
+  padding: 20px; 
+  margin-top: 10px; 
   border-radius: 15px;
   text-align: center;
   background-color: #116466;
-}
-
-.description-text {
-  /* Style the description text for font size, line height, etc. */
 }
