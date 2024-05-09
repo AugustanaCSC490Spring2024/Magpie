@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import AdminMessages from '../components/adminmessages'; 
 import { Snackbar } from '@mui/material'; 
 import Alert from '@mui/material/Alert';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 
 
@@ -48,6 +49,8 @@ const ProfilePage = () => {
   const [conversation, setConversation] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
 
   useEffect(() => {
@@ -143,94 +146,95 @@ const ProfilePage = () => {
 
 
 
-  return (
-    <>
-      <InteractiveBackground />
-      {selectedUserId && <Overlay />}
-      <Box sx={{
+return (
+  <>
+    <InteractiveBackground />
+    {selectedUserId && <Overlay />}
+    <Box sx={{
       display: 'flex',
       flexDirection: 'row',
       position: 'absolute',
       top: '32%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      width: '90vw',
-      maxWidth: '1000px',
+      width: { xs: '100%', sm: '90vw' },  // Ensuring full width on very small screens
+      maxWidth: { xs: '500px', sm: '1000px' },  // More dynamic maxWidth
       background: 'rgba(255, 255, 255, 0.2)',
       borderRadius: '15px',
-      padding: '20px',
+      padding: { xs: '10px', sm: '20px' },
       backdropFilter: 'blur(10px)',
       boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
       border: '1px solid rgba(255, 255, 255, 0.3)',
-      zIndex: 1,  // Ensure this is below the Overlay
+      zIndex: 1,
     }}>
-        {/* Profile Info Section */}
-        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
-          <Typography variant="h4" className="welcome" sx={{ marginBottom: '20px' }}>
-            Welcome, {user?.displayName || 'Guest'}!
-          </Typography>
-          <Box sx={{ marginBottom: '20px', borderRadius: '40%', overflow: 'hidden' }}>
-            <img src={profileImage} alt="Profile" style={{ width: '150px', height: '150px' }} />
-          </Box>
-          <input type="file" accept="image/*" onChange={handleImageUpload} id="profile-image-upload" style={{ display: 'none' }} />
-          <label htmlFor="profile-image-upload">
-            <IconButton color="primary" component="span" sx={{ backgroundColor: 'rgba(255, 255, 255, 0.3)' }}>
-              <AddCircleOutlineIcon sx={{ color: '#FFF', fontSize: 30 }} />
-            </IconButton>
-          </label>
-          <TextField
-            label="Add Bio"
-            multiline
-            rows={4}
-            variant="filled"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            fullWidth
-            sx={{ backgroundColor: 'rgba(255, 255, 255, 0.7)', borderRadius: 1 }}
-          />
-          <Button variant="contained" color="primary" onClick={saveProfile} sx={{ mt: 2 }}>
-            Save Bio
-          </Button>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: { xs: '10px', sm: '20px' } }}>
+        <Typography variant="h4" className="welcome" sx={{ marginBottom: '20px', fontSize: { xs: '1.25rem', sm: '1.5rem' } }}>
+          Welcome, {user?.displayName || 'Guest'}!
+        </Typography>
+        <Box sx={{ marginBottom: '20px', borderRadius: '40%', overflow: 'hidden', width: '150px', height: '150px' }}>
+          <img src={profileImage} alt="Profile" style={{ width: '100%', height: '100%' }} />
         </Box>
-        {inboxOpen && (
-          <Box flex={1} sx={{ overflow: 'auto', maxHeight: '90vh', width: '100%', bgcolor: 'background.paper' }}>
+        <input type="file" accept="image/*" onChange={handleImageUpload} id="profile-image-upload" style={{ display: 'none' }} />
+        <label htmlFor="profile-image-upload">
+          <IconButton color="primary" component="span" sx={{ backgroundColor: 'rgba(255, 255, 255, 0.3)' }}>
+            <AddCircleOutlineIcon sx={{ color: '#FFF', fontSize: { xs: '24px', sm: '30px' } }} />
+          </IconButton>
+        </label>
+        <TextField
+          label="Add Bio"
+          multiline
+          rows={4}
+          variant="filled"
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+          fullWidth
+          sx={{
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            borderRadius: 1,
+            fontSize: { xs: '0.875rem', sm: '1rem' }
+          }}
+        />
+        <Button variant="contained" color="primary" onClick={saveProfile} sx={{ mt: 2, width: { xs: '100%', sm: 'auto' } }}>
+          Save Bio
+        </Button>
+      </Box>
+      {inboxOpen && (
+        <Box flex={1} sx={{ overflow: 'auto', maxHeight: '90vh', width: '100%', bgcolor: 'background.paper' }}>
           <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             {messages.map((msg) => (
-                <ListItem key={msg.senderId} button onClick={() => handleAdminSelect(msg.senderId)}>
-                    <ListItemAvatar>
-                        <Avatar>{msg.senderName.charAt(0)}</Avatar>
-                    </ListItemAvatar>
-                    <ListItemText primary={`Chat with ${msg.senderName}`} secondary={msg.lastMessage} />
-                </ListItem>
+              <ListItem key={msg.senderId} button onClick={() => handleAdminSelect(msg.senderId)}>
+                <ListItemAvatar>
+                  <Avatar>{msg.senderName.charAt(0)}</Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={`Chat with ${msg.senderName}`} secondary={msg.lastMessage} />
+              </ListItem>
             ))}
-        </List>
+          </List>
+        </Box>
+      )}
     </Box>
 
-)}
-</Box>
+    {selectedUserId && (
+      <Box sx={{ position: 'fixed', bottom: 20, width: '100%', paddingTop: '20px', zIndex: 1010 }}>
+        <AdminMessages userId={selectedUserId} messages={conversation} onClose={() => setSelectedUserId(null)} />
+      </Box>
+    )}
+    <Button
+      variant="contained"
+      color="primary"
+      onClick={() => setInboxOpen(!inboxOpen)}
+      sx={{ position: 'fixed', bottom: 20, right: 20, width: { xs: '50%', sm: 'auto' }, fontSize: { xs: '0.7rem', sm: '1rem' } }}
+    >
+      {inboxOpen ? 'Close Inbox' : 'Open Inbox'}
+    </Button>
 
-{selectedUserId && (
-     <Box sx={{ position: 'fixed', bottom: 20, width: '100%', paddingTop: '20px', zIndex: 1010 }}>
-      <AdminMessages userId={selectedUserId} messages={conversation} onClose={() => setSelectedUserId(null)} />
-     </Box>
-)}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setInboxOpen(!inboxOpen)}
-          sx={{ position: 'fixed', bottom: 20, right: 20 }}
-        >
-          {inboxOpen ? 'Close Inbox' : 'Open Inbox'}
-        </Button>
-
-        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
+    <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
       <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
         {snackbarMessage}
       </Alert>
     </Snackbar>
-      
-    </>
-  );
+  </>
+);
 };
 
 export default ProfilePage;

@@ -43,8 +43,6 @@ const Onboarding = () => {
     }
   }, [user]);
 
-
-  // Renamed from handleChange to handleResponseChange, and also uses to fetch the array of responses in the responses field which includes visibility that is passed in as property that checks the checkbox
   const handleResponseChange = (event, questionId, property) => {
     const updatedResponses = {
       ...responses,
@@ -79,7 +77,6 @@ const Onboarding = () => {
     const responsesForFirestore = Object.keys(responses).reduce((acc, questionId) => {
       acc[questionId] = {
         ...responses[questionId],
-        // Here, I am setting visibility default to false if user left the visbility unchecked
         visibility: responses[questionId].visibility || false  
       };
       return acc;
@@ -101,7 +98,6 @@ const Onboarding = () => {
       console.error('Error submitting responses:', error);
     }
   };
-  
 
   const headingText = hasSubmittedResponses ? "Edit Onboarding Responses" : "Start Onboarding";
 
@@ -117,7 +113,7 @@ const Onboarding = () => {
         <Stepper activeStep={currentQuestionIndex} alternativeLabel nonLinear sx={{ mb: 4 }}>
           {questions.map((_, index) => (
             <Step key={index}>
-              <StepLabel>{`Question ${index + 1}`}</StepLabel>
+              {!isSmallScreen && <StepLabel>{`Question ${index + 1}`}</StepLabel>}
             </Step>
           ))}
         </Stepper>
