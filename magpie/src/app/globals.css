@@ -70,9 +70,9 @@ h6.MuiTypography-root.logo {
 
 
 
-h2:hover {
+/* h2:hover {
   transform: scale(1.1);
-}
+} */
 
 .secondarytext{
   color:#fff;
@@ -463,6 +463,7 @@ nav ul button{
   color: #333;
   font-family: 'Montserrat', sans-serif;
   text-align: center;
+  width: 100%;
 }
 
 .contact-methods {

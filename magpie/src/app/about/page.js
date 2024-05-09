@@ -1,4 +1,3 @@
-// pages/about.js
 "use client";
 import React from 'react';
 import { Header, AboutSection, CreatorCard, CreatorCard2, GettingStartedSection} from '../components/About';
@@ -46,8 +45,8 @@ const AboutPage = () => {
       <div className="dropdown-container">
         <Dropdown options={options} /> 
       </div>
-      <Link href="/">
-        <button type="button" className="button">Home Page</button>
+      <Link href="/profile">
+        <button type="button" className="button">Profile</button>
       </Link>
     </div>
   );

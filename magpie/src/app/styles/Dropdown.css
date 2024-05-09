@@ -16,10 +16,9 @@ select {
   font-size: 18px; 
   border: none;
   cursor: pointer;
-  text-align: center; /* Center the text within the select */
+  text-align: center;
   background-color: #116466;
   border-radius: 80px;
   color: white;
-  margin: 0; /* Remove any default margin */
-  
+  margin: 0; 
 }
