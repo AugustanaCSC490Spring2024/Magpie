@@ -158,7 +158,7 @@ function AdminProfile() {
           </Paper>
         </Box>
         {inboxOpen && (
-          <Box flex={1} sx={{ overflow: 'auto', maxHeight: '90vh', width: '100%', bgcolor: 'background.paper' }}>
+          <Box flex={1} sx={{ overflowY: 'scroll', maxHeight: '90vh', width: '100%', bgcolor: 'background.paper' }}>
             <List>
               {messages.map(msg => (
                 <ListItem key={msg.userId} button onClick={() => handleAdminSelect(msg.userId)}>
