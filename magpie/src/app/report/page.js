@@ -1,19 +1,42 @@
 "use client"
 import React, { useState } from 'react';
+import { db } from '../firebase';
+import { doc, setDoc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 
 function ReportPage() {
     const [username, setUsername] = useState('');
     const [reason, setReason] = useState('');
     const [details, setDetails] = useState('');
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        // Handle form submission logic here
-        console.log('Report Submitted:', { username, reason, details });
-        alert('Report submitted! Thank you for your feedback.');
-        setUsername('');
-        setReason('');
-        setDetails('');
+        const userReportRef = doc(db, "userReports", username);
+
+        try {
+            const userReportSnap = await getDoc(userReportRef);
+            const reportEntry = {
+                reason: reason,
+                details: details,
+                timestamp: new Date()
+            };
+
+            if (userReportSnap.exists()) {
+                await updateDoc(userReportRef, {
+                    reports: arrayUnion(reportEntry)
+                });
+            } else {
+                await setDoc(userReportRef, {
+                    reports: [reportEntry]
+                });
+            }
+            alert('Report submitted successfully!');
+            setUsername('');
+            setReason('');
+            setDetails('');
+        } catch (error) {
+            console.error("Error writing document: ", error);
+            alert('Error submitting report. Please try again.');
+        }
     };
 
     const formStyle = {
