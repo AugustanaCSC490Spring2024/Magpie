@@ -57,6 +57,7 @@ function Listing() {
         const querySnapshot = await getDocs(collection(db, "listings"));
         setListings(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     };
+    fetchListings();
 
     const fetchUserProfile = async () => {
         if (!user) return;
