@@ -46,15 +46,29 @@ function ReportPage() {
         alignItems: 'center',
         height: '100vh',
         fontSize: '16px',
-        fontFamily: 'Arial, sans-serif'
+        fontFamily: 'Arial, sans-serif',
+        backgroundColor: '#0051BA', 
+        color: 'white', 
     };
 
     const inputStyle = {
         width: '100%',
         padding: '10px',
         margin: '10px 0',
-        fontSize: '16px'
+        fontSize: '16px',
+        backgroundColor: 'white',
+        color: '#333', 
+        border: '2px solid #F5A623', 
     };
+
+    const buttonStyle = {
+        ...inputStyle,
+        backgroundColor: '#F5A623', 
+        color: 'white',
+        fontWeight: 'bold',
+        border: 'none',
+    };
+
 
     return (
         <div style={formStyle}>
@@ -91,10 +105,9 @@ function ReportPage() {
                         required
                     />
                 </label>
-                <button type="submit" style={{ ...inputStyle, backgroundColor: 'blue', color: 'white', fontWeight: 'bold' }}>Submit Report</button>
+                <button type="submit" style={{ ...inputStyle, backgroundColor: '#F5A623', color: 'white', fontWeight: 'bold' }}>Submit Report</button>
             </form>
         </div>
     );
 }
-
 export default ReportPage;
