@@ -1,9 +1,10 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Container, Button, Typography, FormControl, InputLabel, MenuItem, Select, Box } from '@mui/material';
+import { Container, Button, Typography, FormControl, InputLabel, MenuItem, Select, Dialog, DialogTitle, DialogContent, DialogActions, List, ListItem, ListItemText } from '@mui/material';
 import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { UserAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import "../globals.css";
 
 const Match = () => {
     const { user } = UserAuth();
@@ -14,6 +15,8 @@ const Match = () => {
     const [matchRequests, setMatchRequests] = useState({});
     const [showMatchAnimation, setShowMatchAnimation] = useState(false);
     const [matchedUserName, setMatchedUserName] = useState(''); 
+    const [openMatchesDialog, setOpenMatchesDialog] = useState(false);
+    const [openRequestsDialog, setOpenRequestsDialog] = useState(false);
     useEffect(() => {
         const fetchUsers = async () => {
             const usersCollection = collection(db, 'userProfiles');
@@ -32,10 +35,8 @@ const Match = () => {
                     if (requestData.from === user.uid || requestData.to === user.uid) {
                         const key = requestData.from === user.uid ? requestData.to : requestData.from;
                         requestsData[key] = { ...requestData, id: doc.id };
-
-                        // Show match animation when the status is accepted and the current user is involved
-                        if (requestData.status === 'accepted' && (requestData.to === user.uid || requestData.from === user.uid)) {
-                            const matchedUser = users.find(u => u.id === (requestData.from === user.uid ? requestData.to : requestData.from));
+                        if (requestData.status === 'accepted') {
+                            const matchedUser = users.find(u => u.id === key);
                             if (matchedUser) {
                                 setMatchedUserName(matchedUser.name);
                                 setShowMatchAnimation(true);
@@ -97,24 +98,49 @@ const Match = () => {
     const renderRequestButton = (userId) => {
         const request = matchRequests[userId];
         if (request && request.status === 'accepted') {
-            return <Button onClick={() => handleRequest(userId, 'unmatch')}>Unmatch</Button>;
+            return <Button onClick={() => handleRequest(userId, 'unmatch')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-40px' }}>Unmatch</Button>;
         } else if (request && request.status === 'pending' && request.from === user.uid) {
-            return <Button onClick={() => handleRequest(userId, 'cancel')}>Cancel Request</Button>;
+            return <Button onClick={() => handleRequest(userId, 'cancel')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-40px' }}>Cancel Request</Button>;
         } else if (request && request.status === 'pending' && request.to === user.uid) {
             return (
                 <>
-                    <Button onClick={() => handleResponse(userId, 'accept')} color="primary">Accept</Button>
+                    <Button onClick={() => handleResponse(userId, 'accept')}  color="primary">Accept</Button>
                     <Button onClick={() => handleResponse(userId, 'decline')} color="secondary">Decline</Button>
                 </>
             );
         } else if (!request || request.status === 'declined') {
-            return <Button onClick={() => handleRequest(userId, 'send')}>Send Match Request</Button>;
+            return (
+                <Button onClick={() => handleRequest(userId, 'send')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-40px' }}>Send Match Request</Button>
+            );
         }
+    };
+
+    const dialogStyle = {
+        overflow: 'hidden',
+        borderRadius: '10px',
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        backdropFilter: 'blur(8px)',
+        border: '1px solid rgba(255, 255, 255, 0.18)'
     };
 
     const handleSelectChange = (event) => {
         setSelectedUserId(event.target.value);
     };
+
+    const handleOpenMatches = () => {
+        setOpenMatchesDialog(true);
+    };
+
+    const handleOpenRequests = () => {
+        setOpenRequestsDialog(true);
+    };
+
+    const handleClose = () => {
+        setOpenMatchesDialog(false);
+        setOpenRequestsDialog(false);
+    };
+
+    
 
     const dropdownAnimation = {
         whileHover: { scale: 1.1 },
@@ -129,7 +155,7 @@ const Match = () => {
             padding: '20px',
             position: 'relative'
         }}>
-            <Typography variant="h4" gutterBottom>Match with a User</Typography>
+            <Typography variant="h4" sx={{marginTop: '80px', fontWeight: 'bold'}} gutterBottom>Match with a User</Typography>
             <FormControl fullWidth variant="outlined" style={{ margin: '20px 0' }}>
                 <InputLabel id="user-select-label">Select a User</InputLabel>
                 <Select
@@ -176,6 +202,40 @@ const Match = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
+            <Button onClick={handleOpenMatches} variant="contained" color="primary" style={{ margin: '10px' }}>View Your Matches</Button>
+            <Button onClick={handleOpenRequests} variant="contained" color="secondary" style={{ margin: '10px' }}>View Your Match Requests</Button>
+
+            <Dialog open={openMatchesDialog} onClose={handleClose} PaperProps={{ style: dialogStyle }}>
+                <DialogTitle>Matches</DialogTitle>
+                <DialogContent>
+                    <List>
+                        {Object.entries(matchRequests).filter(([key, value]) => value.status === 'accepted').map(([key, value]) => (
+                            <ListItem key={key}>
+                                <ListItemText primary={`Matched with ${users.find(u => u.id === key).name}`} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">Close</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={openRequestsDialog} onClose={handleClose} PaperProps={{ style: dialogStyle }}>
+                <DialogTitle>Match Requests</DialogTitle>
+                <DialogContent>
+                    <List>
+                        {Object.entries(matchRequests).filter(([key, value]) => value.status === 'pending').map(([key, value]) => (
+                            <ListItem key={key}>
+                                <ListItemText primary={`Request from ${users.find(u => u.id === key).name}`} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="secondary">Close</Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };
