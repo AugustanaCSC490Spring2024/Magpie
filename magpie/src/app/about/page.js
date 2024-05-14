@@ -3,8 +3,10 @@ import React from 'react';
 import { Header, AboutSection, CreatorCard, GettingStartedSection} from '../components/About';
 import '../styles/styles.css'; 
 import Link from 'next/link'; 
-import catImage1 from '../../../public/cat1.jpg';
-import catImage2 from '../../../public/cat2.jpg';
+import Aaron from '../../../public/Aaron.jpg';
+import Elnatan from '../../../public/Elnatan.jpg';
+import Ilyas from '../../../public/Ilyas.jpg';
+import Aymane from '../../../public/Aymane.jpg';
 import Dropdown from '../components/Dropdown';
 import ContactUs from '../components/ContactUs';
 
@@ -37,10 +39,10 @@ const AboutPage = () => {
       <Header title="About Us" />
       <AboutSection />
       <div className="creators">
-        <CreatorCard name="Aaron Afework" title="Front-End Designer" image = {catImage1}/>
-        <CreatorCard name="Aymane Sghier" title="UX/UI Designer" image = {catImage1} />
-        <CreatorCard name="Elnatan Tesfa" title="Lead Developer"  image = {catImage1}/>
-        <CreatorCard name="Ilyas Jamil" title="Back-End Developer" image = {catImage1}/>
+        <CreatorCard name="Aaron Afework" title="Front-End Designer" image = {Aaron}/>
+        <CreatorCard name="Aymane Sghier" title="UX/UI Designer" image = {Aymane} />
+        <CreatorCard name="Elnatan Tesfa" title="Lead Developer"  image = {Elnatan}/>
+        <CreatorCard name="Ilyas Jamil" title="Back-End Developer" image = {Ilyas}/>
       </div>
       <GettingStartedSection />
       <ContactUs /> 
