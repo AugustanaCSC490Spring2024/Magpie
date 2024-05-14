@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs, doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
 import { auth } from '../firebase'; 
+import Autocomplete from '@mui/lab/Autocomplete';
+import TextField from '@mui/material/TextField';
 import { onAuthStateChanged } from 'firebase/auth';
 
 function ReportPage() {
     const [users, setUsers] = useState([]);
     const [currentUser, setCurrentUser] = useState(null); 
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState(null);
     const [reason, setReason] = useState('');
     const [details, setDetails] = useState('');
 
@@ -115,17 +117,18 @@ function ReportPage() {
             <form onSubmit={handleSubmit} style={{ width: '400px' }}>
                 <label style={{ width: '100%', marginBottom: '10px' }}>
                     Username of User:
-                    <select
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                        style={inputStyle}
-                        required
-                    >
-                        <option value="">Select a user</option>
-                        {users.map(user => (
-                            <option key={user.id} value={user.id}>{user.name}</option>
-                        ))}
-                    </select>
+                    <Autocomplete
+                    id="user-select"
+                    options={users}
+                    getOptionLabel={(option) => option.name}
+                    value={username}
+                    onChange={(event, newValue) => {
+                        setUsername(newValue);
+                    }}
+                    renderInput={(params) => (
+                        <TextField {...params} label="Select a User" variant="outlined" />
+                    )}
+                />
                 </label>
                 <label style={{ width: '100%', marginBottom: '10px' }}>
                     Reason for Report:
