@@ -1,25 +1,65 @@
 "use client"
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { db } from '../firebase';
-import { doc, setDoc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { collection, getDocs, doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { auth } from '../firebase'; 
+import { onAuthStateChanged } from 'firebase/auth';
 
 function ReportPage() {
+    const [users, setUsers] = useState([]);
+    const [currentUser, setCurrentUser] = useState(null); 
     const [username, setUsername] = useState('');
     const [reason, setReason] = useState('');
     const [details, setDetails] = useState('');
 
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setCurrentUser(user); 
+            } else {
+                setCurrentUser(null); 
+            }
+        });
+
+        return () => unsubscribe(); 
+    }, []);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const usersCollection = collection(db, "userProfiles");
+            const snapshot = await getDocs(usersCollection);
+            setUsers(snapshot.docs.map(doc => ({ id: doc.id, name: doc.data().name })));
+        };
+
+        fetchUsers();
+    }, []);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if (!currentUser) {
+            alert("You must be logged in to submit a report.");
+            return;
+        }
+
+        const currentUserInfo = users.find(user => user.id === currentUser.uid); 
+        const currentUserName = currentUserInfo ? currentUserInfo.name : "Unknown";
+
         const userReportRef = doc(db, "userReports", username);
 
+        const selectedUserInfo = users.find(user => user.id === username);
+        const selectedUserName = selectedUserInfo ? selectedUserInfo.name : "Unknown";
+
         try {
-            const userReportSnap = await getDoc(userReportRef);
             const reportEntry = {
+                reporterName: currentUserName, 
+                username: selectedUserName, 
                 reason: reason,
                 details: details,
                 timestamp: new Date()
             };
 
+            const userReportSnap = await getDoc(userReportRef);
             if (userReportSnap.exists()) {
                 await updateDoc(userReportRef, {
                     reports: arrayUnion(reportEntry)
@@ -47,8 +87,8 @@ function ReportPage() {
         height: '100vh',
         fontSize: '16px',
         fontFamily: 'Arial, sans-serif',
-        backgroundColor: '#0051BA', 
-        color: 'white', 
+        backgroundColor: '#0051BA',
+        color: 'white'
     };
 
     const inputStyle = {
@@ -57,18 +97,17 @@ function ReportPage() {
         margin: '10px 0',
         fontSize: '16px',
         backgroundColor: 'white',
-        color: '#333', 
-        border: '2px solid #F5A623', 
+        color: '#333',
+        border: '2px solid #F5A623',
     };
 
     const buttonStyle = {
         ...inputStyle,
-        backgroundColor: '#F5A623', 
+        backgroundColor: '#F5A623',
         color: 'white',
         fontWeight: 'bold',
         border: 'none',
     };
-
 
     return (
         <div style={formStyle}>
@@ -76,13 +115,17 @@ function ReportPage() {
             <form onSubmit={handleSubmit} style={{ width: '400px' }}>
                 <label style={{ width: '100%', marginBottom: '10px' }}>
                     Username of User:
-                    <input
-                        type="text"
+                    <select
                         value={username}
                         onChange={e => setUsername(e.target.value)}
                         style={inputStyle}
                         required
-                    />
+                    >
+                        <option value="">Select a user</option>
+                        {users.map(user => (
+                            <option key={user.id} value={user.id}>{user.name}</option>
+                        ))}
+                    </select>
                 </label>
                 <label style={{ width: '100%', marginBottom: '10px' }}>
                     Reason for Report:
@@ -105,9 +148,10 @@ function ReportPage() {
                         required
                     />
                 </label>
-                <button type="submit" style={{ ...inputStyle, backgroundColor: '#F5A623', color: 'white', fontWeight: 'bold' }}>Submit Report</button>
+                <button type="submit" style={buttonStyle}>Submit Report</button>
             </form>
         </div>
     );
 }
+
 export default ReportPage;
