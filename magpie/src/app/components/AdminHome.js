@@ -69,12 +69,12 @@ function AdminDashboard() {
   return (
     <Container maxWidth="sm">
       <Box textAlign="center" marginTop={10}>
-        <Button variant="contained" color="primary" onClick={navigateToCustomizeQuestionnaire} sx={buttonStyle} style={{ marginRight: '10px' }}>Customize Questionnaire</Button>
         <Button variant="contained" color="primary" onClick={navigateToUserList} sx={buttonStyle} style={{ marginRight: '10px' }}>All Users</Button>
-        <Button variant="contained" color="primary" onClick={navigateToProfile} sx={buttonStyle}>Profile</Button>
-        <Button variant="contained" color="primary" onClick={navigateToHousingAgreement} sx={buttonStyle}>Housing Agreement</Button>
-        <Button variant="contained" color="primary" onClick={navigateToMatches} sx={buttonStyle}>View Matches</Button>s
+        <Button variant="contained" color="primary" onClick={navigateToProfile} sx={buttonStyle}>My Profile</Button>
+        <Button variant="contained" color="primary" onClick={navigateToMatches} sx={buttonStyle}>View Matches</Button>
         <Button variant="contained" color="primary" onClick={navigateToViewReports} sx={buttonStyle}>Spam Reports</Button>
+        <Button variant="contained" color="primary" onClick={navigateToHousingAgreement} sx={buttonStyle}>Housing Agreement</Button>
+        <Button variant="contained" color="primary" onClick={navigateToCustomizeQuestionnaire} sx={buttonStyle} style={{ marginRight: '10px' }}>Customize Questionnaire</Button>
       <Box display="flex" flexDirection="row" alignItems="center" justifyContent={'center'} marginTop={2} gap={2}>
       <Button variant="contained" color="secondary" onClick={navigateToHome}>Home</Button>
         <Button variant="contained" color="secondary" onClick={() => {logOut(); router.push('/')}}>{'log out'}</Button>
