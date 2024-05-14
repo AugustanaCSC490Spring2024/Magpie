@@ -1,63 +1,88 @@
 "use client"
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
-import { collection, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Dialog, DialogTitle, DialogContent, Typography, Button } from '@mui/material';
 
 function ViewReports() {
     const [reports, setReports] = useState([]);
+    const [selectedReport, setSelectedReport] = useState(null);
+    const [openDialog, setOpenDialog] = useState(false);
 
     useEffect(() => {
-        const fetchReports = async () => {
-            const usersCollection = collection(db, "users");
-            const usersSnapshot = await getDocs(usersCollection);
-            const userNames = {};
-            usersSnapshot.forEach(userDoc => {
-                userNames[userDoc.id] = userDoc.data().name; 
-            });
-
-            const reportsCollection = collection(db, "userReports");
-            const reportsSnapshot = await getDocs(reportsCollection);
-            const loadedReports = [];
-            reportsSnapshot.forEach(reportDoc => {
-                reportDoc.data().reports.forEach(report => {
-                    loadedReports.push({
-                        reporterId: reportDoc.id,
-                        reporterName: userNames[reportDoc.id] || 'Unknown', 
-                        ...report
-                    });
-                });
-            });
-            setReports(loadedReports);
-        };
-
         fetchReports();
     }, []);
+
+    const fetchReports = async () => {
+        const usersCollection = collection(db, "users");
+        const usersSnapshot = await getDocs(usersCollection);
+        const userNames = {};
+        usersSnapshot.forEach(userDoc => {
+            userNames[userDoc.id] = userDoc.data().name; 
+        });
+
+        const reportsCollection = collection(db, "userReports");
+        const reportsSnapshot = await getDocs(reportsCollection);
+        const loadedReports = [];
+        reportsSnapshot.forEach(reportDoc => {
+            reportDoc.data().reports.forEach(report => {
+                loadedReports.push({
+                    id: reportDoc.id,
+                    reporterName: userNames[reportDoc.id] || 'Unknown',
+                    ...report
+                });
+            });
+        });
+        setReports(loadedReports);
+    };
+
+    const handleRowClick = (report) => {
+        setSelectedReport(report);
+        setOpenDialog(true);
+    };
+
+    const handleClose = () => {
+        setOpenDialog(false);
+    };
+
+    const handleResolveReport = async () => {
+        const reportRef = doc(db, "userReports", selectedReport.id);
+        await deleteDoc(reportRef);
+        setOpenDialog(false);
+        fetchReports(); // Re-fetch reports to update UI
+    };
 
     return (
         <div style={{ margin: '20px' }}>
             <h1>Reported Issues</h1>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                <thead>
-                    <tr>
-                        <th style={{ border: '1px solid black', padding: '8px' }}>Reporter Name</th>
-                        <th style={{ border: '1px solid black', padding: '8px' }}>Reported User</th>
-                        <th style={{ border: '1px solid black', padding: '8px' }}>Reason</th>
-                        <th style={{ border: '1px solid black', padding: '8px' }}>Details</th>
-                        <th style={{ border: '1px solid black', padding: '8px' }}>Timestamp</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {reports.map((report, index) => (
-                        <tr key={index}>
-                            <td style={{ border: '1px solid black', padding: '8px' }}>{report.reporterName}</td>
-                            <td style={{ border: '1px solid black', padding: '8px' }}>{report.username}</td>
-                            <td style={{ border: '1px solid black', padding: '8px' }}>{report.reason}</td>
-                            <td style={{ border: '1px solid black', padding: '8px' }}>{report.details}</td>
-                            <td style={{ border: '1px solid black', padding: '8px' }}>{report.timestamp.toDate().toLocaleString()}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <TableContainer component={Paper} style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+                <Table aria-label="simple table">
+                    <TableBody>
+                        {reports.map((report, index) => (
+                            <TableRow key={index} hover onClick={() => handleRowClick(report)} style={{ cursor: 'pointer', transition: 'transform 0.3s', '&:hover': { transform: 'scale(1.03)' } }}>
+                                <TableCell component="th" scope="row">{report.reporterName}</TableCell>
+                                <TableCell>{report.username}</TableCell>
+                                <TableCell>{report.reason}</TableCell>
+                                <TableCell>{report.details}</TableCell>
+                                <TableCell>{report.timestamp.toDate().toLocaleString()}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            {selectedReport && (
+                <Dialog open={openDialog} onClose={handleClose} aria-labelledby="report-details-dialog">
+                    <DialogTitle id="report-details-dialog">Report Details</DialogTitle>
+                    <DialogContent>
+                        <Typography variant="body1"><strong>Reporter:</strong> {selectedReport.reporterName}</Typography>
+                        <Typography variant="body1"><strong>Reported User:</strong> {selectedReport.username}</Typography>
+                        <Typography variant="body1"><strong>Reason:</strong> {selectedReport.reason}</Typography>
+                        <Typography variant="body1"><strong>Details:</strong> {selectedReport.details}</Typography>
+                        <Typography variant="body1"><strong>Timestamp:</strong> {selectedReport.timestamp.toDate().toLocaleString()}</Typography>
+                        <Button onClick={handleResolveReport} color="primary" variant="contained" style={{ marginTop: '20px' }}>Mark as Resolved</Button>
+                    </DialogContent>
+                </Dialog>
+            )}
         </div>
     );
 }
