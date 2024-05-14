@@ -14,6 +14,7 @@ function ResponsiveAppBar() {
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
     };
+
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     };
@@ -36,8 +37,6 @@ function ResponsiveAppBar() {
             router.push('/#');
         } else {
             router.push('/#');
-
-
         }
     }
     const router = useRouter();
@@ -53,9 +52,8 @@ function ResponsiveAppBar() {
 
     return (
         <AppBar position="absolute">
-
-            <Grid container spacing={4} sx={{ paddingLeft: 4, paddingRight: 4 }}>
-                <Grid item xs={11}>
+            <Grid container spacing={2} sx={{ paddingLeft: 4, paddingRight: 4 }}>
+                <Grid item lg={11} xs={10.6}>
                     <Toolbar disableGutters>
                         <Typography
                             variant="h6"
@@ -72,7 +70,6 @@ function ResponsiveAppBar() {
                             {'ROOMMIXER'}
                         </Typography>
                     </Toolbar>
-
                 </Grid>
                 <Grid item xs={1}>
                     <Toolbar disableGutters>

@@ -1,9 +1,5 @@
 import { Container, Grid, Button, Card, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import UserProfileModal from './UserProfileModal';
-
-
-
-
 const UserProfileCard = ({ userProfile, matchingScores }) => {
 
     return (
@@ -37,7 +33,7 @@ const UserProfileCard = ({ userProfile, matchingScores }) => {
 
                 </Grid>
                 <Grid item xs={12}>
-                    {userProfile && <UserProfileModal user={userProfile} matchingScores={matchingScores}></UserProfileModal>}
+                    {userProfile && <UserProfileModal userProfile={userProfile} matchingScores={matchingScores}></UserProfileModal>}
                 </Grid>
 
             </Grid>

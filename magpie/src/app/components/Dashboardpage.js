@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { getFirestore, collection, getDocs, addDoc, getDoc, setDoc, updateDoc, doc, query, where, deleteDoc, onSnapshot } from 'firebase/firestore';
 import { getMatchingScores } from './matching';
 import { motion } from 'framer-motion';
-import AdminMessages from '../components/adminmessages';
 import { StyledEngineProvider } from '@mui/material/styles';
 import UserProfileCard from './userProfileCard';
 
@@ -14,9 +13,6 @@ const DashboardPage = () => {
   const router = useRouter();
   
   const [users, setUsers] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  const [sentRequests, setSentRequests] = useState({});
-  const [receivedRequests, setReceivedRequests] = useState({});
   const [questionMap, setQuestionMap] = useState({});
 
   const [matchingScores, setMatchingScores] = useState({});
@@ -62,32 +58,8 @@ const DashboardPage = () => {
   useEffect(() => {
     if (user) {
       fetchUsersAndScores();
-      fetchFriendRequests();
-
-      // Setting up real-time listener for friend requests
-      const unsubscribeSent = onSnapshot(query(collection(db, 'friendRequests'), where('from', '==', user.uid)), (snapshot) => {
-        const sentData = {};
-        snapshot.forEach(doc => {
-          sentData[doc.data().to] = { ...doc.data(), id: doc.id, type: 'sent' };
-        });
-        setSentRequests(sentData);
-      });
-
-      const unsubscribeReceived = onSnapshot(query(collection(db, 'friendRequests'), where('to', '==', user.uid)), (snapshot) => {
-        const receivedData = {};
-        snapshot.forEach(doc => {
-          receivedData[doc.data().from] = { ...doc.data(), id: doc.id, type: 'received' };
-        });
-        setReceivedRequests(receivedData);
-      });
-
-      // Unsubscribe from listeners when component unmounts
-      return () => {
-        unsubscribeSent();
-        unsubscribeReceived();
-      };
     }
-  }, [user]);       
+    }, [user]);
 
   const handleFilterChange = (event) => {
     const { name, value } = event.target;
@@ -158,124 +130,6 @@ const DashboardPage = () => {
         (!filters.residenceHall || user.responses[questionMap['What residence hall would you prefer to move to?']]?.response === filters.residenceHall) &&
         (!searchQuery || user.name.toLowerCase().includes(searchQuery.toLowerCase()));
   });
-
-  
-  
-  // Fetch friend requests for the current use
-  const fetchFriendRequests = async () => {
-    const db = getFirestore();
-    const sentRequestsQuery = query(collection(db, 'friendRequests'), where('from', '==', user.uid));
-    const receivedRequestsQuery = query(collection(db, 'friendRequests'), where('to', '==', user.uid));
-    const [sentSnapshot, receivedSnapshot] = await Promise.all([
-      getDocs(sentRequestsQuery),
-      getDocs(receivedRequestsQuery)
-    ]);
-    const sentData = {}, receivedData = {};
-    sentSnapshot.forEach(doc => {
-      sentData[doc.data().to] = { ...doc.data(), id: doc.id, type: 'sent' };
-    });
-    receivedSnapshot.forEach(doc => {
-      receivedData[doc.data().from] = { ...doc.data(), id: doc.id, type: 'received' };
-    });
-    setSentRequests(sentData);
-    setReceivedRequests(receivedData);
-  };
-
-  // Helper function to generate a unique ID for a friend request document
-  const getRequestDocId = (userId1, userId2) => {
-    return [userId1, userId2].sort().join('_');
-  };
-
-  // Handle sending a friend request to another user
-  const handleSendRequest = async (toUserId) => {
-    const db = getFirestore();
-    const requestId = getRequestDocId(user.uid, toUserId);
-    const requestDocRef = doc(db, 'friendRequests', requestId);
-    const docSnap = await getDoc(requestDocRef);
-
-    if (docSnap.exists() && docSnap.data().status === 'pending') {
-        // If it exists and is pending, delete it
-        await deleteDoc(requestDocRef);
-    } else if (!docSnap.exists()){
-        // Otherwise, create it
-        await setDoc(requestDocRef, {
-            from: user.uid,
-            to: toUserId,
-            status: 'pending'
-        }, { merge: true });
-    }
-    await fetchFriendRequests();
-};
-
-// Handle accepting or declining a friend request
-const handleRequestResponse = async (fromUserId, response) => {
-  const db = getFirestore();
-  const requestId = getRequestDocId(user.uid, fromUserId);
-  const requestDocRef = doc(db, 'friendRequests', requestId);
-
-  if (response === 'accept') {
-    await updateDoc(requestDocRef, { status: 'accepted' });
-  } else {
-    await updateDoc(requestDocRef, { status: 'declined'});
-  }
-  await fetchFriendRequests();
-};
-
-const handleDeleteRequest = async (toUserId) => {
-    const db = getFirestore();
-    const requestId = getRequestDocId(user.uid, toUserId);
-    const requestDocRef = doc(db, 'friendRequests', requestId);
-    const docSnap = await getDoc(requestDocRef);
-
-    if (docSnap.exists()) {
-        await deleteDoc(requestDocRef);
-    }
-    await fetchFriendRequests();
-};
-
-
-
-const renderRequestButtons = (userId) => {
-  const sentRequest = sentRequests[userId];
-  const receivedRequest = receivedRequests[userId];
-
-  if ((sentRequest && sentRequest.status === 'accepted') || (receivedRequest && receivedRequest.status === 'accepted')) {
-    return <Button
-    onClick={() => handleSelectUser(userId)}
-    variant="contained"
-    color="primary"
-  >
-    Message
-  </Button>
-  
-  }
-
-  if ((sentRequest && sentRequest.status === 'declined') || (receivedRequest && receivedRequest.status === 'declined')) {
-    return handleDeleteRequest(userId);
-  }
-
-  if (receivedRequest && receivedRequest.type === 'received') {
-    return (
-      <>
-        <Button onClick={() => handleRequestResponse(userId, 'accept')} color="primary">Accept</Button>
-        <Button onClick={() => handleRequestResponse(userId, 'decline')} color="secondary">Decline</Button>
-      </>
-    );
-  } else if (sentRequest && sentRequest.type === 'sent') {
-    return <Button onClick={() => handleSendRequest(userId)} color="primary">Cancel Pending Request</Button>;
-  }
-  
-  return <Button onClick={() => handleSendRequest(userId)}>Send Friend Request</Button>;
-};
-
-const handleSelectUser = (userId) => {
-  setSelectedUserId(userId);
-}
-
-const handleClose = () => {
-  setSelectedUserId(null);  
-};
-
 
 
   return (
@@ -349,13 +203,14 @@ const handleClose = () => {
                 viewport={{ once: true, amount: 0.8 }}
                 variants={cardVariants}
               >
-                <UserProfileCard userProfile={userProfile} matchingScores={matchingScores}></UserProfileCard>
-               
+                <UserProfileCard userProfile={userProfile} matchingScores={matchingScores} ></UserProfileCard>
+                
               </motion.div>
             </Grid>
           ))}
         </Grid>
       </Container>
+
     </StyledEngineProvider>);
 };
 

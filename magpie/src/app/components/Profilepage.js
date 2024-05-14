@@ -60,22 +60,48 @@ const ProfilePage = () => {
             // Query to fetch messages where the current user is involved and isAdmin is true
             const q = query(messagesRef, where("userId", "==", user.uid), where("isAdmin", "==", true));
             onSnapshot(q, (snapshot) => {
-                const userMessages = {};
-                snapshot.docs.forEach(doc => {
-                    const data = doc.data();
-                    // Store messages by senderId for initial listing
-                    if (!userMessages[data.senderId]) {
-                        userMessages[data.senderId] = { messages: [], senderName: data.senderName, lastMessage: data.text };
-                    }
-                    userMessages[data.senderId].messages.push({ ...data, id: doc.id });
-                });
-                // Extract minimal data for the list view
-                setMessages(Object.values(userMessages).map(user => ({
-                    senderId: user.messages[0].senderId,
-                    senderName: user.senderName,
-                    lastMessage: user.messages[user.messages.length - 1].text
-                })));
-            });
+              const userMessages = {};
+          
+              snapshot.docs.forEach(doc => {
+                  const data = doc.data();
+                  // Create a unique key for each pair of users, ensuring order does not matter
+                  const pairKey = [data.senderId, data.userId].sort().join('-');
+          
+                  // Initialize the message storage for this pair if it doesn't exist
+                  if (!userMessages[pairKey]) {
+                      userMessages[pairKey] = {
+                          messages: [],
+                          lastMessage: data.text,
+                          lastTimestamp: data.createdAt,
+                          senderId: data.senderId,
+                          senderName: data.senderName // store sender name
+                      };
+                  }
+                  // Push the message to the messages array
+                  userMessages[pairKey].messages.push({ ...data, id: doc.id });
+          
+                  // Update the lastMessage, lastTimestamp, and senderName if this message is newer
+                  if (data.createdAt > userMessages[pairKey].lastTimestamp) {
+                      userMessages[pairKey].lastMessage = data.text;
+                      userMessages[pairKey].lastTimestamp = data.createdAt;
+                      userMessages[pairKey].senderName = data.senderName;
+                  }
+              });
+          
+              // Extract minimal data for the list view
+              const messageSummary = Object.values(userMessages).map(conversation => ({
+                  senderId: conversation.senderId,
+                  senderName: conversation.senderName,
+                  lastMessage: conversation.lastMessage,
+                  lastTimestamp: conversation.lastTimestamp
+              }));
+          
+              // Sort the message summary to show the most recent message first
+              messageSummary.sort((a, b) => b.lastTimestamp - a.lastTimestamp);
+          
+              setMessages(messageSummary);
+          });          
+          
         };
         fetchMessages();
     }
@@ -199,7 +225,7 @@ return (
         </Button>
       </Box>
       {inboxOpen && (
-        <Box flex={1} sx={{ overflowY: 'scroll', maxHeight: '90vh', width: '100%', bgcolor: 'background.paper' }}>
+        <Box flex={1} sx={{ overflowY: 'scroll', maxHeight: '80vh', width: '100%', bgcolor: 'background.paper'}}>
           <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             {messages.map((msg) => (
               <ListItem key={msg.senderId} button onClick={() => handleAdminSelect(msg.senderId)}>
