@@ -116,13 +116,13 @@ function hsAgree() {
                 onChange={handleFileChange}
                 multiple
             />
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={handleFileSelect}
-                style={{ marginTop: 20, marginLeft: 280 }}
-            >
-                Select File
+           <Button
+             variant="contained"
+             color="primary"
+             onClick={handleFileSelect}
+            style={{ marginTop: 20, marginLeft: 280 }}
+           >
+             Select File
             </Button>
             <Button
                 variant="contained"

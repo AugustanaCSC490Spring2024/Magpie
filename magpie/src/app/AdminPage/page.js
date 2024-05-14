@@ -39,7 +39,7 @@ const AdminPage = () => {
         <p style={{
           marginTop: '30px',
           fontSize: '1.2rem'
-        }}>Augustana College &copy; {new Date().getFullYear()}</p>
+        }}>Rommixer Team &copy; {new Date().getFullYear()}</p>
       </div>
     </div>
     </AuthContextProvider>

@@ -17,7 +17,7 @@ function AdminDashboard() {
     } else {
       setTimeout(() => {
         setLoading(false);
-      }, 3000);
+      }, 1000);
     }
   }, [user, isAdmin, router]);
 
@@ -26,6 +26,9 @@ function AdminDashboard() {
   }
 
 
+  const navigateToHome = () => {
+    router.push('/'); 
+  };
 
   const navigateToCustomizeQuestionnaire = () => {
     router.push('/questionaire');
@@ -40,6 +43,9 @@ function AdminDashboard() {
   };
   const navigateToHousingAgreement = () => {
     router.push('/hsAgree'); 
+  };
+  const navigateToReviews = () => {
+    router.push('/reviews'); 
   };
 
   const buttonStyle = {
@@ -63,8 +69,10 @@ function AdminDashboard() {
         <Button variant="contained" color="primary" onClick={navigateToCustomizeQuestionnaire} sx={buttonStyle} style={{ marginRight: '10px' }}>Customize Questionnaire</Button>
         <Button variant="contained" color="primary" onClick={navigateToUserList} sx={buttonStyle} style={{ marginRight: '10px' }}>All Users</Button>
         <Button variant="contained" color="primary" onClick={navigateToProfile} sx={buttonStyle}>Profile</Button>
-        <Button variant="contained" color="primary" onClick={navigateToHousingAgreement} sx={buttonStyle}>Housing Agreement</Button>
-      <Box display="flex" flexDirection="column" alignItems="center" marginTop={2} gap={2}>
+        <Button variant="contained" color="primary" onClick={navigateToHousingAgreement} sx={buttonStyle}>Housing Agreement</Button>s
+
+      <Box display="flex" flexDirection="row" alignItems="center" justifyContent={'center'} marginTop={2} gap={2}>
+      <Button variant="contained" color="secondary" onClick={navigateToHome}>Home</Button>
         <Button variant="contained" color="secondary" onClick={() => {logOut(); router.push('/')}}>{'log out'}</Button>
       </Box>
       </Box>

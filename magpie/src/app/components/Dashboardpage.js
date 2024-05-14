@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Button, Card, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { Container, Grid, Button, Card, Typography, FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material';
 import { UserAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
@@ -11,7 +11,10 @@ import UserProfileCard from './userProfileCard';
 const DashboardPage = () => {
   const { user, logOut, isAdmin } = UserAuth();
   const router = useRouter();
+  
   const [users, setUsers] = useState([]);
+  const [questionMap, setQuestionMap] = useState({});
+
   const [matchingScores, setMatchingScores] = useState({});
   const [isMounted, setIsMounted] = useState(false);
   const [filters, setFilters] = useState({
@@ -20,6 +23,7 @@ const DashboardPage = () => {
     academicYear: '',
     residenceHall: ''
   });
+  const [searchQuery, setSearchQuery] = useState('');
 
   const cardVariants = {
     offscreen: {
@@ -52,37 +56,7 @@ const DashboardPage = () => {
     if (user && isMounted) {
       fetchUsersAndScores();
     }
-  }, [user, isMounted]);
-
-  const fetchUsersAndScores = async () => {
-    const db = getFirestore();
-    const usersCollection = collection(db, 'userProfiles');
-    const responsesCollection = collection(db, 'userResponses');
-
-    const userSnapshot = await getDocs(usersCollection);
-    const responsesSnapshot = await getDocs(responsesCollection);
-    const responsesData = responsesSnapshot.docs.map(doc => ({ id: doc.id, responses: doc.data().responses }));
-    const userList = userSnapshot.docs.map(doc => {
-      const response = responsesData.find(r => r.id === doc.id);
-      return { id: doc.id, ...doc.data(), responses: response ? response.responses : {} };
-    });
-    console.log(userList);
-
-
-    const usersWithoutSelf = userList.filter(u => u.id !== user.uid);
-    if (isMounted) {
-      setUsers(usersWithoutSelf);
-    }
-
-    const scores = await getMatchingScores(user.uid);
-    const scoresMap = scores.reduce((acc, score) => {
-      acc[score.userId] = score.matchPercentage;
-      return acc;
-    }, {});
-    if (isMounted) {
-      setMatchingScores(scoresMap);
-    }
-  };
+  }, [user, isMounted]);     
 
   const handleFilterChange = (event) => {
     const { name, value } = event.target;
@@ -92,17 +66,85 @@ const DashboardPage = () => {
     }));
   };
 
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  
+
+  const fetchUsersAndScores = async () => {
+    const db = getFirestore();
+    const usersCollection = collection(db, 'userProfiles');
+    const responsesCollection = collection(db, 'userResponses');
+    const questionsCollection = collection(db, 'onboardingQuestions');
+
+    const questionSnapshot = await getDocs(questionsCollection);
+    const newQuestionMap = questionSnapshot.docs.reduce((acc, doc) => {
+      acc[doc.data().questionText] = doc.id;
+      return acc;
+    }, {});
+    if (isMounted) {
+      setQuestionMap(newQuestionMap);
+    }
+
+
+    const userSnapshot = await getDocs(usersCollection);
+    const responsesSnapshot = await getDocs(responsesCollection);
+    const responsesData = responsesSnapshot.docs.map(doc => ({
+        id: doc.id,
+        responses: doc.data().responses
+    }));
+    console.log(responsesData);
+    const userList = userSnapshot.docs.map(doc => {
+        const response = responsesData.find(r => r.id === doc.id);
+        return {
+            id: doc.id,
+            ...doc.data(),
+            responses: response ? response.responses : {}
+        };
+    });
+
+    const filteredUserList = userList.filter(u => u.id !== user.uid);
+    if (isMounted) {
+        setUsers(filteredUserList);
+    }
+
+    const scores = await getMatchingScores(user.uid);
+    const scoresMap = scores.reduce((acc, score) => {
+        acc[score.userId] = score.matchPercentage;
+        return acc;
+    }, {});
+    if (isMounted) {
+        setMatchingScores(scoresMap);
+    }
+  };
+
+// This filter logic is applied to the array of users to match against specified filters and search queries.
   const filteredUsers = users.filter(user => {
-    return (!filters.gender || user.responses['What is your gender?'] === filters.gender) &&
-      (!filters.major || user.responses["What's your major?"] === filters.major) &&
-      (!filters.academicYear || user.responses['What is your current academic year status?'] === filters.academicYear) &&
-      (!filters.residenceHall || user.responses['What residence hall would you prefer to move to?'] === filters.residenceHall);
+      return (!filters.gender || user.responses[questionMap['What is your gender?']]?.response === filters.gender) &&
+        (!filters.major || user.responses[questionMap["What's your major?"]]?.response === filters.major) &&
+        (!filters.academicYear || user.responses[questionMap['What is your current academic year status?']]?.response === filters.academicYear) &&
+        (!filters.residenceHall || user.responses[questionMap['What residence hall would you prefer to move to?']]?.response === filters.residenceHall) &&
+        (!searchQuery || user.name.toLowerCase().includes(searchQuery.toLowerCase()));
   });
+  
 
   return (
     <StyledEngineProvider injectFirst>
       <Container maxWidth="xl">
-        <Grid container spacing={3} alignItems="center" sx={{ marginTop: '50px' }}>
+        
+      <Typography variant="h3" sx={{fontFamily: 'poppins, sans-serif', marginTop: '100px', marginBottom: '20px', textAlign: 'center'}}>Dashboard Overview</Typography>
+
+        <Grid container spacing={3} alignItems="center">
+        <Grid item xs={3}>
+            <TextField
+              fullWidth
+              label="Search by name"
+              variant="outlined"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </Grid>
           <Grid item xs={3}>
             <FormControl fullWidth>
               <InputLabel>Gender</InputLabel>
@@ -111,64 +153,6 @@ const DashboardPage = () => {
                 <MenuItem value="Male">Male</MenuItem>
                 <MenuItem value="Female">Female</MenuItem>
                 <MenuItem value="Other">Other</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={3}>
-            <FormControl fullWidth>
-              <InputLabel>Major</InputLabel>
-              <Select value={filters.major} name="major" onChange={handleFilterChange}>
-                <MenuItem value="">Any</MenuItem>
-                <MenuItem value="Undecided">Undecided</MenuItem>
-                <MenuItem value="Biology">Biology</MenuItem>
-                <MenuItem value="Psychology">Psychology</MenuItem>
-                <MenuItem value="Business Administration and Management">Business Administration and Management</MenuItem>
-                <MenuItem value="Accounting">Accounting</MenuItem>
-                <MenuItem value="Finance">Finance</MenuItem>
-                <MenuItem value="Speech communication and rhetoric">Speech communication and rhetoric</MenuItem>
-                <MenuItem value="Marketing/ Marketing management">Marketing/ Marketing management</MenuItem>
-                <MenuItem value="Neuroscience">Neuroscience</MenuItem>
-                <MenuItem value="Political science and government">Political science and government</MenuItem>
-                <MenuItem value="Communication sciences and disorders">Communication sciences and disorders</MenuItem>
-                <MenuItem value="Sociology">Sociology</MenuItem>
-                <MenuItem value="Computer Science">Computer Science</MenuItem>
-                <MenuItem value="Environmental Studies">Environmental Studies</MenuItem>
-                <MenuItem value="Hispanic and Latin American Languages, Literatures">Hispanic and Latin American Languages, Literatures</MenuItem>
-                <MenuItem value="English language and literature">English language and literature</MenuItem>
-                <MenuItem value="Economics">Economics</MenuItem>
-                <MenuItem value="International business/trade/commerce">International business/trade/commerce</MenuItem>
-                <MenuItem value="Elementary education and teaching">Elementary education and teaching</MenuItem>
-                <MenuItem value="Music teacher education">Music teacher education</MenuItem>
-                <MenuItem value="Graphic design">Graphic design</MenuItem>
-                <MenuItem value="Philosophy">Philosophy</MenuItem>
-                <MenuItem value="History">History</MenuItem>
-                <MenuItem value="Journalism">Journalism</MenuItem>
-                <MenuItem value="Biochemistry">Biochemistry</MenuItem>
-                <MenuItem value="Public health">Public health</MenuItem>
-                <MenuItem value="Applied mathematics">Applied mathematics</MenuItem>
-                <MenuItem value="Geography">Geography</MenuItem>
-                <MenuItem value="Creative writing">Creative writing</MenuItem>
-                <MenuItem value="Art history">Art history</MenuItem>
-                <MenuItem value="Mathematics teacher education">Mathematics teacher education</MenuItem>
-                <MenuItem value="Theatre Arts">Theatre Arts</MenuItem>
-                <MenuItem value="Studio Arts">Studio Arts</MenuItem>
-                <MenuItem value="Music">Music</MenuItem>
-                <MenuItem value="French language and literature">French language and literature</MenuItem>
-                <MenuItem value="Anthropology">Anthropology</MenuItem>
-                <MenuItem value="English/language arts teacher education">English/language arts teacher education</MenuItem>
-                <MenuItem value="Engineering physics/applied physics">Engineering physics/applied physics</MenuItem>
-                <MenuItem value="Mathematics">Mathematics</MenuItem>
-                <MenuItem value="Chemistry">Chemistry</MenuItem>
-                <MenuItem value="History teacher education">History teacher education</MenuItem>
-                <MenuItem value="German language and literature">German language and literature</MenuItem>
-                <MenuItem value="Asian studies">Asian studies</MenuItem>
-                <MenuItem value="Science teacher education">Science teacher education</MenuItem>
-                <MenuItem value="Physics">Physics</MenuItem>
-                <MenuItem value="Women's studies">Women's studies</MenuItem>
-                <MenuItem value="Art teacher education">Art teacher education</MenuItem>
-                <MenuItem value="Classics and classical languages, literatures, and linguistics">Classics and classical languages, literatures, and linguistics</MenuItem>
-                <MenuItem value="Scandinavian Studies">Scandinavian Studies</MenuItem>
-
               </Select>
             </FormControl>
           </Grid>
@@ -186,7 +170,7 @@ const DashboardPage = () => {
           </Grid>
           <Grid item xs={3}>
             <FormControl fullWidth>
-              <InputLabel>Residence Hall</InputLabel>
+              <InputLabel>Residence Preference</InputLabel>
               <Select value={filters.residenceHall} name="residenceHall" onChange={handleFilterChange}>
                 <MenuItem value="">Any</MenuItem>
                 <MenuItem value="No Preference">No Preference</MenuItem>

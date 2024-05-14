@@ -1,14 +1,9 @@
 import * as React from 'react';
-import MenuIcon from '@mui/icons-material/Menu';
-import AdbIcon from '@mui/icons-material/Adb';
 import { Grid, AppBar, Box, Toolbar, IconButton, Typography, Menu, Avatar, Button, Tooltip, MenuItem, Container } from "@mui/material";
 import { UserAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { getFirestore, doc, getDoc, collection, getDocs } from 'firebase/firestore';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Dashboard', 'Logout'];
 
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -33,9 +28,6 @@ function ResponsiveAppBar() {
     const { user, logOut } = UserAuth();
 
     const uid = user?.uid;
-    // const db = getFirestore();
-    // const userProfiles = collection(db, 'userProfiles');
-    // const query = query(userProfiles, where('uid', '==', uid));
     
 
     const handleSignOut = () => {
@@ -82,8 +74,6 @@ function ResponsiveAppBar() {
                     </Toolbar>
 
                 </Grid>
-
-
                 <Grid item xs={1}>
                     <Toolbar disableGutters>
                         <Box sx={{ flexGrow: 0, marginLeft: '70%' }}>
@@ -107,21 +97,28 @@ function ResponsiveAppBar() {
                                 }}
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
-                            >
-
+                            > 
+                                <MenuItem onClick={() => { router.push('/about') }}>
+                                    <Typography textAlign="center">{'About'}</Typography>
+                                </MenuItem>
                                 <MenuItem onClick={() => { router.push('/profile') }}>
                                     <Typography textAlign="center">{'Profile'}</Typography>
                                 </MenuItem>
                                 <MenuItem onClick={() => { router.push('/dashboard') }}>
                                     <Typography textAlign="center">{'Dashboard'}</Typography>
                                 </MenuItem>
+                                <MenuItem onClick={() => { router.push('/rentals') }}>
+                                    <Typography textAlign="center">{'Rentals'}</Typography>
+                                </MenuItem>     
                                 <MenuItem onClick={() => { router.push('/tour') }}>
                                     <Typography textAlign="center">{'Tour Halls'}</Typography>
-                                </MenuItem>
+                                </MenuItem>   
+                                <MenuItem onClick={() => { router.push('/reviews') }}>
+                                    <Typography textAlign="center">{'Reviews'}</Typography>
+                                </MenuItem>  
                                 <MenuItem onClick={handleSignOut}>
                                     <Typography textAlign="center">{'Log out'}</Typography>
                                 </MenuItem>
-
                             </Menu>
                         </Box>
                     </Toolbar>

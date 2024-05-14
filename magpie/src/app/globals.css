@@ -21,6 +21,9 @@ h4.MuiTypography-root {
 h4.MuiTypography-root.welcome {
   color:#ffffff;
 }
+h4.MuiTypography-root.matchtitle {
+  color:#2185dc;
+}
 
 h6.MuiTypography-root.logo {
   color:#fbfbfb;
@@ -69,85 +72,11 @@ h6.MuiTypography-root.logo {
 }
 
 
-h2 {
-  position: absolute;
-  top: 70%;
-  left: 10%;
-  max-width: 50%;
-  color: black;
-  font-family: 'poppins', sans-serif;
-  font-size: 30px;
-  font-weight: bold;
-  text-transform: uppercase;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  background-color: #fff;
-  padding: 10px;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease-in-out;
-}
 
 h2:hover {
   transform: scale(1.1);
 }
 
-/* Navbar Styles */
-.navbar {
-  height: 60px;
-  width: 100%;
-  border-bottom: 2px solid #e1e1e1;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  background-color: #fff;
-}
-
-.navbar ul {
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.navbar li {
-  padding: 10px 15px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.navbar li:hover {
-  background-color: #f0f0f0;
-}
-
-.navbar a {
-  text-decoration: none;
-  color: #333;
-}
-
-/* User Greeting & Logout */
-.navbar .user-greeting {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.navbar .user-greeting p {
-  margin: 0;
-  cursor: pointer;
-  color: #007bff;
-  transition: color 0.2s ease-in-out;
-}
-
-.navbar .user-greeting p:hover {
-  color: #0056b3;
-}
-
-
-/* Typography */
-h3, h4, h5, h6, p {
-  color: #000000;
-}
 .secondarytext{
   color:#fff;
 }
@@ -162,18 +91,6 @@ h3, h4, h5, h6, p {
   100% { background-position: 0% 50%; }
 }
 
-
-/* Responsive */
-@media (max-width: 768px) {
-  .navbar ul {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .navbar li {
-    padding: 8px 10px;
-  }
-}
 
 *{
   margin: 0;
@@ -218,9 +135,7 @@ nav ul li {
   align-items: center; /* Vertically center the content */
   list-style: none;
   margin: 10px 30px; /* Adjust margin as necessary */
-  /* Optional: specify a fixed width and height for each li to better visualize the centering */
-  /* width: 120px; */
-  /* height: 40px; */
+
 }
 
 .logo{
@@ -235,9 +150,13 @@ nav ul li a{
   font-size: 17px;
   letter-spacing: 1px;
 }
+
+
 nav ul li a:hover{
 color: #2F80ED; 
 }
+
+
 nav ul button{
   outline: none;
   border: none;
@@ -249,17 +168,23 @@ nav ul button{
   padding: 14px 40px;
   cursor: pointer;
 }
+
+
 .text-box{
   margin-top: 16%;
   font-size: 22px;
 
 }
+
+
 .text-box h1{
   font-size: 85px;
   font-weight: 600;
   line-height: 100px;
   margin-bottom: 10px;
 }
+
+
 .text-box .btn{
   outline: none;
   border: none;
@@ -289,7 +214,7 @@ nav ul button{
 }
 
 /* Features section styles */
-.features-section {
+/* .features-section {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
@@ -318,7 +243,6 @@ nav ul button{
   color: #666;
 }
 
-/* Hanging effect */
 .feature:before {
   content: "";
   position: absolute;
@@ -341,7 +265,6 @@ nav ul button{
   clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
 }
 
-/* CSS animation for sliding in features */
 .feature {
   animation-duration: 1s;
   animation-timing-function: ease;
@@ -375,7 +298,7 @@ nav ul button{
       transform: translateX(0);
       opacity: 1;
   }
-}
+} */
 
 .admin-page-background {
   background-color: #007bff; 
@@ -503,4 +426,38 @@ nav ul button{
   transform: rotateY(30deg) translateX(50px);
 }
 
+
+.text-container {
+  text-align: left;
+  margin-bottom: 40px;
+}
+
+.reviews-title {
+  color: linear-gradient(45deg, #6e7dff, #88fe92);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  font-family: "Poppins", sans-serif;
+  font-weight: bold;
+  margin-bottom: 0px; 
+  margin-top: 110px; 
+  font-size: 40px;
+}
+
+
+
+.reviews-title::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-image: url('../../public/ink_splash.png');
+  opacity: 0.2;
+  mix-blend-mode: multiply;
+}
+
+.reviews-title:hover{
+  transform: scale(1.05);
+  transition: transform 0.5s;
+}
 

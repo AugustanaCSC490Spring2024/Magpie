@@ -14,56 +14,46 @@ export default function Homepage() {
   const router = useRouter();
   console.log(user);
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (user && isAdmin) {
-        const userProfileRef = doc(db, 'userProfiles', user.uid);
-        const docSnap = await getDoc(userProfileRef);
-        if (docSnap.exists()) {
-          router.push('/AdminPage'); // Navigate to AdminPage if the profile exists
-        } else {
-          router.push('/adminProfile'); // Redirect to the Admin Profile page to create profile
-        }
-      } else if (user) {
-        router.push('/profile');
-
+  const fetchProfile = async () => {
+    if (user && isAdmin) {
+      const userProfileRef = doc(db, 'userProfiles', user.uid);
+      const docSnap = await getDoc(userProfileRef);
+      if (docSnap.exists()) {
+        router.push('/AdminPage'); // Navigate to AdminPage if the profile exists
+      } else {
+        router.push('/adminProfile'); // Redirect to the Admin Profile page to create profile
       }
-    };
-    fetchProfile();
-  }, [user, isAdmin]);
+    } else if (user) {
+      router.push('/profile');
 
-
-
-
+    }
+  };
+  
   const handleSignIn = async () => {
     try {
-      await googleSignIn();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const handleAboutClick = async () => {
-    try {
-      // Redirect to the About page
-      router.push('/about');
+      googleSignIn();
+      await fetchProfile();
     } catch (error) {
       console.log(error);
     }
   };
 
-
-
+  // const handleAboutClick = async () => {
+  //   try {
+  //     // Redirect to the About page
+  //     router.push('/about');
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <div className="header">
       <nav>
         <ul>
-           <li><button onClick={handleAboutClick}>About</button></li>
-
+          {/* <li><button type="button" className="btn" onClick={handleAboutClick}>About</button></li> */}
           <li>
-
-            <button type="button" className="btn" onClick={handleSignIn}>Log in</button>
-
+            <button type="button" className="btn" onClick={handleSignIn}>Log in / Create an account</button>
           </li>
         </ul>
       </nav>
