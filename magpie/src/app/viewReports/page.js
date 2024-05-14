@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import { Table, TableBody, TableCell, TableContainer, TableRow, Paper, Dialog, DialogTitle, DialogContent, Typography, Button } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Dialog, DialogTitle, DialogContent, Typography, Button } from '@mui/material';
 
 function ViewReports() {
     const [reports, setReports] = useState([]);
@@ -49,7 +49,7 @@ function ViewReports() {
         const reportRef = doc(db, "userReports", selectedReport.id);
         await deleteDoc(reportRef);
         setOpenDialog(false);
-        fetchReports(); // Re-fetch reports to update UI
+        fetchReports(); 
     };
 
     return (
@@ -57,6 +57,15 @@ function ViewReports() {
             <h1>Reported Issues</h1>
             <TableContainer component={Paper} style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
                 <Table aria-label="simple table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Reporter</TableCell>
+                            <TableCell>Reported User</TableCell>
+                            <TableCell>Reason</TableCell>
+                            <TableCell>Details</TableCell>
+                            <TableCell>Timestamp</TableCell>
+                        </TableRow>
+                    </TableHead>
                     <TableBody>
                         {reports.map((report, index) => (
                             <TableRow key={index} hover onClick={() => handleRowClick(report)} style={{ cursor: 'pointer', transition: 'transform 0.3s', '&:hover': { transform: 'scale(1.03)' } }}>
