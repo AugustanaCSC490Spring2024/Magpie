@@ -2,8 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';  
 import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
-import { Container, TextField, Card, CardContent, CardMedia, Typography, Button, Grid, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
+import { Container, TextField, Card, CardContent, CardMedia, IconButton, Typography, Button, Grid, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import EmailIcon from '@mui/icons-material/Email';
 
 
 const MatchedUsers = () => {
@@ -55,6 +56,10 @@ const MatchedUsers = () => {
 
     const handleAcademicYearChange = (event) => {
         setAcademicYear(event.target.value);
+    };
+
+    const createMailToLink = (email1, email2) => {
+        return `https://mail.google.com/mail/?view=cm&fs=1&to=${email1},${email2}&su=Matching Update`;
     };
 
     const filteredMatches = matches.filter(match => {
@@ -127,6 +132,9 @@ const MatchedUsers = () => {
                             {match.toUser.bio}
                         </Typography>
                     </CardContent>
+                    <IconButton href={createMailToLink(match.fromUser.email, match.toUser.email)} target="_blank" aria-label="send email">
+                                    <EmailIcon />
+                                </IconButton>
                 </Card>
             </Grid>
             ))}
