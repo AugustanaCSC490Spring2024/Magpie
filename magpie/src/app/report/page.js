@@ -1,13 +1,28 @@
 "use client"
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs, doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { auth } from '../firebase'; 
+import { onAuthStateChanged } from 'firebase/auth';
 
 function ReportPage() {
-    const [users, setUsers] = useState([]); 
+    const [users, setUsers] = useState([]);
+    const [currentUser, setCurrentUser] = useState(null); 
     const [username, setUsername] = useState('');
     const [reason, setReason] = useState('');
     const [details, setDetails] = useState('');
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setCurrentUser(user); 
+            } else {
+                setCurrentUser(null); 
+            }
+        });
+
+        return () => unsubscribe(); 
+    }, []);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -21,20 +36,29 @@ function ReportPage() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const userReportRef = doc(db, "userReports", username); 
-    
-      
+
+        if (!currentUser) {
+            alert("You must be logged in to submit a report.");
+            return;
+        }
+
+        const currentUserInfo = users.find(user => user.id === currentUser.uid); 
+        const currentUserName = currentUserInfo ? currentUserInfo.name : "Unknown";
+
+        const userReportRef = doc(db, "userReports", username);
+
         const selectedUserInfo = users.find(user => user.id === username);
         const selectedUserName = selectedUserInfo ? selectedUserInfo.name : "Unknown";
-    
+
         try {
             const reportEntry = {
+                reporterName: currentUserName, 
                 username: selectedUserName, 
                 reason: reason,
                 details: details,
                 timestamp: new Date()
             };
-    
+
             const userReportSnap = await getDoc(userReportRef);
             if (userReportSnap.exists()) {
                 await updateDoc(userReportRef, {
@@ -53,7 +77,6 @@ function ReportPage() {
             console.error("Error writing document: ", error);
             alert('Error submitting report. Please try again.');
         }
-    
     };
 
     const formStyle = {
