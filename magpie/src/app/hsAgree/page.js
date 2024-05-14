@@ -11,10 +11,10 @@ function hsAgree() {
 
     const onDrop = acceptedFiles => {
       setFiles(acceptedFiles.map(file => ({
-          file: file,  // Store the file object itself
+          file: file,  
           preview: URL.createObjectURL(file),
           isPdf: file.type === 'application/pdf',
-          name: file.name  // Explicitly store the name
+          name: file.name  
       })));
   };
   

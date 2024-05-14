@@ -14,25 +14,27 @@ export default function Homepage() {
   const router = useRouter();
   console.log(user);
 
-  const fetchProfile = async () => {
-    if (user && isAdmin) {
-      const userProfileRef = doc(db, 'userProfiles', user.uid);
-      const docSnap = await getDoc(userProfileRef);
-      if (docSnap.exists()) {
-        router.push('/AdminPage'); // Navigate to AdminPage if the profile exists
-      } else {
-        router.push('/adminProfile'); // Redirect to the Admin Profile page to create profile
-      }
-    } else if (user) {
-      router.push('/profile');
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (user && isAdmin) {
+        const userProfileRef = doc(db, 'userProfiles', user.uid);
+        const docSnap = await getDoc(userProfileRef);
+        if (docSnap.exists()) {
+          router.push('/AdminPage'); // Navigate to AdminPage if the profile exists
+        } else {
+          router.push('/adminProfile'); // Redirect to the Admin Profile page to create profile
+        }
+      } else if (user) {
+        router.push('/profile');
 
-    }
-  };
+      }
+    };
+    fetchProfile();
+  }, [user, isAdmin]);
   
   const handleSignIn = async () => {
     try {
       googleSignIn();
-      await fetchProfile();
     } catch (error) {
       console.log(error);
     }

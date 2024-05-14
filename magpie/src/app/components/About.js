@@ -1,8 +1,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import catImage1 from '../../../public/cat1.jpg';
-import catImage2 from '../../../public/cat2.jpg';
 import './../styles/Dropdown.css';
 import roomate1 from '../../../public/Roomate1.jpg';
 import roomate2 from '../../../public/Roomate2.jpg';
@@ -75,9 +73,9 @@ Looking ahead, our aspirations extend beyond just matching roommates. We envisio
     </div>
   );
 
-export const CreatorCard = ({ name, title }) => (
+export const CreatorCard = ({ name, title, image}) => (
   <div className="creator-card">
-    <Image src={catImage1} 
+    <Image src={image} 
     alt="catImage1"
     placeholder='blur'
     quality={100} />
@@ -85,16 +83,6 @@ export const CreatorCard = ({ name, title }) => (
     <p>{title}</p>
   </div>
 );
-export const CreatorCard2 = ({ name, title }) => (
-    <div className="creator-card">
-      <Image src={catImage2} 
-      alt="catImage2"
-      placeholder='blur'
-      quality={100} />
-      <h3>{name}</h3>
-      <p>{title}</p>
-    </div>
-  );
 export const GettingStartedSection = () => (
   <div className="section">
     {/* Getting started section content */}

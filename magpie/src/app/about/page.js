@@ -1,9 +1,12 @@
-// pages/about.js
 "use client";
 import React from 'react';
-import { Header, AboutSection, CreatorCard, CreatorCard2, GettingStartedSection} from '../components/About';
+import { Header, AboutSection, CreatorCard, GettingStartedSection} from '../components/About';
 import '../styles/styles.css'; 
 import Link from 'next/link'; 
+import Aaron from '../../../public/Aaron.jpg';
+import Elnatan from '../../../public/Elnatan.jpg';
+import Ilyas from '../../../public/Ilyas.jpg';
+import Aymane from '../../../public/Aymane.jpg';
 import Dropdown from '../components/Dropdown';
 import ContactUs from '../components/ContactUs';
 
@@ -36,18 +39,18 @@ const AboutPage = () => {
       <Header title="About Us" />
       <AboutSection />
       <div className="creators">
-        <CreatorCard2 name="Aaron Afework" title="Front-End Designer"/>
-        <CreatorCard name="Aymane Sghier" title="UX/UI Designer"  />
-        <CreatorCard name="Elnatan Tesfa" title="Lead Developer"  />
-        <CreatorCard name="Ilyas Jamil" title="Back-End Developer" />
+        <CreatorCard name="Aaron Afework" title="Front-End Designer" image = {Aaron}/>
+        <CreatorCard name="Aymane Sghier" title="UX/UI Designer" image = {Aymane} />
+        <CreatorCard name="Elnatan Tesfa" title="Lead Developer"  image = {Elnatan}/>
+        <CreatorCard name="Ilyas Jamil" title="Back-End Developer" image = {Ilyas}/>
       </div>
       <GettingStartedSection />
       <ContactUs /> 
       <div className="dropdown-container">
         <Dropdown options={options} /> 
       </div>
-      <Link href="/">
-        <button type="button" className="button">Home Page</button>
+      <Link className='profile-Button' href="/profile">
+        <button type="button" className="button">Profile</button>
       </Link>
     </div>
   );
