@@ -1,22 +1,25 @@
 "use client";
 import React, { useEffect, useState } from 'react';
-import { Container, Button, Typography, FormControl, InputLabel, MenuItem, Select, Dialog, DialogTitle, DialogContent, DialogActions, List, ListItem, ListItemText } from '@mui/material';
+import { Container, Button, Typography, FormControl, Dialog, DialogTitle, DialogContent, DialogActions, List, ListItem, ListItemText, TextField } from '@mui/material';
+import Autocomplete from '@mui/lab/Autocomplete';
 import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import { UserAuth } from '../context/AuthContext';
-import { motion, AnimatePresence } from 'framer-motion';
 import "../globals.css";
+import { motion } from 'framer-motion';
+
 
 const Match = () => {
     const { user } = UserAuth();
     const db = getFirestore();
 
     const [users, setUsers] = useState([]);
-    const [selectedUserId, setSelectedUserId] = useState('');
+    const [selectedUser, setSelectedUser] = useState(null); 
     const [matchRequests, setMatchRequests] = useState({});
     const [showMatchAnimation, setShowMatchAnimation] = useState(false);
-    const [matchedUserName, setMatchedUserName] = useState(''); 
+    const [matchedUserNames, setMatchedUserNames] = useState([]); 
     const [openMatchesDialog, setOpenMatchesDialog] = useState(false);
     const [openRequestsDialog, setOpenRequestsDialog] = useState(false);
+    
     useEffect(() => {
         const fetchUsers = async () => {
             const usersCollection = collection(db, 'userProfiles');
@@ -27,26 +30,24 @@ const Match = () => {
 
         const fetchMatchRequests = () => {
             const matchRequestsRef = collection(db, 'matchRequests');
+            handleMatchAnimation(selectedUser?.id)
             const unsubscribe = onSnapshot(matchRequestsRef, (snapshot) => {
                 const requestsData = {};
-                setShowMatchAnimation(false);
+                const acceptedNames = [];
                 snapshot.forEach(doc => {
                     const requestData = doc.data();
-                    if (requestData.from === user.uid || requestData.to === user.uid) {
-                        const key = requestData.from === user.uid ? requestData.to : requestData.from;
-                        requestsData[key] = { ...requestData, id: doc.id };
-                        if (requestData.status === 'accepted') {
-                            const matchedUser = users.find(u => u.id === key);
-                            if (matchedUser) {
-                                setMatchedUserName(matchedUser.name);
-                                setShowMatchAnimation(true);
-                            }
+                    const key = requestData.from === user.uid ? requestData.to : requestData.from;
+                    requestsData[key] = { ...requestData, id: doc.id };
+                    if (requestData.status === 'accepted') {
+                        const matchedUser = users.find(u => u.id === key);
+                        if (matchedUser) {
+                            acceptedNames.push(matchedUser.name);
                         }
                     }
                 });
                 setMatchRequests(requestsData);
+                setMatchedUserNames(acceptedNames);
             });
-
             return unsubscribe;
         };
 
@@ -73,10 +74,8 @@ const Match = () => {
                 status: 'pending'
             };
             await setDoc(requestDocRef, matchRequest);
-            setShowMatchAnimation(false);
         } else if (action === 'cancel' || action === 'unmatch' || action === 'decline') {
             await deleteDoc(requestDocRef);
-            setShowMatchAnimation(false);
         }
     };
 
@@ -85,27 +84,23 @@ const Match = () => {
         const requestDocRef = doc(db, 'matchRequests', requestId);
 
         if (response === 'accept') {
-            const matchedUser = users.find(u => u.id === fromUserId);
-            setMatchedUserName(matchedUser ? matchedUser.name : '');
             await updateDoc(requestDocRef, { status: 'accepted' });
-            setShowMatchAnimation(true);
         } else {
             await deleteDoc(requestDocRef);
-            setShowMatchAnimation(false);
         }
     };
 
     const renderRequestButton = (userId) => {
         const request = matchRequests[userId];
         if (request && request.status === 'accepted') {
-            return <Button onClick={() => handleRequest(userId, 'unmatch')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-40px' }}>Unmatch</Button>;
+            return <Button onClick={() => handleRequest(userId, 'unmatch')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-20px'}}>Unmatch User</Button>;
         } else if (request && request.status === 'pending' && request.from === user.uid) {
-            return <Button onClick={() => handleRequest(userId, 'cancel')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-40px' }}>Cancel Request</Button>;
+            return <Button onClick={() => handleRequest(userId, 'cancel')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-20px' }}>Cancel Request</Button>;
         } else if (request && request.status === 'pending' && request.to === user.uid) {
             return (
                 <>
-                    <Button onClick={() => handleResponse(userId, 'accept')}  color="primary">Accept</Button>
-                    <Button onClick={() => handleResponse(userId, 'decline')} color="secondary">Decline</Button>
+                    <Button onClick={() => handleResponse(userId, 'accept')}  style={{ backgroundColor: 'blue', color: 'white', marginTop: '-20px', marginRight: '10px' }} color="primary">Accept Request</Button>
+                    <Button onClick={() => handleResponse(userId, 'decline')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-20px' }} color="secondary">Decline Request</Button>
                 </>
             );
         } else if (!request || request.status === 'declined') {
@@ -116,36 +111,43 @@ const Match = () => {
     };
 
     const dialogStyle = {
-        overflow: 'hidden',
+        overflowY: 'scroll',
         borderRadius: '10px',
         boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
         backdropFilter: 'blur(8px)',
         border: '1px solid rgba(255, 255, 255, 0.18)'
     };
 
-    const handleSelectChange = (event) => {
-        setSelectedUserId(event.target.value);
+    const handleMatchRequestClick = (userId) => {
+        setSelectedUser(users.find(u => u.id === userId));
+        handleClose(); 
     };
+    
 
     const handleOpenMatches = () => {
         setOpenMatchesDialog(true);
     };
 
+
     const handleOpenRequests = () => {
         setOpenRequestsDialog(true);
     };
+
+    const handleMatchAnimation = (userId) => {
+        const matchedUser = users.find(u => u.id === userId);
+        if (matchedUser && matchedUserNames.includes(matchedUser.name)) {
+            setShowMatchAnimation(true);
+        }else{
+            setShowMatchAnimation(false);
+        }
+    };
+
 
     const handleClose = () => {
         setOpenMatchesDialog(false);
         setOpenRequestsDialog(false);
     };
 
-    
-
-    const dropdownAnimation = {
-        whileHover: { scale: 1.1 },
-        whileTap: { scale: 0.9 }
-    };
 
     return (
         <Container style={{
@@ -156,54 +158,49 @@ const Match = () => {
             position: 'relative'
         }}>
             <Typography variant="h4" sx={{marginTop: '80px', fontWeight: 'bold'}} gutterBottom>Match with a User</Typography>
-            <FormControl fullWidth variant="outlined" style={{ margin: '20px 0' }}>
-                <InputLabel id="user-select-label">Select a User</InputLabel>
-                <Select
-                    labelId="user-select-label"
-                    value={selectedUserId}
-                    onChange={handleSelectChange}
-                    MenuProps={{
-                        PaperProps: {
-                            style: {
-                                borderRadius: '20px',
-                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                backdropFilter: 'blur(10px)',
-                            },
-                        },
+            <FormControl fullWidth style={{ margin: '20px 0', width: '90%' }}>
+                <Autocomplete
+                    id="user-select"
+                    options={users}
+                    getOptionLabel={(option) => option.name}
+                    value={selectedUser}
+                    onChange={(event, newValue) => {
+                        setSelectedUser(newValue);
+                        if (newValue) {
+                            handleMatchAnimation(newValue.id);
+                        }
+                    }}
+                    renderInput={(params) => (
+                        <TextField {...params} label="Select a User" variant="outlined" />
+                    )}
+                />
+            </FormControl>
+            {selectedUser && renderRequestButton(selectedUser.id)}
+            {showMatchAnimation && (
+                <motion.div
+                    initial={{ x: '-100vw', opacity: 0 }}  
+                    animate={{ x: '0', opacity: 1 }}        
+                    exit={{ x: '100vw', opacity: 0 }}      
+                    transition={{ type: 'spring', stiffness: 60, damping: 20, duration: 0.2 }}  
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '200px',
+                        height: '200px',
+                        borderRadius: '200px',
+                        backgroundColor: 'rgba(0, 255, 0, 0.5)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                     }}
                 >
-                    {users.map((user) => (
-                        <MenuItem key={user.id} value={user.id} component={motion.div} variants={dropdownAnimation} whileHover="whileHover" whileTap="whileTap">
-                            {user.name}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-            {selectedUserId && renderRequestButton(selectedUserId)}
-            <AnimatePresence>
-                {showMatchAnimation && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ rotate: 360, scale: 1, opacity: 1 }}
-                        exit={{ opacity: 0, scale: 0 }}
-                        transition={{ duration: 0.5 }}
-                        style={{
-                            position: 'absolute',
-                            top: '50%',
-                            left: '40%',
-                            transform: 'translate(-50%, -50%)',
-                            width: '300px',
-                            height: '300px',
-                            borderRadius: '200px',
-                            backgroundColor: 'rgba(0, 255, 0, 0.5)',
-                        }}
-                    >
-                        <Typography variant="h4" style={{ textAlign: 'center', lineHeight: '60px', marginTop: "50px" }}>Matched with {matchedUserName}!</Typography>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-            <Button onClick={handleOpenMatches} variant="contained" color="primary" style={{ margin: '10px' }}>View Your Matches</Button>
-            <Button onClick={handleOpenRequests} variant="contained" color="secondary" style={{ margin: '10px' }}>View Your Match Requests</Button>
+                    <Typography variant="h4" style={{ textAlign: 'center' }}>Matched!</Typography>
+                </motion.div>
+)}
+            <Button onClick={handleOpenMatches} variant="contained" color="primary" style={{ margin: '10px' }}>Matches</Button>
+            <Button onClick={handleOpenRequests} variant="contained" color="secondary" style={{ margin: '10px' }}>Pending Match Requests</Button>
 
             <Dialog open={openMatchesDialog} onClose={handleClose} PaperProps={{ style: dialogStyle }}>
                 <DialogTitle>Matches</DialogTitle>
@@ -222,20 +219,23 @@ const Match = () => {
             </Dialog>
 
             <Dialog open={openRequestsDialog} onClose={handleClose} PaperProps={{ style: dialogStyle }}>
-                <DialogTitle>Match Requests</DialogTitle>
-                <DialogContent>
-                    <List>
-                        {Object.entries(matchRequests).filter(([key, value]) => value.status === 'pending').map(([key, value]) => (
-                            <ListItem key={key}>
-                                <ListItemText primary={`Request from ${users.find(u => u.id === key).name}`} />
-                            </ListItem>
-                        ))}
-                    </List>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleClose} color="secondary">Close</Button>
-                </DialogActions>
-            </Dialog>
+    <DialogTitle>Match Requests</DialogTitle>
+    <DialogContent>
+        <List>
+            {Object.entries(matchRequests).filter(([key, value]) => value.status === 'pending').map(([key, value]) => (
+                <ListItem 
+                    key={key} 
+                    button
+                    onClick={() => handleMatchRequestClick(key)}>
+                    <ListItemText primary={`Request pending with ${users.find(u => u.id === key).name}`} />
+                </ListItem>
+            ))}
+        </List>
+    </DialogContent>
+    <DialogActions>
+        <Button onClick={handleClose} color="secondary">Close</Button>
+    </DialogActions>
+</Dialog>
         </Container>
     );
 };
