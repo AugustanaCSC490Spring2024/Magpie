@@ -151,9 +151,9 @@ const Match = () => {
 
     return (
         <Container style={{
-            background: 'linear-gradient(to right, #55bbff 0%, #b6a6fc 100%)',
+            backgroundColor: '#f0f5ff',
             minHeight: '100vh',
-            width: '100%',
+            width: '150wh',
             padding: '20px',
             position: 'relative'
         }}>

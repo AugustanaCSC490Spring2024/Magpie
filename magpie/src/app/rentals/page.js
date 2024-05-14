@@ -154,7 +154,7 @@ function Listing() {
         <Container maxWidth="md" sx={{
           mt: 12,
           py: 3,
-          background: 'linear-gradient(to right top, #003DA5, #FDB913)',
+          backgroundColor: '#bbffff',
           color: '#fff',
           textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
           position: 'relative',
