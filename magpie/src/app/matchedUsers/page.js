@@ -133,8 +133,8 @@ const MatchedUsers = () => {
                         </Typography>
                     </CardContent>
                     <IconButton href={createMailToLink(match.fromUser.email, match.toUser.email)} target="_blank" aria-label="send email">
-                                    <EmailIcon />
-                                </IconButton>
+                        <EmailIcon />
+                    </IconButton>
                 </Card>
             </Grid>
             ))}

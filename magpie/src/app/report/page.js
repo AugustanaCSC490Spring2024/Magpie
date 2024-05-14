@@ -47,8 +47,8 @@ function ReportPage() {
         const currentUserInfo = users.find(user => user.id === currentUser.uid); 
         const currentUserName = currentUserInfo ? currentUserInfo.name : "Unknown";
 
+        
         const userReportRef = doc(db, "userReports", username);
-
         const selectedUserInfo = users.find(user => user.id === username);
         const selectedUserName = selectedUserInfo ? selectedUserInfo.name : "Unknown";
 
@@ -118,17 +118,18 @@ function ReportPage() {
                 <label style={{ width: '100%', marginBottom: '10px' }}>
                     Username of User:
                     <Autocomplete
-                    id="user-select"
-                    options={users}
-                    getOptionLabel={(option) => option.name}
-                    value={username}
-                    onChange={(event, newValue) => {
-                        setUsername(newValue);
-                    }}
-                    renderInput={(params) => (
-                        <TextField {...params} label="Select a User" variant="outlined" />
-                    )}
-                />
+                        id="user-select"
+                        options={users}
+                        getOptionLabel={(option) => option.name}
+                        value={users.find(user => user.id === username)}
+                        onChange={(event, newValue) => {
+                            setUsername(newValue ? newValue.id : '');
+                        }}
+                        renderInput={(params) => (
+                            <TextField {...params} label="Select a User" variant="outlined" />
+                        )}
+                    />
+
                 </label>
                 <label style={{ width: '100%', marginBottom: '10px' }}>
                     Reason for Report:

@@ -117,7 +117,7 @@ const Onboarding = () => {
             </Step>
           ))}
         </Stepper>
-        <Typography variant="h4" gutterBottom component="div" sx={{ fontWeight: 'bold', mb: 3 }}>
+        <Typography variant={isSmallScreen ? "h5" : "h4"} gutterBottom component="div" sx={{ fontWeight: 'bold', mb: 3 }}>
           {headingText}
         </Typography>
         <Box sx={{ mb: 2 }}>

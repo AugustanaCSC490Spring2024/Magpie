@@ -157,8 +157,8 @@ return (
       top: '32%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
-      width: { xs: '100%', sm: '90vw' },  // Ensuring full width on very small screens
-      maxWidth: { xs: '500px', sm: '1000px' },  // More dynamic maxWidth
+      width: { xs: '100%', sm: '90vw' },  
+      maxWidth: { xs: '500px', sm: '1000px' }, 
       background: 'rgba(255, 255, 255, 0.2)',
       borderRadius: '15px',
       padding: { xs: '10px', sm: '20px' },
@@ -223,7 +223,7 @@ return (
       variant="contained"
       color="primary"
       onClick={() => setInboxOpen(!inboxOpen)}
-      sx={{ position: 'fixed', bottom: 20, right: 20, width: { xs: '50%', sm: 'auto' }, fontSize: { xs: '0.7rem', sm: '1rem' } }}
+      sx={{ position: 'fixed', bottom: 0, right: 20, width: { xs: '30%', sm: 'auto' }, fontSize: { xs: '0.7rem', sm: '1rem' } }}
     >
       {inboxOpen ? 'Close Inbox' : 'Open Inbox'}
     </Button>
