@@ -118,7 +118,7 @@ const Match = () => {
         border: '1px solid rgba(255, 255, 255, 0.18)'
     };
 
-    const handleMatchRequestClick = (userId) => {
+    const handleMatchClick = (userId) => {
         setSelectedUser(users.find(u => u.id === userId));
         handleClose(); 
     };
@@ -157,7 +157,7 @@ const Match = () => {
             padding: '20px',
             position: 'relative'
         }}>
-            <Typography variant="h4" sx={{marginTop: '80px', fontWeight: 'bold'}} gutterBottom>Match with a User</Typography>
+            <Typography variant="h4" sx={{marginTop: '80px', fontWeight: 'bold'}} gutterBottom>Become Roommates with a user</Typography>
             <FormControl fullWidth style={{ margin: '20px 0', width: '90%' }}>
                 <Autocomplete
                     id="user-select"
@@ -207,7 +207,10 @@ const Match = () => {
                 <DialogContent>
                     <List>
                         {Object.entries(matchRequests).filter(([key, value]) => value.status === 'accepted').map(([key, value]) => (
-                            <ListItem key={key}>
+                            <ListItem 
+                            key={key} 
+                            button
+                            onClick={() => handleMatchClick(key)}>
                                 <ListItemText primary={`Matched with ${users.find(u => u.id === key).name}`} />
                             </ListItem>
                         ))}
@@ -226,7 +229,7 @@ const Match = () => {
                 <ListItem 
                     key={key} 
                     button
-                    onClick={() => handleMatchRequestClick(key)}>
+                    onClick={() => handleMatchClick(key)}>
                     <ListItemText primary={`Request pending with ${users.find(u => u.id === key).name}`} />
                 </ListItem>
             ))}

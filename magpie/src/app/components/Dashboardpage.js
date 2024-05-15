@@ -134,84 +134,82 @@ const DashboardPage = () => {
 
   return (
     <StyledEngineProvider injectFirst>
-      <Container maxWidth="xl">
-        
-      <Typography variant="h3" sx={{fontFamily: 'poppins, sans-serif', marginTop: '100px', marginBottom: '20px', textAlign: 'center'}}>Dashboard Overview</Typography>
-
-        <Grid container spacing={3} alignItems="center">
-        <Grid item xs={3}>
-            <TextField
-              fullWidth
-              label="Search by name"
-              variant="outlined"
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
-          </Grid>
-          <Grid item xs={3}>
-            <FormControl fullWidth>
-              <InputLabel>Gender</InputLabel>
-              <Select value={filters.gender} name="gender" onChange={handleFilterChange}>
-                <MenuItem value="">Any</MenuItem>
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Female">Female</MenuItem>
-                <MenuItem value="Other">Other</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={3}>
-            <FormControl fullWidth>
-              <InputLabel>Academic Year</InputLabel>
-              <Select value={filters.academicYear} name="academicYear" onChange={handleFilterChange}>
-                <MenuItem value="">Any</MenuItem>
-                <MenuItem value="Freshman">Freshman</MenuItem>
-                <MenuItem value="Sophomore">Sophomore</MenuItem>
-                <MenuItem value="Junior">Junior</MenuItem>
-                <MenuItem value="Senior">Senior</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={3}>
-            <FormControl fullWidth>
-              <InputLabel>Residence Preference</InputLabel>
-              <Select value={filters.residenceHall} name="residenceHall" onChange={handleFilterChange}>
-                <MenuItem value="">Any</MenuItem>
-                <MenuItem value="No Preference">No Preference</MenuItem>
-                <MenuItem value="Seminary Hall">Seminary Hall</MenuItem>
-                <MenuItem value="Andreen Hall">Andreen Hall</MenuItem>
-                <MenuItem value="Swanson Commons">Swanson Commons</MenuItem>
-                <MenuItem value="Erickson Hall">Erickson Hall</MenuItem>
-                <MenuItem value="Westerlin Hall">Westerlin Hall</MenuItem>
-                <MenuItem value="Naeseth Tonwhouses">Naeseth Tonwhouses</MenuItem>
-                <MenuItem value="Parkander">Parkander</MenuItem>
-                <MenuItem value="Arbaugh">Arbaugh</MenuItem>
-                <MenuItem value="other TLAs">other TLAs</MenuItem>
-                <MenuItem value="Off Campus House">Off Campus House</MenuItem>
-
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={2} style={{ paddingLeft: '3%', marginTop: '20px' }}>
-
-          {filteredUsers.map((userProfile, index) => (
-            <Grid item xs={4} key={userProfile.id}>
-              <motion.div
-                initial="offscreen"
-                whileInView="onscreen"
-                viewport={{ once: true, amount: 0.8 }}
-                variants={cardVariants}
-              >
-                <UserProfileCard userProfile={userProfile} matchingScores={matchingScores} ></UserProfileCard>
-                
-              </motion.div>
+        <Container maxWidth="xl">
+            <Typography variant="h3" sx={{ fontFamily: 'poppins, sans-serif', marginTop: 10, marginBottom: 4, textAlign: 'center' }}>
+                Dashboard Overview
+            </Typography>
+            
+            <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} md={3}>
+                    <TextField
+                        fullWidth
+                        label="Search by name"
+                        variant="outlined"
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                    />
+                </Grid>
+                <Grid item xs={12} md={3}>
+                    <FormControl fullWidth>
+                        <InputLabel>Gender</InputLabel>
+                        <Select value={filters.gender} name="gender" onChange={handleFilterChange}>
+                            <MenuItem value="">Any</MenuItem>
+                            <MenuItem value="Male">Male</MenuItem>
+                            <MenuItem value="Female">Female</MenuItem>
+                            <MenuItem value="Other">Other</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                    <FormControl fullWidth>
+                        <InputLabel>Academic Year</InputLabel>
+                        <Select value={filters.academicYear} name="academicYear" onChange={handleFilterChange}>
+                            <MenuItem value="">Any</MenuItem>
+                            <MenuItem value="Freshman">Freshman</MenuItem>
+                            <MenuItem value="Sophomore">Sophomore</MenuItem>
+                            <MenuItem value="Junior">Junior</MenuItem>
+                            <MenuItem value="Senior">Senior</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} md={3}>
+                    <FormControl fullWidth>
+                        <InputLabel>Residence Preference</InputLabel>
+                        <Select value={filters.residenceHall} name="residenceHall" onChange={handleFilterChange}>
+                            <MenuItem value="">Any</MenuItem>
+                            <MenuItem value="No Preference">No Preference</MenuItem>
+                            <MenuItem value="Seminary Hall">Seminary Hall</MenuItem>
+                            <MenuItem value="Andreen Hall">Andreen Hall</MenuItem>
+                            <MenuItem value="Swanson Commons">Swanson Commons</MenuItem>
+                            <MenuItem value="Erickson Hall">Erickson Hall</MenuItem>
+                            <MenuItem value="Westerlin Hall">Westerlin Hall</MenuItem>
+                            <MenuItem value="Naeseth Tonwhouses">Naeseth Tonwhouses</MenuItem>
+                            <MenuItem value="Parkander">Parkander</MenuItem>
+                            <MenuItem value="Arbaugh">Arbaugh</MenuItem>
+                            <MenuItem value="other TLAs">other TLAs</MenuItem>
+                            <MenuItem value="Off Campus House">Off Campus House</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid>
             </Grid>
-          ))}
-        </Grid>
-      </Container>
 
-    </StyledEngineProvider>);
+            <Grid container spacing={2} sx={{ mt: 2 }}>
+                {filteredUsers.map((userProfile, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={userProfile.id}>
+                        <motion.div
+                            initial="offscreen"
+                            whileInView="onscreen"
+                            viewport={{ once: true, amount: 0.8 }}
+                            variants={cardVariants}
+                        >
+                            <UserProfileCard userProfile={userProfile} matchingScores={matchingScores} />
+                        </motion.div>
+                    </Grid>
+                ))}
+            </Grid>
+        </Container>
+    </StyledEngineProvider>
+);
 };
 
 export default DashboardPage;

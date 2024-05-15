@@ -446,6 +446,8 @@ nav ul button{
 
 
 
+
+
 .reviews-title::before {
   content: "";
   position: absolute;
@@ -535,6 +537,11 @@ nav ul button{
     padding: 20px;
   }
 
+  .reviews-title {
+    font-size: 20px;
+  }
+
+
   .contact-form h3 {
     font-size: 1.8rem;
   }
@@ -543,15 +550,6 @@ nav ul button{
   .contact-form form textarea,
   .contact-form form button {
     font-size: 0.9rem;
-  }
-}
-
-/* Responsive adjustments for Mobile Phones */
-@media (max-width: 480px) {
-  .contact-form {
-    margin-left: 20px;
-    margin-right: 20px;
-    padding: 15px;
   }
 
   .contact-form h3 {

@@ -38,16 +38,17 @@ function UserList() {
 
     return (
         <AuthContextProvider>
-            <Container maxWidth="sm" sx={{
+            <Container maxWidth="md" sx={{
                 position: 'fixed',
+                background: 'linear-gradient(to right, #ffffff, #2277ff)',
                 left: 30,
                 top: 30,
-                width: '80vw',
+                width: '94vw',
                 height: '200vh',
-                overflowY: 'auto',
+                overflowY: 'scroll',
                 zIndex: 1200
             }}>
-                <Typography variant="h3" sx={{ my: 2 }}>User List</Typography>
+                <Typography variant="h3" sx={{ my: 2, textAlign: 'center' }}>User List</Typography>
                 <TextField
                     fullWidth
                     label="Search by Name"
@@ -62,7 +63,7 @@ function UserList() {
                             <ListItemAvatar>
                                 <Avatar src={user.imageUrl || 'https://via.placeholder.com/150.png?text=Profile'} alt={user.name} />
                             </ListItemAvatar>
-                            <ListItemText primary={user.name} secondary={user.email} />
+                            <ListItemText primary={user.name} />
                             <IconButton edge="end" onClick={() => handleSelectUser(user.id)}>
                                 <MessageIcon />
                             </IconButton>

@@ -92,7 +92,7 @@ function AdminMessages({ userId, onClose }) {
   justifyContent: 'center',
   alignItems: 'center'
 }}>
-  <Typography variant="h5" sx={{ fontFamily: "'Roboto', sans-serif", fontWeight: 'bold' }}>
+  <Typography variant="h5" sx={{ fontFamily: "'Roboto', sans-serif", fontWeight: 'bold', fontSize: '20px' }}>
     Messaging {userName || 'User'}
   </Typography>
 </Box>

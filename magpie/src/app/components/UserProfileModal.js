@@ -230,102 +230,104 @@ const renderRequestButtons = (userId) => {
 
     console.log(index, currentItem);
     console.log(questionsObject[currentKey]?.questionText);
-    return (
-        <>
+      return (
+          <>
 
-            <Button onClick={() => { handleModal(true); }} variant={'secondary'} style={{ background: '#2185dc', color: 'white' }}>{'View profile'}</Button>
-            <Container maxWidth="xl" sx={{ position: 'fixed' }}>
+              <Button onClick={() => { handleModal(true); }} variant={'secondary'} style={{ background: '#2185dc', color: 'white' }}>{'View profile'}</Button>
+              <Container maxWidth="xl" sx={{ position: 'fixed' }}>
 
-                <Dialog id='modal' open={modalOpen} onClose={() => { handleModal(false); }}
-                    aria-describedby="server-modal-description" sx={{
-                        "& .MuiDialog-container": {
-                            "& .MuiPaper-root": {
-                                width: "100%",
-                                maxWidth: "700px",
-                                height: "100%",
-                                maxHeight: "900px",
-                                alignItems: 'center',
-                                padding: '2rem',
+                  <Dialog id='modal' open={modalOpen} onClose={() => { handleModal(false); }}
+                      aria-describedby="server-modal-description" sx={{
+                          "& .MuiDialog-container": {
+                              "& .MuiPaper-root": {
+                                  width: "100%",
+                                  maxWidth: "700px",
+                                  height: "100%",
+                                  maxHeight: "900px",
+                                  alignItems: 'center',
+                                  padding: '2rem',
 
-                            },
-                        },
-                    }}>
+                              },
+                          },
+                      }}>
+                      
+                
+                      <Grid container spacing={2} sx={{ height: 100 }}>
+                          <Grid item xs={3}>
+                              <img src={userProfile.imageUrl || `https://via.placeholder.com/150x150.png?text=No+Image`} alt={`User ${user.name}`} style={{ width: '150px', height: '150px', borderRadius: '150px', margin: 'auto' }} />
+                          </Grid>
+                          <Grid item xs={8} sm={3} md={4} lg={6} style={{ paddingTop: '70px', paddingLeft: '40px' }}>
+                              <Typography variant="h4" sx={{ fontFamily: 'poppins, sans-serif' }}>{userProfile.name || "Name not available"}</Typography>
+                          </Grid>
+                          <Grid item xs={12} sx={{ textAlign: 'center', marginTop: '2.2rem' }}>
+                              <Typography variant="h4" className="matchtitle" sx={{ color: 'blue', fontSize: 25, fontWeight: 450 }}> {'BIO'}</Typography>
+                          </Grid>
+                          <Grid item xs={12} sx={{ textAlign: 'center', paddingBottom: 10 }}>
+                              <Typography variant="h4" sx={{ fontSize: 25, fontWeight: 400 }}> {userProfile.bio}</Typography>
+                          </Grid>
+                          <Grid item xs={1}>
+                              <IconButton aria-label='close' onClick={previousItem}>
+                                  <ChevronLeftIcon />
+                              </IconButton>
+                          </Grid>
+                          <Grid item xs={10} sx={{ textAlign: 'center' }}>
+                              <Typography variant="h4" className="matchtitle" sx={{ color: 'blue', fontSize: 25, fontWeight: 450 }}> {'RESPONSES'}</Typography>
+                          </Grid>
 
-                    <Grid container spacing={2} sx={{ height: 100 }}>
-                        <Grid item xs={3}>
-                            <img src={userProfile.imageUrl || `https://via.placeholder.com/150x150.png?text=No+Image`} alt={`User ${user.name}`} style={{ width: '150px', height: '150px', borderRadius: '150px', margin: 'auto' }} />
-                        </Grid>
-                        <Grid item xs={8} style={{ paddingTop: '70px', paddingLeft: '40px' }}>
-                            <Typography variant="h4" sx={{ fontFamily: 'poppins, sans-serif' }}>{userProfile.name || "Name not available"}</Typography>
-                        </Grid>
-                        <Grid item xs={12} sx={{ textAlign: 'center', marginTop: '2.2rem' }}>
-                            <Typography variant="h4" className="matchtitle" sx={{ color: 'blue', fontSize: 25, fontWeight: 450 }}> {'BIO'}</Typography>
-                        </Grid>
-                        <Grid item xs={12} sx={{ textAlign: 'center', paddingBottom: 10 }}>
-                            <Typography variant="h4" sx={{ fontSize: 25, fontWeight: 400 }}> {userProfile.bio}</Typography>
-                        </Grid>
-                        <Grid item xs={1}>
-                            <IconButton aria-label='close' onClick={previousItem}>
-                                <ChevronLeftIcon />
-                            </IconButton>
-                        </Grid>
-                        <Grid item xs={10} sx={{ textAlign: 'center' }}>
-                            <Typography variant="h4" className="matchtitle" sx={{ color: 'blue', fontSize: 25, fontWeight: 450 }}> {'RESPONSES'}</Typography>
-                        </Grid>
+                          <Grid item xs={1}>
+                              <IconButton aria-label='close' onClick={nextItem}>
+                                  <ChevronRightIcon />
+                              </IconButton>
+                          </Grid>
 
-                        <Grid item xs={1}>
-                            <IconButton aria-label='close' onClick={nextItem}>
-                                <ChevronRightIcon />
-                            </IconButton>
-                        </Grid>
+                          <Grid item xs={12} sx={{ textAlign: 'center', paddingBottom: 21 }}>
+                              <Typography variant="h4" sx={{ fontSize: 25, fontWeight: 700 }}> {questionsObject[currentKey]?.questionText}</Typography>
+                              <Typography variant="h4" sx={{ fontSize: 25, fontWeight: 400, paddingTop: 4 }}> {currentItem?.visibility === true ? currentItem?.response : <LockIcon />}</Typography>
+                          </Grid>
 
-                        <Grid item xs={12} sx={{ textAlign: 'center', paddingBottom: 21 }}>
-                            <Typography variant="h4" sx={{ fontSize: 25, fontWeight: 700 }}> {questionsObject[currentKey]?.questionText}</Typography>
-                            <Typography variant="h4" sx={{ fontSize: 25, fontWeight: 400, paddingTop: 4 }}> {currentItem?.visibility === true ? currentItem?.response : <LockIcon />}</Typography>
-                        </Grid>
+                          <Grid item xs={2.5} sx={{ textAlign: 'center', padding: '1rem' }}>
+                              <div style={{ width: 105, height: 105 }}>
+                                  <CircularProgressbar styles={{ path: { stroke: `rgba(33, 133, 220, 1)` }, text: { fill: '#2185dc' } }} value={matchingScores[userProfile.id] ? matchingScores[userProfile.id].toFixed(1) : 0} text={`${matchingScores[userProfile.id] ? matchingScores[userProfile.id].toFixed(1) : '0'}%`} />
+                              </div>
+                          </Grid>
 
-                        <Grid item xs={2.5} sx={{ textAlign: 'center', padding: '1rem' }}>
-                            <div style={{ width: 105, height: 105 }}>
-                                <CircularProgressbar styles={{ path: { stroke: `rgba(33, 133, 220, 1)` }, text: { fill: '#2185dc' } }} value={matchingScores[user.id] ? matchingScores[user.id].toFixed(1) : 0} text={`${matchingScores[user.id] ? matchingScores[user.id].toFixed(1) : '0'}%`} />
-                            </div>
-                        </Grid>
+                          <Grid item xs={6.5} sx={{ textAlign: 'left', marginTop: '2.2rem' }}>
+                              <Typography variant="h4" className="matchtitle" sx={{ color: 'blue', fontSize: 25 }}> {'Matching score'}</Typography>
+                          </Grid>
+                          <Grid item xs={3} sx={{ textAlign: 'right', marginTop: '2.2rem', marginBottom: '1rem' }}>
+                          <Button onClick={() => handleSendRequest(userProfile.id)}
+                                  variant="contained"
+                                  color="primary"
+                                  style={{
+                                      textTransform: 'none', 
+                                      marginRight: '2rem',
+                                      borderRadius: '10px', 
+                                      padding: '10px 20px', 
+                                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)', 
+                                      fontWeight: 'bold',
+                                      borderRadius: '40px', 
+                                      fontSize: '0.9rem', 
+                                      transition: 'all 0.3s ease-out', 
+                                      background: 'linear-gradient(45deg, #000022 30%, #555599 90%)', 
+                                      color: '#ffffff', 
+                                      textAlign: 'center',
+                                      '&:hover': { 
+                                      background: 'linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%)',
+                                      boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)', 
+                                      },
+                                  }}
+                                  >
+                      {renderRequestButtons(userProfile.id)}
+                    </Button>
+                    {selectedUserId && <AdminMessages userId={selectedUserId} onClose={handleClose} />}
+                  </Grid>
+                      </Grid>
+                  </Dialog>
+              </Container>
 
-                        <Grid item xs={6.5} sx={{ textAlign: 'left', marginTop: '2.2rem' }}>
-                            <Typography variant="h4" className="matchtitle" sx={{ color: 'blue', fontSize: 25 }}> {'Matching score'}</Typography>
-                        </Grid>
-                        <Grid item xs={3} sx={{ textAlign: 'right', marginTop: '2.2rem', marginBottom: '1rem' }}>
-                        <Button onClick={() => handleSendRequest(userProfile.id)}
-                                variant="contained"
-                                color="primary"
-                                style={{
-                                    textTransform: 'none', 
-                                    marginRight: '2rem',
-                                    borderRadius: '10px', 
-                                    padding: '10px 20px', // More balanced padding
-                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)', // More pronounced shadow
-                                    fontWeight: 'bold',
-                                    fontSize: '0.9rem', // Slightly larger font size
-                                    transition: 'all 0.3s ease-out', // Smoother transition
-                                    background: 'linear-gradient(45deg, #000022 30%, #555599 90%)', // Gradient background
-                                    color: '#ffffff', // White text for better contrast
-                                    textAlign: 'center',
-                                    '&:hover': { 
-                                    background: 'linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%)', // Inverted gradient on hover
-                                    boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)', // Increased shadow on hover
-                                    },
-                                }}
-                                >
-                    {renderRequestButtons(userProfile.id)}
-                  </Button>
-                  {selectedUserId && <AdminMessages userId={selectedUserId} onClose={handleClose} />}
-                </Grid>
-                    </Grid>
-                </Dialog>
-            </Container>
+          </>
+      )
 
-        </>
-    )
-
-}
+  }
 
 export default UserProfileModal;

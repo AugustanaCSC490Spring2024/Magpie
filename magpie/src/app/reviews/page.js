@@ -103,7 +103,7 @@ function ExplorePage() {
           Reviews --  Leave a rating and share your experience
         </h4>
         {averageRating !== null && (
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h7" gutterBottom>
             Average Rating: {averageRating.toFixed(1)} <Rating value={averageRating} readOnly />
           </Typography>
         )}

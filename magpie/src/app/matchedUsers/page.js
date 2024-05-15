@@ -5,6 +5,7 @@ import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firesto
 import { Container, TextField, Card, CardContent, CardMedia, IconButton, Typography, Button, Grid, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import EmailIcon from '@mui/icons-material/Email';
+import { Line } from '@react-three/drei';
 
 
 const MatchedUsers = () => {
@@ -102,35 +103,39 @@ const MatchedUsers = () => {
                     display: 'flex',
                     flexDirection: { xs: 'column', md: 'row' },
                     mb: 2,
+                    p: 2,
+                    backgroundColor: 'cyan',
                     transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                    backgroundImage: 'linear-gradient(to right, silver, lightblue)',
+                    position: 'relative',
+                    overflow: 'hidden',
                     '&:hover': {
                         transform: 'scale(1.03)',
                         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)'
                     }
+                    
                 }}>
                     <CardMedia
                         component="img"
-                        sx={{ width: { xs: '100%', md: 151 }, height: 200 }}
+                        sx={{ width: { xs: '150px', md: 151 }, borderRadius: '20px', justifyContent: 'center', height: { xs: '150px', md: 150 }}}
                         image={match.fromUser.imageUrl || 'https://via.placeholder.com/150'}
                         alt={match.fromUser.name}
                     />
                     <CardContent sx={{ flex: '1 0 auto' }}>
                         <Typography variant="h5">{match.fromUser.name}</Typography>
-                        <Typography variant="subtitle1" color="text.secondary">
-                            {match.fromUser.bio}
-                        </Typography>
+                        <Typography variant="h10">{match.fromUser.email}</Typography>
+
+                        
                     </CardContent>
                     <CardMedia
                         component="img"
-                        sx={{ width: { xs: '100%', md: 151 }, height: 200 }}
+                        sx={{ width: { xs: '50%', md: 151 }, borderRadius: '20px', justifyContent: 'center', height: { xs: '50%', md: 150 }}}
                         image={match.toUser.imageUrl || 'https://via.placeholder.com/150'}
                         alt={match.toUser.name}
                     />
                     <CardContent sx={{ flex: '1 0 auto' }}>
                         <Typography variant="h5">{match.toUser.name}</Typography>
-                        <Typography variant="subtitle1" color="text.secondary">
-                            {match.toUser.bio}
-                        </Typography>
+                        <Typography variant="h10">{match.toUser.email}</Typography>
                     </CardContent>
                     <IconButton href={createMailToLink(match.fromUser.email, match.toUser.email)} target="_blank" aria-label="send email">
                         <EmailIcon />

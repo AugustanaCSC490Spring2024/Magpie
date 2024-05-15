@@ -202,7 +202,7 @@ return (
         </Box>
         <input type="file" accept="image/*" onChange={handleImageUpload} id="profile-image-upload" style={{ display: 'none' }} />
         <label htmlFor="profile-image-upload">
-          <IconButton color="primary" component="span" sx={{ backgroundColor: 'rgba(255, 255, 255, 0.3)' }}>
+          <IconButton color="primary" component="span" sx={{ backgroundColor: 'rgba(255, 255, 255, 0.3)', marginBottom: '10px' }}>
             <AddCircleOutlineIcon sx={{ color: '#FFF', fontSize: { xs: '24px', sm: '30px' } }} />
           </IconButton>
         </label>
@@ -225,14 +225,14 @@ return (
         </Button>
       </Box>
       {inboxOpen && (
-        <Box flex={1} sx={{ overflowY: 'scroll', maxHeight: '80vh', width: '100%', bgcolor: 'background.paper'}}>
+        <Box flex={1} sx={{ overflowY: 'scroll', maxHeight: '30vh', width: '100%', bgcolor: 'background.paper'}}>
           <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             {messages.map((msg) => (
               <ListItem key={msg.senderId} button onClick={() => handleAdminSelect(msg.senderId)}>
                 <ListItemAvatar>
                   <Avatar>{msg.senderName.charAt(0)}</Avatar>
                 </ListItemAvatar>
-                <ListItemText primary={`Chat with ${msg.senderName}`} secondary={msg.lastMessage} />
+                <ListItemText primary={`${msg.senderName}`} secondary={msg.lastMessage} />
               </ListItem>
             ))}
           </List>
@@ -249,7 +249,7 @@ return (
       variant="contained"
       color="primary"
       onClick={() => setInboxOpen(!inboxOpen)}
-      sx={{ position: 'fixed', bottom: 0, right: 20, width: { xs: '30%', sm: 'auto' }, fontSize: { xs: '0.7rem', sm: '1rem' } }}
+      sx={{ position: 'fixed', bottom: 10, right: 20, width: { xs: '30%', sm: 'auto' }, fontSize: { xs: '0.7rem', sm: '1rem' } }}
     >
       {inboxOpen ? 'Close Inbox' : 'Open Inbox'}
     </Button>
