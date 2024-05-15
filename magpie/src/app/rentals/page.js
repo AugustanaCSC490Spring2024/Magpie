@@ -12,6 +12,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { UserAuth } from '../context/AuthContext';
 import axios from 'axios';
 import { styled } from '@mui/system';
+import Autosuggest from 'react-autosuggest';
+import '../globals.css'; 
 
 const PrimaryButton = styled(Button)(({ theme }) => ({
     backgroundImage: 'linear-gradient(45deg, #003DA5 30%, #002D80 90%)',
@@ -24,7 +26,7 @@ const PrimaryButton = styled(Button)(({ theme }) => ({
 }));
 
 const SecondaryButton = styled(Button)(({ theme }) => ({
-    backgroundImage: 'linear-gradient(45deg, #FDB913 30%, #E0A800 90%)',
+    backgroundImage: 'linear-gradient(45deg, #85C1E9 30%, #5DADE2 90%)',
     color: '#000000',
     fontWeight: 'bold',
     boxShadow: '0 3px 5px 2px rgba(255, 193, 7, .3)',
@@ -36,6 +38,8 @@ const SecondaryButton = styled(Button)(({ theme }) => ({
 function Listing() {
     const { user } = UserAuth();
     const [listings, setListings] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showMyListings, setShowMyListings] = useState(false);
     const [currentUserProfile, setCurrentUserProfile] = useState(null);
     const [formData, setFormData] = useState({
         address: '',
@@ -47,6 +51,7 @@ function Listing() {
     const [open, setOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [editId, setEditId] = useState(null);
+    const [suggestions, setSuggestions] = useState([]);
 
     useEffect(() => {
         if (user) fetchUserProfile();
@@ -79,6 +84,10 @@ function Listing() {
         }));
     };
 
+    const filteredListings = listings.filter(listing =>
+        listing.address.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!user) {
@@ -87,7 +96,7 @@ function Listing() {
         }
 
         const apiKey = '79f9041fba124e94912b720262d03976'; 
-        const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(formData.address)}&key=${apiKey}`;
+        const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(formData.address)}&countrycode=us&key=${apiKey}`;
 
         try {
             const response = await axios.get(url);
@@ -150,11 +159,82 @@ function Listing() {
         setListings(listings.filter(listing => listing.id !== id));
     };
 
+    const getSuggestions = async (value) => {
+        const apiKey = '79f9041fba124e94912b720262d03976'; 
+        const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(value)}&countrycode=us&key=${apiKey}`;
+        try {
+            const response = await axios.get(url);
+            if (response.data.results && response.data.results.length > 0) {
+                return response.data.results.map(result => ({
+                    address: result.formatted
+                }));
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.error("Failed to fetch suggestions: ", error);
+            return [];
+        }
+    };
+
+    const onSuggestionsFetchRequested = async ({ value }) => {
+        const suggestions = await getSuggestions(value);
+        setSuggestions(suggestions);
+    };
+
+    const onSuggestionsClearRequested = () => {
+        setSuggestions([]);
+    };
+
+    const onSuggestionSelected = (event, { suggestion }) => {
+        setFormData(prevState => ({
+            ...prevState,
+            address: suggestion.address
+        }));
+    };
+
+    const renderSuggestion = (suggestion) => (
+        <div className="suggestion-content">
+            {suggestion.address}
+        </div>
+    );
+
+    const inputProps = {
+        placeholder: 'Search by address',
+        value: formData.address,
+        onChange: (event, { newValue }) => {
+            setFormData(prevState => ({
+                ...prevState,
+                address: newValue
+            }));
+        },
+        style: {
+            width: '100%',
+            padding: '15px 20px',
+            fontSize: '1.2rem',
+            borderRadius: '4px',
+            border: '1px solid #ccc',
+            boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+            marginBottom: '10px'
+        }
+    };
+    
+    const myListings = listings.filter(listing => listing.userId === user.uid);
+    const displayedListings = showMyListings ? myListings : filteredListings;
+
+    const theme = {
+        container: 'autosuggest-container',
+        suggestionsContainerOpen: 'suggestions-container-open',
+        suggestionsList: 'suggestions-list',
+        suggestion: 'suggestion',
+        suggestionHighlighted: 'suggestion-highlighted'
+    };
+
     return (
         <Container maxWidth="md" sx={{
           mt: 12,
           py: 3,
-          backgroundColor: '#bbffff',
+          backgroundColor: 'lightBlue',
           color: '#fff',
           textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
           position: 'relative',
@@ -179,19 +259,31 @@ function Listing() {
             <PrimaryButton onClick={() => handleOpen()} sx={{ mb: 2 }}>
                 Create New Listing
             </PrimaryButton>
+            <SecondaryButton onClick={() => setShowMyListings(!showMyListings)} sx={{ mb: 2, ml: 2 }}>
+                {showMyListings ? 'Show All Listings' : 'My Listings'}
+            </SecondaryButton>
+            <TextField
+                fullWidth
+                label="Search Listings"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                margin="normal"
+                variant="outlined"
+                sx={{ mb: 2 }}
+            />
             <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>{editMode ? "Edit Listing" : "Create a New Listing"}</DialogTitle>
                 <form onSubmit={handleSubmit}>
                     <DialogContent>
-                        <TextField
-                            fullWidth
-                            label="Address"
-                            name="address"
-                            value={formData.address}
-                            onChange={handleChange}
-                            margin="normal"
-                            required
-                            sx={{ input: { color: 'black' } }}
+                        <Autosuggest
+                            suggestions={suggestions}
+                            onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                            onSuggestionsClearRequested={onSuggestionsClearRequested}
+                            getSuggestionValue={(suggestion) => suggestion.address}
+                            renderSuggestion={renderSuggestion}
+                            onSuggestionSelected={onSuggestionSelected}
+                            inputProps={inputProps}
+                            theme={theme}
                         />
                         <TextField
                             fullWidth
@@ -238,7 +330,7 @@ function Listing() {
                 </form>
             </Dialog>
             <Grid container spacing={2} sx={{ mt: 4 }}>
-                {listings.map(listing => (
+                {displayedListings.map(listing => (
                     <Grid item xs={12} md={6} key={listing.id}>
                         <Card sx={{
                             transition: '0.3s',
@@ -289,6 +381,6 @@ function Listing() {
             </Grid>
         </Container>
     );
-}
+}    
     
 export default Listing;

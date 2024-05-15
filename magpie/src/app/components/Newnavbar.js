@@ -105,7 +105,7 @@ function ResponsiveAppBar() {
                                     <Typography textAlign="center">{'Dashboard'}</Typography>
                                 </MenuItem>
                                 <MenuItem onClick={() => { router.push('/match') }}>
-                                    <Typography textAlign="center">{'Pick a Roommate'}</Typography>
+                                    <Typography textAlign="center">{'Pick a roommate'}</Typography>
                                 </MenuItem>  
                                 <MenuItem onClick={() => { router.push('/rentals') }}>
                                     <Typography textAlign="center">{'Rentals'}</Typography>
@@ -116,6 +116,9 @@ function ResponsiveAppBar() {
                                 <MenuItem onClick={() => { router.push('/report') }}>
                                     <Typography textAlign="center">{'Report User'}</Typography>
                                 </MenuItem>  
+                                <MenuItem onClick={() => { router.push('/agreement') }}>
+                                    <Typography textAlign="center">{'Policies'}</Typography>
+                                </MenuItem>
                                 <MenuItem onClick={handleSignOut}>
                                     <Typography textAlign="center">{'Log out'}</Typography>
                                 </MenuItem>

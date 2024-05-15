@@ -225,7 +225,7 @@ return (
         </Button>
       </Box>
       {inboxOpen && (
-        <Box flex={1} sx={{ overflowY: 'scroll', maxHeight: '30vh', width: '100%', bgcolor: 'background.paper'}}>
+        <Box flex={1} sx={{ overflowY: 'scroll', maxHeight: '80vh', width: '100%', bgcolor: 'background.paper'}}>
           <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             {messages.map((msg) => (
               <ListItem key={msg.senderId} button onClick={() => handleAdminSelect(msg.senderId)}>

@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
 
-  const noBar = ['/', '/AdminPage', '/adminProfile', '/userlist', '/hsAgree', '/questionaire', '/matchedUsers', '/viewReports'];
+  const noBar = ['/', '/AdminPage', '/adminProfile', '/userlist', '/hsAgree', '/questionaire', '/matchedUsers', '/viewReports', '/emailPortal'];
   return (
 
     <html lang="en">
