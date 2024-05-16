@@ -27,21 +27,24 @@ const Match = () => {
             const usersList = snapshot.docs.map(doc => ({ id: doc.id, name: doc.data().name }));
             setUsers(usersList.filter(u => u.id !== user.uid));
         };
-
+    
         const fetchMatchRequests = () => {
             const matchRequestsRef = collection(db, 'matchRequests');
-            handleMatchAnimation(selectedUser?.id)
             const unsubscribe = onSnapshot(matchRequestsRef, (snapshot) => {
                 const requestsData = {};
                 const acceptedNames = [];
                 snapshot.forEach(doc => {
                     const requestData = doc.data();
                     const key = requestData.from === user.uid ? requestData.to : requestData.from;
-                    requestsData[key] = { ...requestData, id: doc.id };
-                    if (requestData.status === 'accepted') {
-                        const matchedUser = users.find(u => u.id === key);
-                        if (matchedUser) {
-                            acceptedNames.push(matchedUser.name);
+    
+                    if (requestData.from === user.uid || requestData.to === user.uid) {
+                        requestsData[key] = { ...requestData, id: doc.id };
+                        
+                        if (requestData.status === 'accepted') {
+                            const matchedUser = users.find(u => u.id === key);
+                            if (matchedUser) {
+                                acceptedNames.push(matchedUser.name);
+                            }
                         }
                     }
                 });
@@ -50,14 +53,15 @@ const Match = () => {
             });
             return unsubscribe;
         };
-
+    
         fetchUsers();
         const unsubscribeMatchRequests = fetchMatchRequests();
-
+    
         return () => {
             unsubscribeMatchRequests();
         };
     }, [db, user.uid, users]);
+    
 
     const getRequestDocId = (userId1, userId2) => {
         return [userId1, userId2].sort().join('_');
