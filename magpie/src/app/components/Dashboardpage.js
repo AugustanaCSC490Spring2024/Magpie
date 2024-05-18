@@ -134,8 +134,8 @@ const DashboardPage = () => {
 
   return (
     <StyledEngineProvider injectFirst>
-        <Container maxWidth="xl">
-            <Typography variant="h3" sx={{ fontFamily: 'poppins, sans-serif', marginTop: 10, marginBottom: 4, textAlign: 'center' }}>
+        <Container maxWidth="xl" style={{background: 'lightBlue'}}>
+            <Typography variant="h3" sx={{ fontFamily: 'poppins, sans-serif', paddingTop: 10, marginBottom: 4, textAlign: 'center' }}>
                 Dashboard Overview
             </Typography>
             

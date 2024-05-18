@@ -92,8 +92,8 @@ function ReportPage() {
         height: '100vh',
         fontSize: '16px',
         fontFamily: 'Arial, sans-serif',
-        backgroundColor: '#0051BA',
-        color: 'white',
+        backgroundColor: 'lightBlue',
+        color: 'bLack',
         padding: isMobile ? '10px' : '20px',
     };
 
@@ -103,14 +103,14 @@ function ReportPage() {
         margin: '10px 0',
         fontSize: '16px',
         backgroundColor: 'white',
-        color: '#333',
+        color: '#000',
         border: '2px solid #F5A623',
     };
 
     const buttonStyle = {
         ...inputStyle,
         backgroundColor: '#F5A623',
-        color: 'white',
+        color: 'black',
         fontWeight: 'bold',
         border: 'none',
         cursor: 'pointer',

@@ -232,7 +232,7 @@ function Listing() {
 
     return (
         <Container maxWidth="md" sx={{
-          mt: 12,
+          mt: 8,
           py: 3,
           backgroundColor: 'lightBlue',
           color: '#fff',

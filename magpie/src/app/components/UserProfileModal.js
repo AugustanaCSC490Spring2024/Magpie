@@ -306,8 +306,9 @@ const UserProfileModal = ({ userProfile, matchingScores }) => {
                                   background: 'linear-gradient(45deg, #000022 30%, #555599 90%)',
                                   color: '#ffffff',
                                   '&:hover': {
-                                      background: 'linear-gradient(45deg, #FF8E53 30%, #FE6B8B 90%)',
-                                      boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)',
+                                      background: 'linear-gradient(45deg, #000022 30%, #555599 90%)',
+                                      transform: 'scale(1.05)',
+                                      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
                                   },
                               }}>
                               {renderRequestButtons(userProfile.id)}

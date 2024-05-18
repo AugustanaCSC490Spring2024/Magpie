@@ -156,7 +156,7 @@ const Match = () => {
 
     return (
         <Container style={{
-            backgroundColor: '#f0f5ff',
+            backgroundColor: 'lightblue',
             minHeight: '100vh',
             padding: '20px',
             position: 'relative',
