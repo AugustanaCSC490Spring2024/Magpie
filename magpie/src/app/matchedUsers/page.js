@@ -1,12 +1,11 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';  
-import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { Container, TextField, Card, CardContent, CardMedia, IconButton, Typography, Button, Grid, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import EmailIcon from '@mui/icons-material/Email';
-import { Line } from '@react-three/drei';
-
+import * as XLSX from 'xlsx';
 
 const MatchedUsers = () => {
     const [allUsers, setAllUsers] = useState([]);
@@ -63,6 +62,32 @@ const MatchedUsers = () => {
         return `https://mail.google.com/mail/?view=cm&fs=1&to=${email1},${email2}&su=Matching Update`;
     };
 
+    const handleCreateDataSheet = () => {
+        const filteredMatches = matches.filter(match => {
+            const fromMatches = match.fromUser.name.toLowerCase().includes(searchTerm) || match.toUser.name.toLowerCase().includes(searchTerm);
+            const academicMatches = academicYear ? (match.fromUser.academicStatus === academicYear || match.toUser.academicStatus === academicYear) : true;
+            return fromMatches && academicMatches;
+        });
+
+        const matchedUsersData = filteredMatches.map(match => ({
+            'From User': match.fromUser.name,
+            'To User': match.toUser.name
+        }));
+
+        const worksheet = XLSX.utils.json_to_sheet(matchedUsersData);
+        const workbook = XLSX.utils.book_new();
+        const sheetName = academicYear ? `${academicYear} Matches` : 'All Matches';
+        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+
+        const wscols = [
+            { wch: 20 }, 
+            { wch: 20 }, 
+        ];
+        worksheet['!cols'] = wscols;
+
+        XLSX.writeFile(workbook, `${sheetName}.xlsx`);
+    };
+
     const filteredMatches = matches.filter(match => {
         const fromMatches = match.fromUser.name.toLowerCase().includes(searchTerm) || match.toUser.name.toLowerCase().includes(searchTerm);
         const academicMatches = academicYear ? (match.fromUser.academicStatus === academicYear || match.toUser.academicStatus === academicYear) : true;
@@ -96,6 +121,7 @@ const MatchedUsers = () => {
                     ))}
                 </Select>
             </FormControl>
+            <Button onClick={handleCreateDataSheet} variant="contained" color="primary" sx={{ mb: 2 }}>Create DataSheet</Button>
             <Typography variant="h6">Total Matches: {filteredMatches.length}</Typography>
             {filteredMatches.map((match, index) => (
                 <Grid item xs={12} md={6} key={index}>
@@ -123,9 +149,7 @@ const MatchedUsers = () => {
                     />
                     <CardContent sx={{ flex: '1 0 auto' }}>
                         <Typography variant="h5">{match.fromUser.name}</Typography>
-                        <Typography variant="h10">{match.fromUser.email}</Typography>
-
-                        
+                        <Typography variant="body2">{match.fromUser.email}</Typography>
                     </CardContent>
                     <CardMedia
                         component="img"
@@ -135,7 +159,7 @@ const MatchedUsers = () => {
                     />
                     <CardContent sx={{ flex: '1 0 auto' }}>
                         <Typography variant="h5">{match.toUser.name}</Typography>
-                        <Typography variant="h10">{match.toUser.email}</Typography>
+                        <Typography variant="body2">{match.toUser.email}</Typography>
                     </CardContent>
                     <IconButton href={createMailToLink(match.fromUser.email, match.toUser.email)} target="_blank" aria-label="send email">
                         <EmailIcon />
