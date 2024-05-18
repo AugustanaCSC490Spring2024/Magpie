@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs, doc, getDoc, setDoc, updateDoc, arrayUnion } from 'firebase/firestore';
@@ -6,6 +6,7 @@ import { auth } from '../firebase';
 import Autocomplete from '@mui/lab/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { onAuthStateChanged } from 'firebase/auth';
+import { useTheme, useMediaQuery } from '@mui/material';
 
 function ReportPage() {
     const [users, setUsers] = useState([]);
@@ -13,6 +14,9 @@ function ReportPage() {
     const [username, setUsername] = useState(null);
     const [reason, setReason] = useState('');
     const [details, setDetails] = useState('');
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -47,7 +51,6 @@ function ReportPage() {
         const currentUserInfo = users.find(user => user.id === currentUser.uid); 
         const currentUserName = currentUserInfo ? currentUserInfo.name : "Unknown";
 
-        
         const userReportRef = doc(db, "userReports", username);
         const selectedUserInfo = users.find(user => user.id === username);
         const selectedUserName = selectedUserInfo ? selectedUserInfo.name : "Unknown";
@@ -90,7 +93,8 @@ function ReportPage() {
         fontSize: '16px',
         fontFamily: 'Arial, sans-serif',
         backgroundColor: '#0051BA',
-        color: 'white'
+        color: 'white',
+        padding: isMobile ? '10px' : '20px',
     };
 
     const inputStyle = {
@@ -109,12 +113,13 @@ function ReportPage() {
         color: 'white',
         fontWeight: 'bold',
         border: 'none',
+        cursor: 'pointer',
     };
 
     return (
         <div style={formStyle}>
-            <h1>Report Inappropriate Behavior</h1>
-            <form onSubmit={handleSubmit} style={{ width: '400px' }}>
+            <h1 style={{ textAlign: 'center' }}>Report Inappropriate Behavior</h1>
+            <form onSubmit={handleSubmit} style={{ width: isMobile ? '100%' : '400px' }}>
                 <label style={{ width: '100%', marginBottom: '10px' }}>
                     Username of User:
                     <Autocomplete
@@ -126,10 +131,9 @@ function ReportPage() {
                             setUsername(newValue ? newValue.id : '');
                         }}
                         renderInput={(params) => (
-                            <TextField {...params} label="Select a User" variant="outlined" />
+                            <TextField {...params} label="Select a User" variant="outlined" fullWidth />
                         )}
                     />
-
                 </label>
                 <label style={{ width: '100%', marginBottom: '10px' }}>
                     Reason for Report:

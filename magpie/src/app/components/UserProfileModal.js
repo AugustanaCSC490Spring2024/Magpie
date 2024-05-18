@@ -312,6 +312,7 @@ const UserProfileModal = ({ userProfile, matchingScores }) => {
                               }}>
                               {renderRequestButtons(userProfile.id)}
                           </Button>
+                        {selectedUserId && <AdminMessages userId={selectedUserId} onClose={handleClose} />}
                       </Grid>
                   </Grid>
               </Dialog>
