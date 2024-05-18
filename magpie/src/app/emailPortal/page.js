@@ -14,7 +14,6 @@ const createMailToLink = (emails) => {
 const StyledContainer = styled(Container)({
     display: 'flex',
     flexDirection: 'column',
-    backgroundColor: 'lightBlue',
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: '100vh',
@@ -112,9 +111,9 @@ function EmailPortal() {
     };
 
     return (
-        <div>
+        <div style={{backgroundImage: 'linear-gradient(55deg, #3366cc, #ffd966'}}>
             <StyledContainer component="main" maxWidth="lg">
-                <Typography variant="h3" component="h1" style={{ marginBottom: '40px', fontWeight: 'bold', color: 'darkBlue' }}>
+                <Typography variant="h3" component="h1" style={{ marginBottom: '40px', fontWeight: 'bold', color: 'black' }}>
                     Email Portal
                 </Typography>
                 <Grid container spacing={4} justifyContent="center">

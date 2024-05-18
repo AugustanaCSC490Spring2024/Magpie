@@ -21,6 +21,7 @@ function AgreementPreview() {
     }, []);
 
     return (
+        <div style={{ background: 'lightBlue'}}>
         <Container component="main" maxWidth="lg" style={{background: 'lightBlue'}}>
             <Typography variant="h4" component="h1" style={{ marginTop: '20px', paddingTop: '70px', marginBottom: '20px', textAlign: 'center' }}>
                 Housing Agreement Policy
@@ -52,6 +53,7 @@ function AgreementPreview() {
                 </Typography>
             )}
         </Container>
+        </div>
     );
 }
 

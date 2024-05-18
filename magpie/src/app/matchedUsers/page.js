@@ -95,8 +95,10 @@ const MatchedUsers = () => {
     });
 
     return (
+        <div style={{    backgroundImage: 'linear-gradient(55deg, #3366cc, #ffd966)'
+    }}>
         <Container>
-            <Typography variant="h4" sx={{ mt: 4, mb: 2 }}>Matched Users</Typography>
+            <Typography variant="h4" sx={{ pt: 4, pb: 2 }}>Matched Users</Typography>
             <TextField
                 placeholder="Search by name..."
                 onChange={handleSearchChange}
@@ -122,9 +124,9 @@ const MatchedUsers = () => {
                 </Select>
             </FormControl>
             <Button onClick={handleCreateDataSheet} variant="contained" color="primary" sx={{ mb: 2 }}>Create DataSheet</Button>
-            <Typography variant="h6">Total Matches: {filteredMatches.length}</Typography>
+            <Typography sx={{mb: 2}}variant="h6">Total Matches: {filteredMatches.length}</Typography>
             {filteredMatches.map((match, index) => (
-                <Grid item xs={12} md={6} key={index}>
+                <Grid item xs={12} md={6} key={index} sx={{pb:2}}>
                 <Card sx={{
                     display: 'flex',
                     flexDirection: { xs: 'column', md: 'row' },
@@ -168,6 +170,7 @@ const MatchedUsers = () => {
             </Grid>
             ))}
         </Container>
+        </div>
     );
 };
 

@@ -40,9 +40,9 @@ function UserList() {
         <AuthContextProvider>
             <Container maxWidth="md" sx={{
                 position: 'fixed',
-                background: 'linear-gradient(to right, #ffffff, #2277ff)',
-                left: 30,
-                top: 30,
+                background: 'linear-gradient(55deg, #3366cc, #ffd966)',              
+                left: 0,
+                top: 0,
                 width: '94vw',
                 height: '200vh',
                 overflowY: 'scroll',
