@@ -641,3 +641,13 @@ nav ul button{
   background-color: rgba(0, 123, 255, 0.3);
 }
 
+@media screen and (max-width: 768px) {
+  .contacts-section {
+    padding: 20px; /* Adjust padding for smaller screens */
+    width: 100%; /* Stretch to the edge of the page */
+    border-radius: 0; /* Remove border-radius for full-width */
+    margin-left: auto; /* Align to the right edge of the screen */
+    margin-right: auto; /* Align to the left edge of the screen */
+  }
+  
+}

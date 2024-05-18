@@ -115,4 +115,5 @@
   .about-content {
     flex-direction: column; /* Stack items vertically on smaller screens */
   }
+  
 }
