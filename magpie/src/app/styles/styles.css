@@ -1,85 +1,114 @@
 /* styles.css */
 .about-page {
-    background: linear-gradient(to top, #09203f 0%, #537895 100%);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    color:white;
-    font-family: "Inter", sans-serif;
-    border: none;
-  }
-  
-  .section {
-    text-align: center;
-    padding: 30px 0;
-    font-size: 23px;
-    text-align: 'center';
-    border-radius: 5%;
-    border-color: black;
-    color:white;
-    font-family: "Inter", sans-serif;
-  }
-  .profile-Button{
-    padding-top: 30px;
-  }
-  .creators {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* Optional: Center the cards horizontally */
-    color: white;
-  }
-  .creator-card {
-    width: 400px;
-    height: 500px;
-    margin: 10px;
-    padding: 20px;
-    text-align: center;
-    color: white;
-    border-radius: 5%;
-    background-color: #116466;
-    font-size: 20px;
-    font-weight: bold;
-  }
-  .creator-card:hover{
-    background-color: #D1E8E2;
-    transition: 1s;
-    color: black;
-  }
-  .creator-card img {
-    width: 300px;
-    height: 300px;
-    object-fit: cover;
-    border-radius: 50%;
-  }
-  
-  .button {
-    padding: 10px;
-    border-color: #66fcf1;
-    border-width: 2px; 
-    background-color: #116466;
-    border-radius: 4px;
-    box-shadow: rgba(1,60,136,.5) 0 -1px 3px 0 inset,rgba(0,44,97,.1) 0 3px 6px 0;
-    box-sizing: border-box;
-    color: #fff;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 700;
-    line-height: 24px;
-    margin: 0;
-    min-height: 56px;
-    min-width: 120px;
-    padding: 16px 20px;
-    touch-action: manipulation;
-    transition: all .2s cubic-bezier(.22, .61, .36, 1);
-  }
-  
-  .button:hover {
-    background-color: #116466;
-    transform: translateY(-2px);
-  }
-/* styles.css */
+  background: linear-gradient(to top, #09203f 0%, #537895 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  color: white;
+  font-family: "Inter", sans-serif;
+  border: none;
+  padding: 20px;
+}
+
+.section {
+  text-align: center;
+  padding: 30px 0;
+  font-size: 23px;
+  border-radius: 5%;
+  border-color: black;
+  color: white;
+  font-family: "Inter", sans-serif;
+}
+
+.about-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.image-container, .text-container {
+  flex: 1;
+  margin: 10px;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+}
+
+.text-container {
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5); /* Ensure readability */
+  border-radius: 15px;
+  max-width: 600px; /* Prevent the text container from getting too wide */
+}
+
+.creators {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px; /* Add space between cards */
+  color: white;
+}
+
+.creator-card {
+  flex: 1 1 300px; /* Flex-grow, flex-shrink, and minimum width */
+  max-width: 400px;
+  margin: 10px;
+  padding: 20px;
+  text-align: center;
+  color: white;
+  border-radius: 5%;
+  background-color: #116466;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.creator-card img {
+  width: 100%;
+  height: auto;
+  border-radius: 50%;
+}
+
+.creator-card:hover {
+  background-color: #D1E8E2;
+  transition: 1s;
+  color: black;
+}
+.profile-Button{
+  padding-top: 20px;
+}
+.button {
+  padding: 10px;
+  border-color: #66fcf1;
+  border-width: 2px;
+  background-color: #116466;
+  border-radius: 4px;
+  box-shadow: rgba(1, 60, 136, 0.5) 0 -1px 3px 0 inset, rgba(0, 44, 97, 0.1) 0 3px 6px 0;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  margin: 0;
+  min-height: 56px;
+  min-width: 120px;
+  padding: 16px 20px;
+  touch-action: manipulation;
+  transition: all 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.button:hover {
+  background-color: #116466;
+  transform: translateY(-2px);
+}
 
 .contact-us {
   margin-top: 40px;
@@ -87,8 +116,8 @@
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  max-width: 90%; 
-  width: 90%; 
+  max-width: 90%;
+  width: 90%;
   margin: 0 auto; /* Center the contact form horizontally */
 }
 
@@ -117,7 +146,6 @@
   border-radius: 5px;
   font-size: 16px;
   width: 100%; /* Set the width to 100% of the parent container */
-  width: 98%;
 }
 
 .contact-us textarea {
@@ -138,13 +166,8 @@
 .contact-us button:hover {
   background-color: #0056b3;
 }
-
-button{
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  font-size: 18px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+@media screen and (max-width: 768px) {
+  .about-content {
+    flex-direction: column; /* Stack items vertically on smaller screens */
+  }
 }
