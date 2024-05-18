@@ -30,6 +30,7 @@ const Match = () => {
     
         const fetchMatchRequests = () => {
             const matchRequestsRef = collection(db, 'matchRequests');
+            handleMatchAnimation(selectedUser?.id);
             const unsubscribe = onSnapshot(matchRequestsRef, (snapshot) => {
                 const requestsData = {};
                 const acceptedNames = [];

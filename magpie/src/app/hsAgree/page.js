@@ -10,14 +10,14 @@ function hsAgree() {
     const fileInputRef = useRef(null);
 
     const onDrop = acceptedFiles => {
-      setFiles(acceptedFiles.map(file => ({
-          file: file,  
-          preview: URL.createObjectURL(file),
-          isPdf: file.type === 'application/pdf',
-          name: file.name  
-      })));
-  };
-  
+        setFiles(acceptedFiles.map(file => ({
+            file: file,  
+            preview: URL.createObjectURL(file),
+            isPdf: file.type === 'application/pdf',
+            name: file.name  
+        })));
+    };
+
     useEffect(() => {
         return () => files.forEach(file => URL.revokeObjectURL(file.preview));
     }, [files]);
@@ -39,23 +39,22 @@ function hsAgree() {
     };
 
     const handleUploadClick = () => {
-      if (files.length > 0) {
-          const file = files[0].file;  // Using the first file from the array
-          const storage = getStorage();
-          const storageReference = storageRef(storage, `housingAgreements/agreement.pdf`);  // Static name for all uploads
-  
-          uploadBytes(storageReference, file).then((snapshot) => {
-              console.log('Uploaded a blob or file!');
-              alert('Upload successful!');
-          }).catch((error) => {
-              console.error('Upload failed:', error);
-              alert('Error during upload.');
-          });
-      } else {
-          alert('No file selected. Please select a file to upload.');
-      }
-  };
-  
+        if (files.length > 0) {
+            const file = files[0].file;  // Using the first file from the array
+            const storage = getStorage();
+            const storageReference = storageRef(storage, `housingAgreements/agreement.pdf`);  // Static name for all uploads
+
+            uploadBytes(storageReference, file).then((snapshot) => {
+                console.log('Uploaded a blob or file!');
+                alert('Upload successful!');
+            }).catch((error) => {
+                console.error('Upload failed:', error);
+                alert('Error during upload.');
+            });
+        } else {
+            alert('No file selected. Please select a file to upload.');
+        }
+    };
 
     const handleFileSelect = () => {
         fileInputRef.current.click();
@@ -93,17 +92,17 @@ function hsAgree() {
                             justifyContent: 'center',
                             padding: 10,
                             width: '100%', 
-                            maxWidth: 5000, 
-                            height: 1300, 
+                            maxWidth: '500px', 
+                            height: 'auto',
                         }}>
                             <Typography>{file.name}</Typography>
                             <IconButton onClick={removeFile(file)} aria-label="Delete file">
                                 <DeleteIcon />
                             </IconButton>
                             {file.isPdf ? (
-                                <iframe src={file.preview} style={{ width: 1400, height: 1300, border: '1px solid black' }} frameBorder="0"></iframe>
+                                <iframe src={file.preview} style={{ width: '100%', height: 'auto', border: '1px solid black' }} frameBorder="0"></iframe>
                             ) : (
-                                <img src={file.preview} alt={file.name} style={{ width: 1400, height: 1300, objectFit: 'cover' }} />
+                                <img src={file.preview} alt={file.name} style={{ width: '100%', height: 'auto', objectFit: 'cover' }} />
                             )}
                         </Paper>
                     </Grid>
@@ -116,22 +115,28 @@ function hsAgree() {
                 onChange={handleFileChange}
                 multiple
             />
-           <Button
-             variant="contained"
-             color="primary"
-             onClick={handleFileSelect}
-            style={{ marginTop: 20, marginLeft: 280 }}
-           >
-             Select File
-            </Button>
-            <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleUploadClick}
-                style={{ marginTop: 20, marginLeft: 280 }}
-            >
-                Upload File
-            </Button>
+            <Grid container spacing={2} justifyContent="center">
+                <Grid item>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleFileSelect}
+                        style={{ marginTop: 20 }}
+                    >
+                        Select File
+                    </Button>
+                </Grid>
+                <Grid item>
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={handleUploadClick}
+                        style={{ marginTop: 20 }}
+                    >
+                        Upload File
+                    </Button>
+                </Grid>
+            </Grid>
         </Container>
     );
 }
