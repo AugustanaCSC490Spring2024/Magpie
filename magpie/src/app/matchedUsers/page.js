@@ -95,10 +95,10 @@ const MatchedUsers = () => {
     });
 
     return (
-        <div style={{    backgroundImage: 'linear-gradient(55deg, #3366cc, #ffd966)'
+        <div style={{ backgroundImage: 'linear-gradient(90deg, #3366cc, #ffd966)'
     }}>
         <Container>
-            <Typography variant="h4" sx={{ pt: 4, pb: 2 }}>Matched Users</Typography>
+            <Typography variant="h4" style={{fontWeight: 'bold'}} sx={{ pt: 4, pb: 2 }}>Matched Users</Typography>
             <TextField
                 placeholder="Search by name..."
                 onChange={handleSearchChange}
