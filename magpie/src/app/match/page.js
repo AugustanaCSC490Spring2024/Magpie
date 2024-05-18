@@ -6,7 +6,7 @@ import { getFirestore, collection, getDocs, doc, setDoc, deleteDoc, updateDoc, o
 import { UserAuth } from '../context/AuthContext';
 import "../globals.css";
 import { motion } from 'framer-motion';
-
+import Confetti from 'react-confetti';
 
 const Match = () => {
     const { user } = UserAuth();
@@ -19,6 +19,7 @@ const Match = () => {
     const [matchedUserNames, setMatchedUserNames] = useState([]); 
     const [openMatchesDialog, setOpenMatchesDialog] = useState(false);
     const [openRequestsDialog, setOpenRequestsDialog] = useState(false);
+    const [showConfetti, setShowConfetti] = useState(false);
     
     useEffect(() => {
         const fetchUsers = async () => {
@@ -66,7 +67,7 @@ const Match = () => {
 
     const getRequestDocId = (userId1, userId2) => {
         return [userId1, userId2].sort().join('_');
-      };
+    };
 
     const handleRequest = async (otherUserId, action) => {
         const requestId = getRequestDocId(user.uid, otherUserId);
@@ -98,19 +99,19 @@ const Match = () => {
     const renderRequestButton = (userId) => {
         const request = matchRequests[userId];
         if (request && request.status === 'accepted') {
-            return <Button onClick={() => handleRequest(userId, 'unmatch')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-20px'}}>Unmatch User</Button>;
+            return <Button onClick={() => handleRequest(userId, 'unmatch')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px'}}>Unmatch User</Button>;
         } else if (request && request.status === 'pending' && request.from === user.uid) {
-            return <Button onClick={() => handleRequest(userId, 'cancel')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-20px' }}>Cancel Request</Button>;
+            return <Button onClick={() => handleRequest(userId, 'cancel')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px' }}>Cancel Request</Button>;
         } else if (request && request.status === 'pending' && request.to === user.uid) {
             return (
                 <>
-                    <Button onClick={() => handleResponse(userId, 'accept')}  style={{ backgroundColor: 'blue', color: 'white', marginTop: '-20px', marginRight: '10px' }} color="primary">Accept Request</Button>
-                    <Button onClick={() => handleResponse(userId, 'decline')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-20px' }} color="secondary">Decline Request</Button>
+                    <Button onClick={() => handleResponse(userId, 'accept')}  style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px', marginRight: '10px' }} color="primary">Accept Request</Button>
+                    <Button onClick={() => handleResponse(userId, 'decline')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px' }} color="secondary">Decline Request</Button>
                 </>
             );
         } else if (!request || request.status === 'declined') {
             return (
-                <Button onClick={() => handleRequest(userId, 'send')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '-40px' }}>Send Match Request</Button>
+                <Button onClick={() => handleRequest(userId, 'send')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px' }}>Send Match Request</Button>
             );
         }
     };
@@ -142,28 +143,27 @@ const Match = () => {
         const matchedUser = users.find(u => u.id === userId);
         if (matchedUser && matchedUserNames.includes(matchedUser.name)) {
             setShowMatchAnimation(true);
-        }else{
+            setShowConfetti(true);
+        } else {
             setShowMatchAnimation(false);
         }
     };
-
 
     const handleClose = () => {
         setOpenMatchesDialog(false);
         setOpenRequestsDialog(false);
     };
 
-
     return (
         <Container style={{
             backgroundColor: '#f0f5ff',
             minHeight: '100vh',
-            width: '150wh',
             padding: '20px',
-            position: 'relative'
+            position: 'relative',
+            textAlign: 'center'
         }}>
-            <Typography variant="h4" sx={{marginTop: '80px', fontWeight: 'bold'}} gutterBottom>Become Roommates with a user</Typography>
-            <FormControl fullWidth style={{ margin: '20px 0', width: '90%' }}>
+            <Typography variant="h4" sx={{marginTop: '60px', fontWeight: 'bold'}} gutterBottom>Become Roommates with a user</Typography>
+            <FormControl fullWidth style={{ margin: '20px 0' }}>
                 <Autocomplete
                     id="user-select"
                     options={users}
@@ -183,10 +183,10 @@ const Match = () => {
             {selectedUser && renderRequestButton(selectedUser.id)}
             {showMatchAnimation && (
                 <motion.div
-                    initial={{ x: '-100vw', opacity: 0 }}  
-                    animate={{ x: '0', opacity: 1 }}        
-                    exit={{ x: '100vw', opacity: 0 }}      
-                    transition={{ type: 'spring', stiffness: 60, damping: 20, duration: 0.2 }}  
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    transition={{ type: 'spring', stiffness: 60, damping: 20, duration: 0.5 }}
                     style={{
                         position: 'absolute',
                         top: '50%',
@@ -194,16 +194,25 @@ const Match = () => {
                         transform: 'translate(-50%, -50%)',
                         width: '200px',
                         height: '200px',
-                        borderRadius: '200px',
+                        borderRadius: '50%',
                         backgroundColor: 'rgba(0, 255, 0, 0.5)',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        zIndex: 1000
                     }}
                 >
                     <Typography variant="h4" style={{ textAlign: 'center' }}>Matched!</Typography>
                 </motion.div>
-)}
+            )}
+            {showConfetti && (
+                <Confetti
+                    width={window.innerWidth}
+                    height={window.innerHeight}
+                    numberOfPieces={500}
+                    recycle={false}
+                />
+            )}
             <Button onClick={handleOpenMatches} variant="contained" color="primary" style={{ margin: '10px' }}>Matches</Button>
             <Button onClick={handleOpenRequests} variant="contained" color="secondary" style={{ margin: '10px' }}>Pending Match Requests</Button>
 
@@ -227,23 +236,23 @@ const Match = () => {
             </Dialog>
 
             <Dialog open={openRequestsDialog} onClose={handleClose} PaperProps={{ style: dialogStyle }}>
-    <DialogTitle>Match Requests</DialogTitle>
-    <DialogContent>
-        <List>
-            {Object.entries(matchRequests).filter(([key, value]) => value.status === 'pending').map(([key, value]) => (
-                <ListItem 
-                    key={key} 
-                    button
-                    onClick={() => handleMatchClick(key)}>
-                    <ListItemText primary={`Request pending with ${users.find(u => u.id === key).name}`} />
-                </ListItem>
-            ))}
-        </List>
-    </DialogContent>
-    <DialogActions>
-        <Button onClick={handleClose} color="secondary">Close</Button>
-    </DialogActions>
-</Dialog>
+                <DialogTitle>Match Requests</DialogTitle>
+                <DialogContent>
+                    <List>
+                        {Object.entries(matchRequests).filter(([key, value]) => value.status === 'pending').map(([key, value]) => (
+                            <ListItem 
+                                key={key} 
+                                button
+                                onClick={() => handleMatchClick(key)}>
+                                <ListItemText primary={`Request pending with ${users.find(u => u.id === key).name}`} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="secondary">Close</Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
 };
