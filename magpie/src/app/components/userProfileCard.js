@@ -5,6 +5,7 @@ const UserProfileCard = ({ userProfile, matchingScores }) => {
     return (
         <Card style={{
             textAlign: 'center',
+            margin: '2rem',
             padding: '2.4rem',
             maxWidth: '25rem',
             borderRadius: '15px',
