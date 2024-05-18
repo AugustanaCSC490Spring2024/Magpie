@@ -29,6 +29,10 @@ const UserProfileCard = ({ userProfile, matchingScores }) => {
                     <Typography variant="h7">{userProfile.email || "Email not available"}</Typography>
                 </Grid>
                 <Grid item xs={12}>
+                    <Typography variant="h7">Match: {matchingScores[userProfile.id] ? matchingScores[userProfile.id].toFixed(1) : 0}  %
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
                     {userProfile && <UserProfileModal userProfile={userProfile} matchingScores={matchingScores}></UserProfileModal>}
                 </Grid>
 

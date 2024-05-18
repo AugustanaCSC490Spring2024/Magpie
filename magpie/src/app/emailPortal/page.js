@@ -82,14 +82,16 @@ function EmailPortal() {
 
             const unmatchedSnapshot = await getDocs(collection(db, 'matchRequests'));
             const unmatchedUserIds = new Set();
+            const pendingUserIds = new Set();
             unmatchedSnapshot.forEach(doc => {
-                if (doc.data().status === 'pending') {
-                    const [user1, user2] = doc.id.split('_');
-                    unmatchedUserIds.add(user1);
-                    unmatchedUserIds.add(user2);
+                const { status } = doc.data();
+                const [user1, user2] = doc.id.split('_');
+                if (status === 'pending') {
+                    pendingUserIds.add(user1);
+                    pendingUserIds.add(user2);
                 }
             });
-            setUnmatchedUsers(users.filter(user => !matchedUserIds.has(user.id) && unmatchedUserIds.has(user.id) && user.id !== currentUserId));
+            setUnmatchedUsers(users.filter(user => !matchedUserIds.has(user.id) && (pendingUserIds.has(user.id) || !unmatchedUserIds.has(user.id)) && user.id !== currentUserId));
 
             const reportsSnapshot = await getDocs(collection(db, 'userReports'));
             const reportedUserIds = new Set(reportsSnapshot.docs.map(doc => doc.id));
@@ -124,8 +126,7 @@ function EmailPortal() {
                                 variant="contained"
                                 onClick={() => handleEmailClick(allUsers.map(user => user.email))}
                             >
-                         <EmailIcon />
-
+                                <EmailIcon />
                             </StyledButton>
                         </Paper>
                     </Grid>
@@ -137,7 +138,7 @@ function EmailPortal() {
                                 variant="contained"
                                 onClick={() => handleEmailClick(matchedUsers.map(user => user.email))}
                             >
-                            <EmailIcon />
+                                <EmailIcon />
                             </StyledButton>
                         </Paper>
                     </Grid>
@@ -149,7 +150,7 @@ function EmailPortal() {
                                 variant="contained"
                                 onClick={() => handleEmailClick(unmatchedUsers.map(user => user.email))}
                             >
-                          <EmailIcon />
+                                <EmailIcon />
                             </StyledButton>
                         </Paper>
                     </Grid>
@@ -161,7 +162,7 @@ function EmailPortal() {
                                 variant="contained"
                                 onClick={() => handleEmailClick(reportedUsers.map(user => user.email))}
                             >
-                            <EmailIcon />
+                                <EmailIcon />
                             </StyledButton>
                         </Paper>
                     </Grid>
@@ -173,7 +174,7 @@ function EmailPortal() {
                                 variant="contained"
                                 onClick={() => handleEmailClick(completedOnboardingUsers.map(user => user.email))}
                             >
-                            <EmailIcon />
+                                <EmailIcon />
                             </StyledButton>
                         </Paper>
                     </Grid>
@@ -185,7 +186,7 @@ function EmailPortal() {
                                 variant="contained"
                                 onClick={() => handleEmailClick(notCompletedOnboardingUsers.map(user => user.email))}
                             >
-                           <EmailIcon />
+                                <EmailIcon />
                             </StyledButton>
                         </Paper>
                     </Grid>
