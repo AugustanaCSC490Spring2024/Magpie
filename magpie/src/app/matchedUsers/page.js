@@ -70,8 +70,8 @@ const MatchedUsers = () => {
         });
 
         const matchedUsersData = filteredMatches.map(match => ({
-            'From User': match.fromUser.name,
-            'To User': match.toUser.name
+            'User 1': match.fromUser.name,
+            'User 2': match.toUser.name
         }));
 
         const worksheet = XLSX.utils.json_to_sheet(matchedUsersData);
