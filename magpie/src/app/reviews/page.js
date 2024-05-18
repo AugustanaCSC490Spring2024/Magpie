@@ -12,13 +12,14 @@ import {
   Rating,
   Paper,
   IconButton,
+  Grid,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { UserAuth } from '../context/AuthContext';
 import "../globals.css";
 
-function ExplorePage() {
+function ReviewPage() {
   const [reviews, setReviews] = useState([]);
   const { user } = UserAuth();
   const [currentUserProfile, setCurrentUserProfile] = useState(null);
@@ -27,6 +28,7 @@ function ExplorePage() {
   const [editMode, setEditMode] = useState(false);
   const [editReviewId, setEditReviewId] = useState(null);
   const [averageRating, setAverageRating] = useState(null);
+  const [showMyComments, setShowMyComments] = useState(false);
 
   useEffect(() => {
     if (user) fetchUserProfile();
@@ -96,19 +98,33 @@ function ExplorePage() {
     setEditMode(true);
   };
 
+  const toggleMyComments = () => {
+    setShowMyComments(!showMyComments);
+  };
+
+  const filteredReviews = showMyComments
+    ? reviews.filter(review => review.userId === user.uid)
+    : reviews;
+
   return (
-    <Container>
+    <Container
+      sx={{
+        backgroundColor: 'lightblue',
+        padding: '20px',
+        borderRadius: '8px',
+        minHeight: '100vh',
+      }}
+    >
       <div className="text-container">
         <h4 className="reviews-title">
           Reviews --  Leave a rating and share your experience
         </h4>
-        {averageRating !== null && (
-          <Typography variant="h7" gutterBottom>
-            Average Rating: {averageRating.toFixed(1)} <Rating value={averageRating} readOnly />
-          </Typography>
-        )}
       </div>
-
+      {averageRating !== null && (
+        <Typography variant="h7" gutterBottom>
+          Average Rating: {averageRating.toFixed(1)} <Rating value={averageRating} readOnly />
+        </Typography>
+      )}
       <Box component="form" noValidate autoComplete="off" sx={{ mb: 5 }}>
         <Rating
           name="simple-controlled"
@@ -126,11 +142,20 @@ function ExplorePage() {
           onChange={(e) => setNewComment(e.target.value)}
           margin="normal"
         />
-        <Button variant="contained" color="primary" onClick={handlePostReview}>
-          {editMode ? 'Update' : 'Comment'}
-        </Button>
+        <Grid container spacing={2}>
+          <Grid item>
+            <Button variant="contained" color="primary" onClick={handlePostReview}>
+              {editMode ? 'Update' : 'Comment'}
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button variant="contained" color="secondary" onClick={toggleMyComments}>
+              {showMyComments ? 'All Comments' : 'My Comments'}
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
-      {reviews.map((review) => (
+      {filteredReviews.map((review) => (
         <Paper key={review.id} sx={{ p: 2, mb: 2, display: 'flex', alignItems: 'center' }}>
           <Avatar src={review.imageUrl} sx={{ mr: 2 }} />
           <Box sx={{ flexGrow: 1 }}>
@@ -157,4 +182,4 @@ function ExplorePage() {
   );
 }
 
-export default ExplorePage;
+export default ReviewPage;
