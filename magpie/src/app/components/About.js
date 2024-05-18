@@ -3,6 +3,7 @@ import Image from 'next/image';
 import './../styles/Dropdown.css';
 import roomate1 from '../../../public/Roomate1.jpg';
 import roomate2 from '../../../public/Roomate2.jpg';
+import roomate3 from '../../../public/Roomate3.jpg';
 import '../styles/styles.css';
 
 export const Header = ({ title }) => (
@@ -49,13 +50,13 @@ export const AboutSection = () => (
     <div className="about-content">
       <div className='image-container'>
         <Image 
-          src={roomate2} 
+          src={roomate3} 
           style={{ borderRadius: '15px' }}
           width={700}
           height={350}
           placeholder='blur'
           quality={100} 
-          alt="roomate2" />
+          alt="roomate3" />
       </div>
       <div className='text-container'>
         <p>
