@@ -111,7 +111,7 @@ function EmailPortal() {
     };
 
     return (
-        <div style={{backgroundImage: 'linear-gradient(55deg, #3366cc, #ffd966'}}>
+        <div style={{backgroundImage: 'linear-gradient(55deg, #3366cc, #ffd966', height: '100vh'}}>
             <StyledContainer component="main" maxWidth="lg">
                 <Typography variant="h3" component="h1" style={{ marginBottom: '40px', fontWeight: 'bold', color: 'black' }}>
                     Email Portal

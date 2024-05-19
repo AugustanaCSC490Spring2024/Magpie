@@ -194,7 +194,7 @@ function AdminPage() {
   };
 
   return (
-    <div style={{backgroundImage: 'linear-gradient(55deg, #3366cc, #ffd966)'}}>
+    <div style={{backgroundImage: 'linear-gradient(55deg, #3366cc, #ffd966)', height: '100%'} }>
       <Container>
         <Typography variant="h4" style={{fontWeight: 'bold'}}gutterBottom component="div" sx={{ pt: 4, mb: 2 }}>
           Customize Questionnaire
