@@ -156,7 +156,8 @@ const Match = () => {
     };
 
     return (
-        <div style={{ backgroundColor: 'lightblue', height: '100vh' }}>
+        <div style={{ backgroundImage: 'linear-gradient(135deg, #003087, #ffb914)',
+    minHeight: '100vh'}}>
         <Container style={{
             minHeight: '100vh',
             padding: '20px',

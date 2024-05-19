@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Grid, Button, Card, Typography, FormControl, InputLabel, Select, MenuItem, TextField } from '@mui/material';
 import { UserAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { getFirestore, collection, getDocs, addDoc, getDoc, setDoc, updateDoc, doc, query, where, deleteDoc, onSnapshot } from 'firebase/firestore';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import { getMatchingScores } from './matching';
 import { motion } from 'framer-motion';
 import { StyledEngineProvider } from '@mui/material/styles';
@@ -14,7 +14,6 @@ const DashboardPage = () => {
 
   const [users, setUsers] = useState([]);
   const [questionMap, setQuestionMap] = useState({});
-
   const [matchingScores, setMatchingScores] = useState({});
   const [isMounted, setIsMounted] = useState(false);
   const [filters, setFilters] = useState({
@@ -54,7 +53,6 @@ const DashboardPage = () => {
 
   const db = getFirestore();
 
-  // Fetching users and scores on initial load and also friend requests loads in realtime to reduce complexity and any delays.
   useEffect(() => {
     if (user) {
       fetchUsersAndScores();
@@ -73,8 +71,6 @@ const DashboardPage = () => {
     setSearchQuery(event.target.value);
   };
 
-
-
   const fetchUsersAndScores = async () => {
     const db = getFirestore();
     const usersCollection = collection(db, 'userProfiles');
@@ -90,14 +86,13 @@ const DashboardPage = () => {
       setQuestionMap(newQuestionMap);
     }
 
-
     const userSnapshot = await getDocs(usersCollection);
     const responsesSnapshot = await getDocs(responsesCollection);
     const responsesData = responsesSnapshot.docs.map(doc => ({
       id: doc.id,
       responses: doc.data().responses
     }));
-    console.log(responsesData);
+
     const userList = userSnapshot.docs.map(doc => {
       const response = responsesData.find(r => r.id === doc.id);
       return {
@@ -122,7 +117,6 @@ const DashboardPage = () => {
     }
   };
 
-  // This filter logic is applied to the array of users to match against specified filters and search queries.
   const filteredUsers = users.filter(user => {
     return (!filters.gender || user.responses[questionMap['What is your gender?']]?.response === filters.gender) &&
       (!filters.major || user.responses[questionMap["What's your major?"]]?.response === filters.major) &&
@@ -131,7 +125,6 @@ const DashboardPage = () => {
       (!searchQuery || user.name.toLowerCase().includes(searchQuery.toLowerCase()));
   });
 
-
   return (
     <StyledEngineProvider injectFirst>
       <Container maxWidth="xl">
@@ -139,7 +132,7 @@ const DashboardPage = () => {
           Dashboard
         </Typography>
         <Grid container spacing={2} alignItems="center" style={{ marginBottom: '20px' }}>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} sm={6} md={3}>
             <TextField
               fullWidth
               label="Search by name"
@@ -148,7 +141,7 @@ const DashboardPage = () => {
               onChange={handleSearchChange}
             />
           </Grid>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} sm={6} md={3}>
             <FormControl fullWidth>
               <InputLabel>Gender</InputLabel>
               <Select value={filters.gender} name="gender" onChange={handleFilterChange}>
@@ -159,7 +152,7 @@ const DashboardPage = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} sm={6} md={3}>
             <FormControl fullWidth>
               <InputLabel>Academic Year</InputLabel>
               <Select value={filters.academicYear} name="academicYear" onChange={handleFilterChange}>
@@ -171,7 +164,7 @@ const DashboardPage = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} sm={6} md={3}>
             <FormControl fullWidth>
               <InputLabel>Residence Preference</InputLabel>
               <Select value={filters.residenceHall} name="residenceHall" onChange={handleFilterChange}>
@@ -192,11 +185,11 @@ const DashboardPage = () => {
           </Grid>
         </Grid>
         <Card style={{
-          paddingLeft: '50px', paddingRight: '50px', margingTop: '400px', backgroundColor: '#e8e8e8', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+          paddingLeft: '10px', paddingRight: '10px', marginTop: '20px', backgroundColor: '#e8e8e8', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         }}>
           <Grid container spacing={2} sx={{ mt: 2 }}>
             {filteredUsers.map((userProfile, index) => (
-              <Grid item xs={12} sm={4} md={4} key={userProfile.id}>
+              <Grid item xs={12} sm={6} md={4} key={userProfile.id}>
                 <motion.div
                   initial="offscreen"
                   whileInView="onscreen"
@@ -209,7 +202,6 @@ const DashboardPage = () => {
             ))}
           </Grid>
         </Card>
-
       </Container>
     </StyledEngineProvider>
   );

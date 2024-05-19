@@ -1,29 +1,28 @@
+// components/Dropdown.js
 import React, { useState } from 'react';
 import '../styles/Dropdown.css';
 
-const Dropdown = ({ options = [] }) => {
+const Dropdown = ({ options }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
-  const handleOptionSelect = (event) => {
-    const selectedValue = event.target.value;
-    const selectedOption = options.find((option) => option.value === selectedValue);
-    setSelectedOption(selectedOption);
+  const handleChange = (e) => {
+    const selectedIndex = e.target.value;
+    setSelectedOption(options[selectedIndex]);
   };
 
   return (
-    <div className="dropdown-container"> {/* Container for better styling */}
-      <h2>Commonly Asked Questions</h2> {/* Header for commonly asked questions */}
-      <select onChange={handleOptionSelect} className="dropdown-select">
-        <option value="">Select an option</option> {/* Add a default option */}
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
+    <div className="dropdown-container">
+      <select className="dropdown-select" onChange={handleChange}>
+        <option value="" disabled selected>Select an option</option>
+        {options.map((option, index) => (
+          <option key={index} value={index}>
             {option.label}
           </option>
         ))}
       </select>
       {selectedOption && (
-        <div className="description-container"> {/* Container for description */}
-          <p className="description-text">{selectedOption.description}</p>
+        <div className="description-container">
+          <p dangerouslySetInnerHTML={{ __html: selectedOption.description }} />
         </div>
       )}
     </div>
