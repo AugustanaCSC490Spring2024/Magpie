@@ -3,7 +3,8 @@ import { Grid, AppBar, Box, Toolbar, IconButton, Typography, Menu, Avatar, Butto
 import { UserAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -76,7 +77,7 @@ function ResponsiveAppBar() {
                         <Box sx={{ flexGrow: 0, marginLeft: '70%' }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                    <AccountCircleIcon fontSize="large" sx={{color: "white"}}></AccountCircleIcon>
                                 </IconButton>
                             </Tooltip>
                             <Menu
