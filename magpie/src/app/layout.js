@@ -24,7 +24,6 @@ export default function RootLayout({ children }) {
           <ThemeProvider theme={theme}>
             <AuthCheck>
               {!noBar.includes(usePathname()) ? <ResponsiveAppBar></ResponsiveAppBar> : false}
-
               {children}
 
             </AuthCheck>
