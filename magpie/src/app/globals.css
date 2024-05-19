@@ -555,8 +555,3 @@ nav ul button{
   background-color: rgba(0, 123, 255, 0.3);
 }
 
-@media screen and (max-width: 768px) {
-  .about-content {
-    flex-direction: column; /* Stack items vertically on smaller screens */
-  }
-}
