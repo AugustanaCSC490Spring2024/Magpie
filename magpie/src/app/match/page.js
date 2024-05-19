@@ -156,7 +156,8 @@ const Match = () => {
     };
 
     return (
-        <div style={{ backgroundColor: 'lightblue', height: '100vh' }}>
+        <div style={{ backgroundImage: 'linear-gradient(135deg, #003087, #ffb914)',
+    minHeight: '100vh'}}>
         <Container style={{
             minHeight: '100vh',
             padding: '20px',
@@ -208,8 +209,13 @@ const Match = () => {
             )}
             {showConfetti && (
                 <Confetti
+<<<<<<< HEAD
                     width="1000vh"
                     height={window.innerHeight}
+=======
+                    width={window.fullWidth}
+                    height={window.fullHeight}
+>>>>>>> e905109c43d2765f94af7f285402ecbed1d9005e
                     numberOfPieces={500}
                     recycle={false}
                 />

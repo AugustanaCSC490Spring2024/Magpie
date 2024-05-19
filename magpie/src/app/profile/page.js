@@ -13,7 +13,7 @@ const Profile = () => {
     <AuthContextProvider>
       <div style={{ position: 'relative', zIndex: 0 }}> 
         <Profilepage />
-        <div style={{paddingTop: isMobile ? '70vh' : '100vh', paddingBottom: '100px' }}> 
+        <div style={{paddingTop: isMobile ? '70vh' : '80vh', paddingBottom: '100px' }}> 
           <Onboarding />
         </div>
       </div>
