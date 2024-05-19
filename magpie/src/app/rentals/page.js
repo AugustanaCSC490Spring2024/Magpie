@@ -62,7 +62,6 @@ function Listing() {
         const querySnapshot = await getDocs(collection(db, "listings"));
         setListings(querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     };
-    fetchListings();
 
     const fetchUserProfile = async () => {
         if (!user) return;
@@ -108,7 +107,7 @@ function Listing() {
                       userEmail: user.email
                     });
                     alert("Listing updated successfully!");
-                    setListings(listings.map(listing => listing.id === editId ? { ...listing, ...formData } : listing));
+                    setListings(prevListings => prevListings.map(listing => listing.id === editId ? { ...listing, ...formData } : listing));
                     setEditMode(false);
                     setEditId(null);
                 } else { 
@@ -118,10 +117,11 @@ function Listing() {
                       userEmail: user.email
                     });
                     alert("Listing created successfully!");
-                    setOpen(false);
-                    await setListings([{ id: newDoc.id, ...formData }, ...listings]);
+                    setListings(prevListings => [{ id: newDoc.id, ...formData }, ...prevListings]);
                     setFormData({ address: '', rent: '', numRoommates: '', notes: '', imageUrl: '' });
+                    fetchListings();
                 }
+                setOpen(false); 
             } else {
                 alert("The address entered could not be verified. Please check the address and try again.");
             }
@@ -129,7 +129,7 @@ function Listing() {
             console.error("Failed to validate address: ", error);
             alert("Error validating address. Please try again.");
         }
-    };
+        };
 
     const handleOpen = (listing = null) => {
         if (listing) {
@@ -156,7 +156,7 @@ function Listing() {
     const handleDelete = async (id) => {
         alert("Listing deleted successfully!");
         await deleteDoc(doc(db, "listings", id));
-        setListings(listings.filter(listing => listing.id !== id));
+        setListings(prevListings => prevListings.filter(listing => listing.id !== id));
     };
 
     const getSuggestions = async (value) => {
@@ -230,159 +230,168 @@ function Listing() {
         suggestionHighlighted: 'suggestion-highlighted'
     };
 
+    const formatAddress = (address) => {
+        return address.replace(', United States of America', '');
+    };
+
     return (
-        <div style={{ backgroundColor: 'lightblue' }}>
-        <Container maxWidth="md" sx={{
-          mt: 8,
-          py: 3,
-          backgroundColor: 'lightBlue',
-          color: '#fff',
-          textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
-          position: 'relative',
-          overflow: 'hidden',
-          '&:before': {
-            content: '"Augustana College"',
-            position: 'absolute',
-            bottom: 10,
-            right: 10,
-            fontSize: '4rem',
-            color: 'rgba(255, 255, 255, 0.1)',
-            fontWeight: 'bold',
-            zIndex: -1
-          }
+        <div style={{ 
+          backgroundImage: 'linear-gradient(135deg, #003087, #ffb914)',
+          minHeight: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          fontFamily: 'Lato, sans-serif',
+          color: '#fff'
         }}>
-            <Typography variant="h4" gutterBottom sx={{
-              fontWeight: 'bold', 
-              textShadow: '1px 1px 2px rgba(0,0,0,0.1)'
+            <Container maxWidth="md" sx={{
+              mt: 0,
+              py: 3,
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              color: '#333',
+              textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
+              borderRadius: '0px',
+              boxShadow: '0 10px 20px rgba(0, 0, 0, 0.2)',
+              position: 'relative',
+              overflow: 'hidden'
             }}>
-                Housing Listings
-            </Typography>
-            <PrimaryButton onClick={() => handleOpen()} sx={{ mb: 2 }}>
-                Create New Listing
-            </PrimaryButton>
-            <SecondaryButton onClick={() => setShowMyListings(!showMyListings)} sx={{ mb: 2, ml: 2 }}>
-                {showMyListings ? 'Show All Listings' : 'My Listings'}
-            </SecondaryButton>
-            <TextField
-                fullWidth
-                label="Search Listings"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                margin="normal"
-                variant="outlined"
-                sx={{ mb: 2 }}
-            />
-            <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-                <DialogTitle>{editMode ? "Edit Listing" : "Create a New Listing"}</DialogTitle>
-                <form onSubmit={handleSubmit}>
-                    <DialogContent>
-                        <Autosuggest
-                            suggestions={suggestions}
-                            onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-                            onSuggestionsClearRequested={onSuggestionsClearRequested}
-                            getSuggestionValue={(suggestion) => suggestion.address}
-                            renderSuggestion={renderSuggestion}
-                            onSuggestionSelected={onSuggestionSelected}
-                            inputProps={inputProps}
-                            theme={theme}
-                        />
-                        <TextField
-                            fullWidth
-                            label="Rent"
-                            name="rent"
-                            type="number"
-                            InputProps={{
-                                startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                            }}
-                            value={formData.rent}
-                            onChange={handleChange}
-                            margin="normal"
-                            required
-                        />
-                        <TextField
-                            fullWidth
-                            label="Number of Roommates Needed"
-                            name="numRoommates"
-                            type="number"
-                            value={formData.numRoommates}
-                            onChange={handleChange}
-                            margin="normal"
-                            required
-                        />
-                        <TextField
-                            fullWidth
-                            label="Notes"
-                            name="notes"
-                            value={formData.notes}
-                            onChange={handleChange}
-                            margin="normal"
-                            multiline
-                            rows={4}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <SecondaryButton onClick={handleClose}>
-                            Cancel
-                        </SecondaryButton>
-                        <PrimaryButton type="submit">
-                            {editMode ? "Update Listing" : "Create Listing"}
-                        </PrimaryButton>
-                    </DialogActions>
-                </form>
-            </Dialog>
-            <Grid container spacing={2} sx={{ mt: 4 }}>
-                {displayedListings.map(listing => (
-                    <Grid item xs={12} md={6} key={listing.id}>
-                        <Card sx={{
-                            transition: '0.3s',
-                            boxShadow: '0px 8px 20px rgba(0,0,0,0.12)',
-                            '&:hover': {
-                                transform: 'scale(1.03)',
-                                boxShadow: '0px 16px 40px rgba(0,0,0,0.2)'
-                            }
-                        }}>
-                            <CardContent>
-                                <Typography variant="h5" sx={{ color: '#333', fontWeight: 'medium' }}>{listing.address}</Typography>
-                                <Typography variant="body1" sx={{ color: '#555' }}>${listing.rent} / month</Typography>
-                                <Typography variant="body2" sx={{ color: '#777' }}>{listing.numRoommates} roommates needed</Typography>
-                                <Typography variant="body2" sx={{ color: '#999' }}>{listing.notes}</Typography>
-                            </CardContent>
-                            <CardActions>
-                                {currentUserProfile && user.uid === listing.userId ? (
-                                    <>
+                <Typography variant="h4" gutterBottom sx={{
+                  fontWeight: 'bold',
+                  fontSize: '35px', 
+                  textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+                  textAlign: 'center',
+                  marginTop: '50px',
+                  marginBottom: '30px'
+
+                }}>
+                    Housing Listings
+                </Typography>
+                <PrimaryButton onClick={() => handleOpen()} sx={{ mb: 2 }}>
+                    Create New Listing
+                </PrimaryButton>
+                <SecondaryButton onClick={() => setShowMyListings(!showMyListings)} sx={{ mb: 2, ml: 2 }}>
+                    {showMyListings ? 'Show All Listings' : 'My Listings'}
+                </SecondaryButton>
+                <TextField
+                    fullWidth
+                    label="Search Listings"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    margin="normal"
+                    variant="outlined"
+                    sx={{ mb: 2 }}
+                />
+                <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+                    <DialogTitle>{editMode ? "Edit Listing" : "Create a New Listing"}</DialogTitle>
+                    <form onSubmit={handleSubmit}>
+                        <DialogContent>
+                            <Autosuggest
+                                suggestions={suggestions}
+                                onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+                                onSuggestionsClearRequested={onSuggestionsClearRequested}
+                                getSuggestionValue={(suggestion) => suggestion.address}
+                                renderSuggestion={renderSuggestion}
+                                onSuggestionSelected={onSuggestionSelected}
+                                inputProps={inputProps}
+                                theme={theme}
+                            />
+                            <TextField
+                                fullWidth
+                                label="Rent"
+                                name="rent"
+                                type="number"
+                                InputProps={{
+                                    startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                }}
+                                value={formData.rent}
+                                onChange={handleChange}
+                                margin="normal"
+                                required
+                            />
+                            <TextField
+                                fullWidth
+                                label="Number of Roommates Needed"
+                                name="numRoommates"
+                                type="number"
+                                value={formData.numRoommates}
+                                onChange={handleChange}
+                                margin="normal"
+                                required
+                            />
+                            <TextField
+                                fullWidth
+                                label="Notes"
+                                name="notes"
+                                value={formData.notes}
+                                onChange={handleChange}
+                                margin="normal"
+                                multiline
+                                rows={4}
+                            />
+                        </DialogContent>
+                        <DialogActions>
+                            <SecondaryButton onClick={handleClose}>
+                                Cancel
+                            </SecondaryButton>
+                            <PrimaryButton type="submit">
+                                {editMode ? "Update Listing" : "Create Listing"}
+                            </PrimaryButton>
+                        </DialogActions>
+                    </form>
+                </Dialog>
+                <Grid container spacing={2} sx={{ mt: 4 }}>
+                    {displayedListings.map(listing => (
+                        <Grid item xs={12} md={6} key={listing.id}>
+                            <Card sx={{
+                                transition: '0.3s',
+                                boxShadow: '0px 8px 20px rgba(0,0,0,0.12)',
+                                '&:hover': {
+                                    transform: 'scale(1.03)',
+                                    boxShadow: '0px 16px 40px rgba(0,0,0,0.2)'
+                                }
+                            }}>
+                                <CardContent>
+                                    <Typography variant="h5" sx={{ color: '#333', fontWeight: 'medium' }}>{formatAddress(listing.address)}</Typography>
+                                    <Typography variant="body1" sx={{ color: '#555' }}>${listing.rent} / month</Typography>
+                                    <Typography variant="body2" sx={{ color: '#777' }}>{listing.numRoommates} roommates needed</Typography>
+                                    <Typography variant="body2" sx={{ color: '#999' }}>{listing.notes}</Typography>
+                                </CardContent>
+                                <CardActions>
+                                    {currentUserProfile && user.uid === listing.userId ? (
+                                        <>
+                                            <IconButton
+                                                color="primary"
+                                                onClick={() => handleOpen(listing)}
+                                                sx={{ '&:hover': { backgroundColor: 'rgba(76, 175, 80, 0.2)' } }}
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                color="secondary"
+                                                onClick={() => handleDelete(listing.id)}
+                                                sx={{ '&:hover': { backgroundColor: 'rgba(244, 67, 54, 0.2)' } }}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </>
+                                    ) : (
                                         <IconButton
                                             color="primary"
-                                            onClick={() => handleOpen(listing)}
-                                            sx={{ '&:hover': { backgroundColor: 'rgba(76, 175, 80, 0.2)' } }}
+                                            component="span"
+                                            onClick={() => window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${listing.userEmail}&su=About%20Housing%20Listing:%20${encodeURIComponent(formatAddress(listing.address))}`, '_blank')}
+                                            sx={{ '&:hover': { backgroundColor: 'rgba(255, 235, 59, 0.2)' } }}
                                         >
-                                            <EditIcon />
+                                            <EmailIcon />
                                         </IconButton>
-                                        <IconButton
-                                            color="secondary"
-                                            onClick={() => handleDelete(listing.id)}
-                                            sx={{ '&:hover': { backgroundColor: 'rgba(244, 67, 54, 0.2)' } }}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
-                                    </>
-                                ) : (
-                                    <IconButton
-                                        color="primary"
-                                        component="span"
-                                        onClick={() => window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${listing.userEmail}&su=About%20Housing%20Listing:%20${encodeURIComponent(listing.address)}`, '_blank')}
-                                        sx={{ '&:hover': { backgroundColor: 'rgba(255, 235, 59, 0.2)' } }}
-                                    >
-                                        <EmailIcon />
-                                    </IconButton>
-                                )}
-                            </CardActions>
-                        </Card>
-                    </Grid>
-                ))}
-            </Grid>
-        </Container>
+                                    )}
+                                </CardActions>
+                            </Card>
+                        </Grid>
+                    ))}
+                </Grid>
+            </Container>
         </div>
     );
 }    
-    
+
 export default Listing;

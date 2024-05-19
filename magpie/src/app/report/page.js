@@ -92,8 +92,7 @@ function ReportPage() {
         height: '100vh',
         fontSize: '16px',
         fontFamily: 'Arial, sans-serif',
-        backgroundColor: 'lightBlue',
-        color: 'bLack',
+        backgroundImage: 'linear-gradient(135deg, #003087, #ffb914)', 
         padding: isMobile ? '10px' : '20px',
     };
 
