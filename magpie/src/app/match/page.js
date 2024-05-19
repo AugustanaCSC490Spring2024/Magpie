@@ -155,7 +155,7 @@ const Match = () => {
     };
 
     return (
-        <div style={{ backgroundColor: 'lightblue' }}>
+        <div style={{ backgroundColor: 'lightblue', height: '100vh' }}>
         <Container style={{
             minHeight: '100vh',
             padding: '20px',

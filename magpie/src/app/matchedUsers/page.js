@@ -95,7 +95,7 @@ const MatchedUsers = () => {
     });
 
     return (
-        <div style={{ backgroundImage: 'linear-gradient(90deg, #3366cc, #ffd966)'
+        <div style={{ backgroundImage: 'linear-gradient(90deg, #3366cc, #ffd966)', height: '100vh'
     }}>
         <Container>
             <Typography variant="h4" style={{fontWeight: 'bold'}} sx={{ pt: 4, pb: 2 }}>Matched Users</Typography>

@@ -107,7 +107,7 @@ function ReviewPage() {
     : reviews;
 
   return (
-    <div style={{ backgroundColor: 'lightblue'}}>
+    <div style={{ backgroundColor: 'lightblue', height: '100vh'}}>
     <Container
       sx={{
         backgroundColor: 'lightblue',
