@@ -130,6 +130,7 @@ const DashboardPage = () => {
       (!filters.residenceHall || user.responses[questionMap['What residence hall would you prefer to move to?']]?.response === filters.residenceHall) &&
       (!searchQuery || user.name.toLowerCase().includes(searchQuery.toLowerCase()));
   });
+  
 
 
   return (

@@ -1,16 +1,24 @@
 import * as React from 'react';
-import { Grid, AppBar, Box, Toolbar, IconButton, Typography, Menu, Avatar, Button, Tooltip, MenuItem, Container } from "@mui/material";
+import { Grid, AppBar, Box, Toolbar, IconButton, Typography, Menu, Avatar, Button, Tooltip, MenuItem, Container, Snackbar, Alert, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import { UserAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import AccountCircle from '@mui/icons-material/AccountCircle';
+import { db } from '../firebase';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import AdminMessages from './adminmessages';
+import MailIcon from '@mui/icons-material/Mail';
 
 function ResponsiveAppBar() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [anchorElInbox, setAnchorElInbox] = React.useState(null);
     const [loading, setLoading] = useState(true);
-
+    const [messages, setMessages] = useState([]);
+    const [selectedUserId, setSelectedUserId] = useState(null);
+    const [conversation, setConversation] = useState([]);
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -20,6 +28,10 @@ function ResponsiveAppBar() {
         setAnchorElUser(event.currentTarget);
     };
 
+    const handleOpenInboxMenu = (event) => {
+        setAnchorElInbox(event.currentTarget);
+    };
+
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
@@ -27,10 +39,14 @@ function ResponsiveAppBar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleCloseInboxMenu = () => {
+        setAnchorElInbox(null);
+    };
+
     const { user, logOut } = UserAuth();
 
     const uid = user?.uid;
-    
 
     const handleSignOut = () => {
         if (user) {
@@ -42,6 +58,20 @@ function ResponsiveAppBar() {
     }
     const router = useRouter();
 
+    const handleAdminSelect = (adminId) => {
+        setSelectedUserId(adminId);
+        if (user?.uid && adminId) {
+            const messagesRef = collection(db, 'adminMessages');
+            const q = query(messagesRef, where("userId", "==", user.uid), where("senderId", "==", adminId));
+            onSnapshot(q, (snapshot) => {
+                const messages = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setConversation(messages);
+            });
+        }
+    };
 
     useEffect(() => {
         const checkAuthentication = async () => {
@@ -51,11 +81,57 @@ function ResponsiveAppBar() {
         checkAuthentication();
     }, [user]);
 
+    useEffect(() => {
+        if (user?.uid) {
+            const fetchMessages = () => {
+                const messagesRef = collection(db, 'adminMessages');
+                const q = query(messagesRef, where("userId", "==", user.uid), where("isAdmin", "==", true));
+                onSnapshot(q, (snapshot) => {
+                    const userMessages = {};
+
+                    snapshot.docs.forEach(doc => {
+                        const data = doc.data();
+                        const pairKey = [data.senderId, data.userId].sort().join('-');
+
+                        if (!userMessages[pairKey]) {
+                            userMessages[pairKey] = {
+                                messages: [],
+                                lastMessage: data.text,
+                                lastTimestamp: data.createdAt,
+                                senderId: data.senderId,
+                                senderName: data.senderName
+                            };
+                        }
+                        userMessages[pairKey].messages.push({ ...data, id: doc.id });
+
+                        if (data.createdAt > userMessages[pairKey].lastTimestamp) {
+                            userMessages[pairKey].lastMessage = data.text;
+                            userMessages[pairKey].lastTimestamp = data.createdAt;
+                            userMessages[pairKey].senderName = data.senderName;
+                        }
+                    });
+
+                    const messageSummary = Object.values(userMessages).map(conversation => ({
+                        senderId: conversation.senderId,
+                        senderName: conversation.senderName,
+                        lastMessage: conversation.lastMessage,
+                        lastTimestamp: conversation.lastTimestamp
+                    }));
+
+                    messageSummary.sort((a, b) => b.lastTimestamp - a.lastTimestamp);
+
+                    setMessages(messageSummary);
+                });
+            };
+            fetchMessages();
+        }
+    }, [user]);
+
     return (
         <AppBar position="absolute">
             <Grid container spacing={2} sx={{ paddingLeft: 4, paddingRight: 4 }}>
-                <Grid item lg={11} xs={10.6}>
-                    <Toolbar disableGutters>
+                <Grid item lg={9} xs={10.6}>
+                    <Toolbar disableGutters onClick={() => { router.push('/dashboard') }}>
                         <Typography
                             variant="h6"
                             className="logo"
@@ -72,12 +148,44 @@ function ResponsiveAppBar() {
                         </Typography>
                     </Toolbar>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={2.4}>
                     <Toolbar disableGutters>
-                        <Box sx={{ flexGrow: 0, marginLeft: '70%' }}>
+                        <IconButton
+                            color="inherit"
+                            onClick={handleOpenInboxMenu}
+                            sx={{ marginRight: 2 }}
+                        >
+                            <MailIcon />
+                        </IconButton>
+                        <Menu
+                            id="inbox-menu"
+                            anchorEl={anchorElInbox}
+                            open={Boolean(anchorElInbox)}
+                            onClose={handleCloseInboxMenu}
+                            PaperProps={{
+                                style: {
+                                    maxHeight: '50vh',
+                                    width: '30ch',
+                                },
+                            }}
+                        >
+                            {messages.length === 0 ? (
+                                <MenuItem disabled>No messages</MenuItem>
+                            ) : (
+                                messages.map((msg) => (
+                                    <MenuItem key={msg.senderId} onClick={() => { handleAdminSelect(msg.senderId); handleCloseInboxMenu(); }}>
+                                        <ListItemAvatar>
+                                            <Avatar>{msg.senderName.charAt(0)}</Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText primary={msg.senderName} secondary={msg.lastMessage} />
+                                    </MenuItem>
+                                ))
+                            )}
+                        </Menu>
+                        <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <AccountCircleIcon fontSize="large" sx={{color: "white"}}></AccountCircleIcon>
+                                    <AccountCircleIcon fontSize="large" sx={{ color: "white" }}></AccountCircleIcon>
                                 </IconButton>
                             </Tooltip>
                             <Menu
@@ -95,7 +203,7 @@ function ResponsiveAppBar() {
                                 }}
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
-                            > 
+                            >
                                 <MenuItem onClick={() => { router.push('/about') }}>
                                     <Typography textAlign="center">{'About'}</Typography>
                                 </MenuItem>
@@ -107,16 +215,16 @@ function ResponsiveAppBar() {
                                 </MenuItem>
                                 <MenuItem onClick={() => { router.push('/match') }}>
                                     <Typography textAlign="center">{'Pick a roommate'}</Typography>
-                                </MenuItem>  
+                                </MenuItem>
                                 <MenuItem onClick={() => { router.push('/rentals') }}>
                                     <Typography textAlign="center">{'Rentals'}</Typography>
-                                </MenuItem>       
+                                </MenuItem>
                                 <MenuItem onClick={() => { router.push('/reviews') }}>
                                     <Typography textAlign="center">{'Reviews'}</Typography>
                                 </MenuItem>
                                 <MenuItem onClick={() => { router.push('/report') }}>
                                     <Typography textAlign="center">{'Report User'}</Typography>
-                                </MenuItem>  
+                                </MenuItem>
                                 <MenuItem onClick={() => { router.push('/agreement') }}>
                                     <Typography textAlign="center">{'Policies'}</Typography>
                                 </MenuItem>
@@ -127,10 +235,18 @@ function ResponsiveAppBar() {
                         </Box>
                     </Toolbar>
                 </Grid>
-
             </Grid>
+            {selectedUserId && (
+                <Box sx={{ position: 'fixed', bottom: 20, width: '100%', paddingTop: '20px', zIndex: 1010 }}>
+                    <AdminMessages userId={selectedUserId} messages={conversation} onClose={() => setSelectedUserId(null)} />
+                </Box>
+            )}
+            <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
+                <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
 
-
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </AppBar>
     );
 }
