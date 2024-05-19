@@ -145,6 +145,7 @@ const Match = () => {
             setShowMatchAnimation(true);
             setShowConfetti(true);
         } else {
+            setShowConfetti(false);
             setShowMatchAnimation(false);
         }
     };
@@ -207,8 +208,8 @@ const Match = () => {
             )}
             {showConfetti && (
                 <Confetti
-                    width={window.innerWidth}
-                    height={window.innerHeight}
+                    width={window.fullWidth}
+                    height={window.fullHeight}
                     numberOfPieces={500}
                     recycle={false}
                 />

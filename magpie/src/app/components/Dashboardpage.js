@@ -196,7 +196,7 @@ const DashboardPage = () => {
         }}>
           <Grid container spacing={2} sx={{ mt: 2 }}>
             {filteredUsers.map((userProfile, index) => (
-              <Grid item xs={12} sm={6} md={4} key={userProfile.id}>
+              <Grid item xs={12} sm={4} md={4} key={userProfile.id}>
                 <motion.div
                   initial="offscreen"
                   whileInView="onscreen"
