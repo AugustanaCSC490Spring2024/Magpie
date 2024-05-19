@@ -119,7 +119,7 @@ function ReportPage() {
         <div style={formStyle}>
             <h1 style={{ textAlign: 'center' }}>Report Inappropriate Behavior</h1>
             <form onSubmit={handleSubmit} style={{ width: isMobile ? '100%' : '400px' }}>
-                <label style={{ width: '100%', marginBottom: '10px' }}>
+                <label style={{ width: '100%', marginBottom: '10px' }} >
                     Username of User:
                     <Autocomplete
                         id="user-select"
@@ -129,6 +129,7 @@ function ReportPage() {
                         onChange={(event, newValue) => {
                             setUsername(newValue ? newValue.id : '');
                         }}
+                        style={inputStyle}
                         renderInput={(params) => (
                             <TextField {...params} label="Select a User" variant="outlined" fullWidth />
                         )}
