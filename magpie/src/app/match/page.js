@@ -155,8 +155,8 @@ const Match = () => {
     };
 
     return (
+        <div style={{ backgroundColor: 'lightblue', height: '100vh' }}>
         <Container style={{
-            backgroundColor: 'lightblue',
             minHeight: '100vh',
             padding: '20px',
             position: 'relative',
@@ -254,6 +254,7 @@ const Match = () => {
                 </DialogActions>
             </Dialog>
         </Container>
+        </div>
     );
 };
 

@@ -107,6 +107,7 @@ function ReviewPage() {
     : reviews;
 
   return (
+    <div style={{ backgroundColor: 'lightblue', height: '100vh'}}>
     <Container
       sx={{
         backgroundColor: 'lightblue',
@@ -179,6 +180,7 @@ function ReviewPage() {
         </Paper>
       ))}
     </Container>
+    </div>
   );
 }
 

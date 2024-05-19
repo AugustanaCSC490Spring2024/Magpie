@@ -5,6 +5,7 @@ const UserProfileCard = ({ userProfile, matchingScores }) => {
     return (
         <Card style={{
             textAlign: 'center',
+            margin: '2rem',
             padding: '2.4rem',
             maxWidth: '25rem',
             borderRadius: '15px',
@@ -14,8 +15,10 @@ const UserProfileCard = ({ userProfile, matchingScores }) => {
             backgroundImage: 'linear-gradient(to bottom right, #ffffff, #f0f0f0)',
             border: '1px solid #e0e0e0',
             ':hover': {
-                transform: 'scale(1.05)'
-            }
+                transform: 'scale(1.05)',
+            },
+            display: 'flex',
+            flexDirection: 'column'
         }}>
             <Grid container spacing={2} style={{}}>
                 <Grid item xs={12}>
@@ -37,7 +40,7 @@ const UserProfileCard = ({ userProfile, matchingScores }) => {
                 </Grid>
 
             </Grid>
-        </Card>
+        </Card >
     )
 }
 

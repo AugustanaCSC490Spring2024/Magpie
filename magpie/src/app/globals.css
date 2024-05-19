@@ -15,6 +15,11 @@ body, html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+.adminBackground{
+  background-color: 'linear-gradient(55deg, #3366cc, #ffd966)';
+}
+
 h4.MuiTypography-root {
   color:#080808;
 }
@@ -335,88 +340,6 @@ nav ul button{
   text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
 }
 
-/* Container adjustments */
-.tour-container {
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(rgba(20, 8, 251, 0.2), rgba(58, 15, 252, 0.2)), url('../../public/background_tour.jpeg');
-  background-size: cover;
-  overflow: hidden;
-  position: relative;
-}
-
-/* Animated bubble background */
-@keyframes rise {
-  0% {
-    bottom: -100px;
-    transform: scale(0);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    bottom: 110vh;
-    transform: scale(1);
-  }
-}
-
-
-.bubble {
-  position: absolute;
-  bottom: -100px;
-  background-color: rgba(42, 31, 247, 0.7);
-  border-radius: 50%;
-  opacity: 0.6;
-  animation: rise 20s infinite ease-in;
-}
-
-/* Generate multiple bubbles with different timings/sizes */
-.bubble.small { width: 40px; height: 40px; animation-duration: 18s; }
-.bubble.medium { width: 70px; height: 70px; animation-duration: 22s; }
-.bubble.large { width: 100px; height: 100px; animation-duration: 28s; }
-
-.hallway {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: 50px;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.hall {
-  width: 250px;
-  height: 140px;
-  margin: 0px;
-  background-color: rgba(255, 255, 255, 0.85);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  transition: transform 0.5s ease-in-out, box-shadow 0.5s ease;
-  position: relative;
-  overflow: hidden;
-  cursor: pointer;
-}
-
-.hall:hover {
-  transform: scale(1.1);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-}
-
-/* Hall content style */
-.hall a {
-  text-decoration: none;
-  color: #333;
-  font-size: 20px;
-  font-weight: bold;
-  z-index: 10;
-}
-
 /* Perspective effects */
 .left {
   transform: rotateY(-30deg) translateX(-50px);
@@ -464,104 +387,129 @@ nav ul button{
 }
 
 .contacts-section {
-  padding: 100px;
-  color: #333;
-  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  min-height: 60vh;
+  box-sizing: border-box;
+  width: 100%; 
+  max-width: 1200px;
+  margin: 0 auto; 
+}
+
+
+.contact-title {
+  font-size: 3rem;
+  color: white;
+  margin-bottom: 20px;
   text-align: center;
-  width: 100%;
 }
 
-.contact-methods {
-  margin-bottom: 40px;
-  font-size: 1.1rem;
-}
-
-/* Contact Form */
 .contact-form {
-  background: lightcyan;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  display: block;
-  margin-left: 150px;
-  margin-right: 150px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto; /* Center the contact form horizontally */
 }
 
 .contact-form h3 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-bottom: 20px;
-  color: #385bab;
+  color: #333;
 }
 
 .contact-form form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
 
-.contact-form form input,
-.contact-form form textarea {
-  padding: 15px;
-  border: 1px solid #ddd;
+.contact-form input,
+.contact-form textarea {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
+  width: 100%; /* Set the width to 100% of the parent container */
 }
 
-.contact-form form button {
-  padding: 15px 30px;
-  background-color: #4CAF50;
-  color: white;
+.contact-form textarea {
+  height: 150px;
+}
+
+.contact-form button {
+  padding: 12px 20px;
+  background-color: #007bff;
+  color: #fff;
   border: none;
   border-radius: 5px;
+  font-size: 1.125rem;
   cursor: pointer;
-  font-size: 1rem;
   transition: background-color 0.3s ease;
 }
 
-.contact-form form button:hover {
-  background-color: #45a049;
+.contact-form button:hover {
+  background-color: #0056b3;
 }
 
-.contact-form form input:focus,
-.contact-form form textarea:focus {
-  outline: none;
-  border-color: #4CAF50;
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-}
-
-/* Responsive adjustments for Tablets */
 @media (max-width: 768px) {
+  .contact-title {
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+  
   .contact-form {
-    margin-left: 50px;
-    margin-right: 50px;
-    padding: 20px;
-  }
-
-  .reviews-title {
-    font-size: 20px;
-  }
-
-
-  .contact-form h3 {
-    font-size: 1.8rem;
-  }
-
-  .contact-form form input,
-  .contact-form form textarea,
-  .contact-form form button {
-    font-size: 0.9rem;
+    padding: 15px;
+    max-width: 90%;
   }
 
   .contact-form h3 {
-    font-size: 1.6rem;
+    font-size: 1.25rem;
+    margin-bottom: 15px;
   }
 
-  .contact-form form input,
-  .contact-form form textarea,
-  .contact-form form button {
-    font-size: 0.8rem;
+  .contact-form input,
+  .contact-form textarea {
+    font-size: 0.875rem;
+  }
+
+  .contact-form button {
+    font-size: 1rem;
+    padding: 10px 15px;
   }
 }
+
+@media (max-width: 480px) {
+  .contact-title {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
+  
+  .contact-form {
+    padding: 10px;
+    max-width: 100%;
+  }
+
+  .contact-form h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .contact-form input,
+  .contact-form textarea {
+    font-size: 0.75rem;
+  }
+
+  .contact-form button {
+    font-size: 0.875rem;
+    padding: 8px 10px;
+  }
+}
+
 
 /* AutosuggestStyles.css */
 .autosuggest-container {
@@ -608,12 +556,7 @@ nav ul button{
 }
 
 @media screen and (max-width: 768px) {
-  .contacts-section {
-    padding: 20px; /* Adjust padding for smaller screens */
-    width: 100%; /* Stretch to the edge of the page */
-    border-radius: 0; /* Remove border-radius for full-width */
-    margin-left: auto; /* Align to the right edge of the screen */
-    margin-right: auto; /* Align to the left edge of the screen */
+  .about-content {
+    flex-direction: column; /* Stack items vertically on smaller screens */
   }
-  
 }
