@@ -62,7 +62,7 @@ function hsAgree() {
 
     return (
         <Container component="main" maxWidth="lg">
-            <Typography variant="h4" component="h1" style={{ margin: '20px 0', textAlign: 'center' }}>
+            <Typography variant="h4" component="h1" style={{ margin: '20px 0', textAlign: 'center', color: 'darkBlue' }}>
                 Please upload the housing agreement
             </Typography>
             <Paper {...getRootProps()} style={{

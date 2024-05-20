@@ -40,7 +40,6 @@ function UserList() {
         <AuthContextProvider>
             <Container maxWidth="md" sx={{
                 position: 'fixed',
-                background: 'linear-gradient(55deg, #3366cc, #ffd966)',              
                 left: 0,
                 top: 0,
                 width: '94vw',
@@ -48,7 +47,7 @@ function UserList() {
                 overflowY: 'scroll',
                 zIndex: 1200
             }}>
-                <Typography variant="h3" sx={{ my: 2, textAlign: 'center' }}>User List</Typography>
+                <Typography variant="h3" style={{ color: 'darkblue' }} sx={{ my: 2, textAlign: 'center' }}>User List</Typography>
                 <TextField
                     fullWidth
                     label="Search by Name"

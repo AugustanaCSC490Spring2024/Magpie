@@ -5,6 +5,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { Container, TextField, Card, CardContent, CardMedia, IconButton, Typography, Button, Grid, InputLabel, Select, MenuItem, FormControl } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import EmailIcon from '@mui/icons-material/Email';
+import Box from '@mui/material/Box';
 import * as XLSX from 'xlsx';
 
 const MatchedUsers = () => {
@@ -95,10 +96,8 @@ const MatchedUsers = () => {
     });
 
     return (
-        <div style={{ backgroundImage: 'linear-gradient(90deg, #3366cc, #ffd966)', height: '100%'
-    }}>
         <Container>
-            <Typography variant="h4" style={{fontWeight: 'bold'}} sx={{ pt: 4, pb: 2 }}>Matched Users</Typography>
+            <Typography variant="h4" style={{fontWeight: 'bold', color: 'darkblue'}} sx={{ pt: 4, pb: 2 }}>Matched Users</Typography>
             <TextField
                 placeholder="Search by name..."
                 onChange={handleSearchChange}
@@ -124,7 +123,7 @@ const MatchedUsers = () => {
                 </Select>
             </FormControl>
             <Button onClick={handleCreateDataSheet} variant="contained" color="primary" sx={{ mb: 2 }}>Create DataSheet</Button>
-            <Typography sx={{mb: 2}}variant="h6">Total Matches: {filteredMatches.length}</Typography>
+            <Typography style={{ color: 'darkblue' }} sx={{mb: 2}}variant="h6">Total Matches: {filteredMatches.length}</Typography>
             {filteredMatches.map((match, index) => (
                 <Grid item xs={12} md={6} key={index} sx={{pb:2}}>
                 <Card sx={{
@@ -132,9 +131,7 @@ const MatchedUsers = () => {
                     flexDirection: { xs: 'column', md: 'row' },
                     mb: 2,
                     p: 2,
-                    backgroundColor: 'cyan',
                     transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-                    backgroundImage: 'linear-gradient(to right, silver, lightblue)',
                     position: 'relative',
                     overflow: 'hidden',
                     '&:hover': {
@@ -143,25 +140,29 @@ const MatchedUsers = () => {
                     }
                     
                 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <CardMedia
                         component="img"
-                        sx={{ width: { xs: '150px', md: 151 }, borderRadius: '20px', justifyContent: 'center', height: { xs: '150px', md: 150 }}}
+                        sx={{ width: { xs: '150px', md: 151 }, borderRadius: '20px', height: { xs: '150px', md: 150 }}}
                         image={match.fromUser.imageUrl || 'https://via.placeholder.com/150'}
                         alt={match.fromUser.name}
                     />
+                    </Box>
                     <CardContent sx={{ flex: '1 0 auto' }}>
-                        <Typography variant="h5">{match.fromUser.name}</Typography>
-                        <Typography variant="body2">{match.fromUser.email}</Typography>
+                        <Typography variant="h5" style={{textAlign: 'center'}}>{match.fromUser.name}</Typography>
+                        <Typography variant="body2"style={{textAlign: 'center'}}>{match.fromUser.email}</Typography>
                     </CardContent>
+                    <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                     <CardMedia
                         component="img"
-                        sx={{ width: { xs: '50%', md: 151 }, borderRadius: '20px', justifyContent: 'center', height: { xs: '50%', md: 150 }}}
+                        sx={{ width: { xs: '50%', md: 151 }, borderRadius: '20px', justifyContent: 'center', height: { xs: '150px', md: 150 }}}
                         image={match.toUser.imageUrl || 'https://via.placeholder.com/150'}
                         alt={match.toUser.name}
                     />
+                    </Box>
                     <CardContent sx={{ flex: '1 0 auto' }}>
-                        <Typography variant="h5">{match.toUser.name}</Typography>
-                        <Typography variant="body2">{match.toUser.email}</Typography>
+                        <Typography variant="h5" style={{textAlign: 'center'}}>{match.toUser.name}</Typography>
+                        <Typography variant="body2" style={{textAlign: 'center'}}>{match.toUser.email}</Typography>
                     </CardContent>
                     <IconButton href={createMailToLink(match.fromUser.email, match.toUser.email)} target="_blank" aria-label="send email">
                         <EmailIcon />
@@ -170,7 +171,6 @@ const MatchedUsers = () => {
             </Grid>
             ))}
         </Container>
-        </div>
     );
 };
 

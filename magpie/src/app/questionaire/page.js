@@ -195,9 +195,9 @@ function AdminPage() {
   };
 
   return (
-    <div style={{backgroundImage: 'linear-gradient(55deg, #3366cc, #ffd966)', height: '100%'} }>
+    <div>
       <Container>
-        <Typography variant="h4" style={{fontWeight: 'bold'}}gutterBottom component="div" sx={{ pt: 4, mb: 2 }}>
+        <Typography variant="h4" style={{fontWeight: 'bold', color: 'darkblue'}}gutterBottom component="div" sx={{ pt: 4, mb: 2 }}>
           Customize Questionnaire
         </Typography>
         <Box component="form" noValidate autoComplete="off" onSubmit={(e) => e.preventDefault()} sx={{ mb: 5 }}>

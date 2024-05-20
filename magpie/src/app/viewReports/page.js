@@ -54,7 +54,7 @@ function ViewReports() {
 
     return (
         <div style={{ margin: '20px' }}>
-            <h1>Reported Issues</h1>
+            <h1 style={{color: 'darkBlue', marginBottom: '20px', textAlign: 'center'}}>Reported Issues</h1>
             <TableContainer component={Paper} style={{ boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
                 <Table aria-label="simple table">
                     <TableHead>

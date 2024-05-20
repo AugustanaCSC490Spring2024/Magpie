@@ -32,7 +32,7 @@ const StyledButton = styled(Button)({
     boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
     transition: 'all 0.3s ease-in-out',
     '&:hover': {
-        backgroundColor: '#333',
+        backgroundColor: 'lightBlue',
         color: '#fff',
         transform: 'scale(1.05)',
     },
@@ -47,6 +47,8 @@ const Title = styled(Typography)({
     fontWeight: 'bold',
     marginBottom: '10px',
 });
+
+
 
 const Description = styled(Typography)({
     fontSize: '14px',
@@ -111,14 +113,13 @@ function EmailPortal() {
     };
 
     return (
-        <div style={{ backgroundImage: 'linear-gradient(55deg, #3366cc, #ffd966)', minHeight: '100vh' }}>
             <StyledContainer component="main" maxWidth="lg">
-                <Typography variant="h3" component="h1" style={{ marginBottom: '40px', fontWeight: 'bold', color: 'black' }}>
+                <Typography variant="h3" component="h1" style={{ marginBottom: '40px', fontWeight: 'bold', color: 'darkBlue' }}>
                     Email Portal
                 </Typography>
                 <Grid container spacing={4} justifyContent="center">
                     <Grid item xs={12} sm={6} md={5}>
-                        <Paper style={{ padding: '20px', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: '200px' }}>
+                        <Paper style={{ padding: '20px', textAlign: 'center', boxShadow: '0px 8px 20px rgba(0,0,0,0.12)', height: '200px' }}>
                             <Title>Email All Users</Title>
                             <Description>Send an email to all registered users.</Description>
                             <StyledButton
@@ -130,7 +131,7 @@ function EmailPortal() {
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={5}>
-                        <Paper style={{ padding: '20px', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: '200px' }}>
+                        <Paper style={{ padding: '20px', textAlign: 'center', boxShadow: '0px 8px 20px rgba(0,0,0,0.12)', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: '200px' }}>
                             <Title>Email Matched Users</Title>
                             <Description>Send an email to users who have been matched.</Description>
                             <StyledButton
@@ -142,7 +143,7 @@ function EmailPortal() {
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={5}>
-                        <Paper style={{ padding: '20px', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: '220px' }}>
+                        <Paper style={{ padding: '20px', textAlign: 'center', boxShadow: '0px 8px 20px rgba(0,0,0,0.12)', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: '220px' }}>
                             <Title>Email Unmatched Users</Title>
                             <Description>Send an email to users who are currently unmatched.</Description>
                             <StyledButton
@@ -154,7 +155,7 @@ function EmailPortal() {
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={5}>
-                        <Paper style={{ padding: '20px', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: '220px' }}>
+                        <Paper style={{ padding: '20px', textAlign: 'center', boxShadow: '0px 8px 20px rgba(0,0,0,0.12)', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: '220px' }}>
                             <Title>Email Reported Users</Title>
                             <Description>Send an email to users who have been reported.</Description>
                             <StyledButton
@@ -166,7 +167,7 @@ function EmailPortal() {
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={5}>
-                        <Paper style={{ padding: '20px', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: '220px' }}>
+                        <Paper style={{ padding: '20px', textAlign: 'center', boxShadow: '0px 8px 20px rgba(0,0,0,0.12)', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: '220px' }}>
                             <Title>Email Users Who Completed Onboarding</Title>
                             <Description>Send an email to users who have completed onboarding.</Description>
                             <StyledButton
@@ -178,7 +179,7 @@ function EmailPortal() {
                         </Paper>
                     </Grid>
                     <Grid item xs={12} sm={6} md={5}>
-                        <Paper style={{ padding: '20px', textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: '220px' }}>
+                        <Paper style={{ padding: '20px', textAlign: 'center', boxShadow: '0px 8px 20px rgba(0,0,0,0.12)', backgroundColor: 'rgba(255, 255, 255, 0.1)', height: '220px' }}>
                             <Title>Email Users Who Haven't Completed Onboarding</Title>
                             <Description>Send an email to users who haven't completed onboarding.</Description>
                             <StyledButton
@@ -191,7 +192,6 @@ function EmailPortal() {
                     </Grid>
                 </Grid>
             </StyledContainer>
-        </div>
     );
 }
 

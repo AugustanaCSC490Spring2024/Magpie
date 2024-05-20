@@ -9,7 +9,7 @@ import { auth } from "../firebase";
 
 const AuthContext = createContext();
 // export const adminEmails = ["elnatanmesfintesfa20@augustana.edu"];
-export const adminEmails = [""];
+export const adminEmails = ["elnatanmesfintesfa20@augustana.edu"];
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
