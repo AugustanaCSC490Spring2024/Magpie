@@ -107,11 +107,9 @@ function ReviewPage() {
     : reviews;
 
   return (
-    <div style={{ backgroundImage: 'linear-gradient(135deg, #003087, #ffb914)',
-    minHeight: '100vh'}}>
     <Container
       sx={{
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        backgroundColor: 'white',
         padding: '20px',
         borderRadius: '8px',
         minHeight: '100vh',
@@ -181,7 +179,6 @@ function ReviewPage() {
         </Paper>
       ))}
     </Container>
-    </div>
   );
 }
 

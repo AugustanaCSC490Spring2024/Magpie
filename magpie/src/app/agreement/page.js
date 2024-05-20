@@ -21,9 +21,7 @@ function AgreementPreview() {
     }, []);
 
     return (
-        <div style={{ backgroundImage: 'linear-gradient(135deg, #003087, #ffb914)',
-    minHeight: '100vh'}}>
-        <Container component="main" maxWidth="lg" style={{backgroundColor: 'rgba(255, 255, 255, 0.8)'}}>
+        <Container component="main" maxWidth="lg">
             <Typography variant="h4" component="h1" style={{ marginTop: '20px', paddingTop: '70px', marginBottom: '20px', textAlign: 'center' }}>
                 Housing Agreement Policy
             </Typography>
@@ -54,7 +52,6 @@ function AgreementPreview() {
                 </Typography>
             )}
         </Container>
-        </div>
     );
 }
 

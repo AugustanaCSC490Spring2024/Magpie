@@ -236,11 +236,13 @@ function Listing() {
 
     return (
         <div style={{ 
-          backgroundImage: 'linear-gradient(135deg, #003087, #ffb914)',
           minHeight: '100vh',
           display: 'flex',
+          marginTop: '100px',
+          marginBottom: '50px',
           justifyContent: 'center',
           alignItems: 'center',
+          backgroundColor: 'white',
           fontFamily: 'Lato, sans-serif',
           color: '#fff'
         }}>
@@ -257,10 +259,10 @@ function Listing() {
             }}>
                 <Typography variant="h4" gutterBottom sx={{
                   fontWeight: 'bold',
-                  fontSize: '35px', 
+                  fontSize: '40px', 
                   textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
                   textAlign: 'center',
-                  marginTop: '50px',
+                  marginTop: '20px',
                   marginBottom: '30px'
 
                 }}>

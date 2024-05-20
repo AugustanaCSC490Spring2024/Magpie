@@ -95,10 +95,7 @@ function ResponsiveAppBar() {
                                 }}
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
-                            > 
-                                <MenuItem onClick={() => { router.push('/about') }}>
-                                    <Typography textAlign="center">{'About'}</Typography>
-                                </MenuItem>
+                            >
                                 <MenuItem onClick={() => { router.push('/profile') }}>
                                     <Typography textAlign="center">{'Profile'}</Typography>
                                 </MenuItem>
@@ -120,8 +117,11 @@ function ResponsiveAppBar() {
                                 <MenuItem onClick={() => { router.push('/agreement') }}>
                                     <Typography textAlign="center">{'Policies'}</Typography>
                                 </MenuItem>
+                                <MenuItem onClick={() => { router.push('/about') }}>
+                                    <Typography textAlign="center">{'About'}</Typography>
+                                </MenuItem>
                                 <MenuItem onClick={handleSignOut}>
-                                    <Typography textAlign="center">{'Log out'}</Typography>
+                                    <Typography textAlign="center" color= 'red'>{'Log out'}</Typography>
                                 </MenuItem>
                             </Menu>
                         </Box>

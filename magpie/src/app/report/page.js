@@ -92,7 +92,6 @@ function ReportPage() {
         height: '100vh',
         fontSize: '16px',
         fontFamily: 'Arial, sans-serif',
-        backgroundImage: 'linear-gradient(135deg, #003087, #ffb914)', 
         padding: isMobile ? '10px' : '20px',
     };
 
@@ -103,7 +102,7 @@ function ReportPage() {
         fontSize: '16px',
         backgroundColor: 'white',
         color: '#000',
-        border: '2px solid #F5A623',
+        border: 'solid 1px #000',
     };
 
     const buttonStyle = {
@@ -117,7 +116,7 @@ function ReportPage() {
 
     return (
         <div style={formStyle}>
-            <h1 style={{ textAlign: 'center' }}>Report Inappropriate Behavior</h1>
+            <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>Report Inappropriate Behavior</h1>
             <form onSubmit={handleSubmit} style={{ width: isMobile ? '100%' : '400px' }}>
                 <label style={{ width: '100%', marginBottom: '10px' }} >
                     Username of User:
@@ -129,7 +128,7 @@ function ReportPage() {
                         onChange={(event, newValue) => {
                             setUsername(newValue ? newValue.id : '');
                         }}
-                        style={inputStyle}
+                        style={{border: 'solid 1px #000'}}
                         renderInput={(params) => (
                             <TextField {...params} label="Select a User" variant="outlined" fullWidth />
                         )}
