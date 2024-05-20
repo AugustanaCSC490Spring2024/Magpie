@@ -79,7 +79,7 @@ function AdminMessages({ userId, onClose }) {
             borderRadius: 1
         }}>
             <Box sx={{ position: 'relative', flexShrink: 0 }}>
-                <IconButton onClick={onClose} sx={{ position: 'absolute', right: 5, top: 12 }}>
+                <IconButton onClick={onClose} sx={{ position: 'absolute', right: 5, top: 38 }}>
                     <CloseIcon />
                 </IconButton>
                 <Box sx={{
@@ -88,7 +88,7 @@ function AdminMessages({ userId, onClose }) {
                     p: 2,
                     borderRadius: 2,
                     boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                    background: 'linear-gradient(135deg, rgba(126,132,233,1) 0%, rgba(255,105,180,1) 100%)',
+                    background: 'linear-gradient(135deg, rgba(000,060,250,1) 0%, rgba(120,105,180,1) 100%)',
                     color: 'white',
                     display: 'flex',
                     justifyContent: 'center',
@@ -105,7 +105,6 @@ function AdminMessages({ userId, onClose }) {
                 my: 2,
                 mx: 2,
                 p: 2,
-                bgcolor: '#f0f0f0',
                 borderRadius: 2
             }}>
                 {messages.map((msg) => (
@@ -120,7 +119,7 @@ function AdminMessages({ userId, onClose }) {
                         maxWidth: '70%',
                         wordWrap: 'break-word'
                     }}>
-                        <Typography variant="body2" sx={{ mx: 1, textAlign: 'left' }}>
+                        <Typography variant="body2" sx={{ mx: 1, textAlign: 'left', color: "black" }}>
                             {msg.text}
                             <Typography component="span" variant="caption" sx={{ display: 'block', textAlign: 'right', color: 'gray' }}>
                                 {msg.createdAt.seconds ? new Date(msg.createdAt.seconds * 1000).toLocaleTimeString() : msg.createdAt.toLocaleTimeString()}

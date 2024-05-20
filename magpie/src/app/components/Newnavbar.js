@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Grid, AppBar, Box, Toolbar, IconButton, Typography, Menu, Avatar, Button, Tooltip, MenuItem, Container, Snackbar, Alert, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
+import { Grid, AppBar, Box, Toolbar, IconButton, Typography, Menu, Avatar, Button, Tooltip, MenuItem, Snackbar, Alert, List, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import { UserAuth } from '../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -130,7 +130,7 @@ function ResponsiveAppBar() {
     return (
         <AppBar position="absolute">
             <Grid container spacing={2} sx={{ paddingLeft: 4, paddingRight: 4 }}>
-                <Grid item lg={9} xs={10.6}>
+                <Grid item lg={9} xs={9}>
                     <Toolbar disableGutters onClick={() => { router.push('/dashboard') }}>
                         <Typography
                             variant="h6"
@@ -148,7 +148,7 @@ function ResponsiveAppBar() {
                         </Typography>
                     </Toolbar>
                 </Grid>
-                <Grid item xs={2.4}>
+                <Grid item lg={3} xs={3} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                     <Toolbar disableGutters>
                         <IconButton
                             color="inherit"
@@ -173,7 +173,7 @@ function ResponsiveAppBar() {
                                 <MenuItem disabled>No messages</MenuItem>
                             ) : (
                                 messages.map((msg) => (
-                                    <MenuItem key={msg.senderId} onClick={() => { handleAdminSelect(msg.senderId); handleCloseInboxMenu(); }}>
+                                    <MenuItem key={msg.senderId} onClick={() => { handleAdminSelect(msg.senderId); handleCloseInboxMenu(); }} sx={{ color: 'black' }}>
                                         <ListItemAvatar>
                                             <Avatar>{msg.senderName.charAt(0)}</Avatar>
                                         </ListItemAvatar>
@@ -232,7 +232,7 @@ function ResponsiveAppBar() {
                                     <Typography textAlign="center">{'About'}</Typography>
                                 </MenuItem>
                                 <MenuItem onClick={handleSignOut}>
-                                    <Typography textAlign="center" color= 'red'>{'Log out'}</Typography>
+                                    <Typography textAlign="center" color='red'>{'Log out'}</Typography>
                                 </MenuItem>
                             </Menu>
                         </Box>
@@ -253,4 +253,5 @@ function ResponsiveAppBar() {
         </AppBar>
     );
 }
+
 export default ResponsiveAppBar;

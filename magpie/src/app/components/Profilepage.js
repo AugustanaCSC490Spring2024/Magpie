@@ -42,70 +42,12 @@ const ProfilePage = () => {
   const { user } = UserAuth();
   const [profileImage, setProfileImage] = useState('https://via.placeholder.com/150.png?text=Profile');
   const [bio, setBio] = useState('');
-  const [messages, setMessages] = useState([]);
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  const [inboxOpen, setInboxOpen] = useState(false);
   const router = useRouter();
-  const [conversation, setConversation] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-
-  useEffect(() => {
-    if (user?.uid) {
-        const fetchMessages = () => {
-            const messagesRef = collection(db, 'adminMessages');
-            // Query to fetch messages where the current user is involved and isAdmin is true
-            const q = query(messagesRef, where("userId", "==", user.uid), where("isAdmin", "==", true));
-            onSnapshot(q, (snapshot) => {
-              const userMessages = {};
-          
-              snapshot.docs.forEach(doc => {
-                  const data = doc.data();
-                  // Create a unique key for each pair of users, ensuring order does not matter
-                  const pairKey = [data.senderId, data.userId].sort().join('-');
-          
-                  // Initialize the message storage for this pair if it doesn't exist
-                  if (!userMessages[pairKey]) {
-                      userMessages[pairKey] = {
-                          messages: [],
-                          lastMessage: data.text,
-                          lastTimestamp: data.createdAt,
-                          senderId: data.senderId,
-                          senderName: data.senderName // store sender name
-                      };
-                  }
-                  // Push the message to the messages array
-                  userMessages[pairKey].messages.push({ ...data, id: doc.id });
-          
-                  // Update the lastMessage, lastTimestamp, and senderName if this message is newer
-                  if (data.createdAt > userMessages[pairKey].lastTimestamp) {
-                      userMessages[pairKey].lastMessage = data.text;
-                      userMessages[pairKey].lastTimestamp = data.createdAt;
-                      userMessages[pairKey].senderName = data.senderName;
-                  }
-              });
-          
-              // Extract minimal data for the list view
-              const messageSummary = Object.values(userMessages).map(conversation => ({
-                  senderId: conversation.senderId,
-                  senderName: conversation.senderName,
-                  lastMessage: conversation.lastMessage,
-                  lastTimestamp: conversation.lastTimestamp
-              }));
-          
-              // Sort the message summary to show the most recent message first
-              messageSummary.sort((a, b) => b.lastTimestamp - a.lastTimestamp);
-          
-              setMessages(messageSummary);
-          });          
-          
-        };
-        fetchMessages();
-    }
-}, [user]);
 
   useEffect(() => {
     if (user?.uid) {
@@ -154,28 +96,10 @@ const ProfilePage = () => {
     }
   };
 
-  const handleAdminSelect = (adminId) => {
-    setSelectedUserId(adminId);
-    if (user?.uid && adminId) {
-        const messagesRef = collection(db, 'adminMessages');
-        // This query should fetch all messages where the current user and the admin are involved, either as sender or receiver
-        const q = query(messagesRef, where("userId", "==", user.uid), where("senderId", "==", adminId));
-        onSnapshot(q, (snapshot) => {
-            const messages = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setConversation(messages); // Set fetched messages into the conversation state
-        });
-    }
-};
-
-
 
 return (
   <>
     <InteractiveBackground />
-    {selectedUserId && <Overlay />}
     <Box sx={{
       display: 'flex',
       flexDirection: 'row',
@@ -224,36 +148,7 @@ return (
           Save Bio
         </Button>
       </Box>
-      {inboxOpen && (
-        <Box flex={1} sx={{ overflowY: 'scroll', maxHeight: '80vh', width: '100%', bgcolor: 'background.paper'}}>
-          <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
-            {messages.map((msg) => (
-              <ListItem key={msg.senderId} button onClick={() => handleAdminSelect(msg.senderId)}>
-                <ListItemAvatar>
-                  <Avatar>{msg.senderName.charAt(0)}</Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={`${msg.senderName}`} secondary={msg.lastMessage} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      )}
     </Box>
-
-    {selectedUserId && (
-      <Box sx={{ position: 'fixed', bottom: 20, width: '100%', paddingTop: '20px', zIndex: 1010 }}>
-        <AdminMessages userId={selectedUserId} messages={conversation} onClose={() => setSelectedUserId(null)} />
-      </Box>
-    )}
-    <Button
-      variant="contained"
-      color="primary"
-      onClick={() => setInboxOpen(!inboxOpen)}
-      sx={{ position: 'fixed', bottom: 10, right: 20, width: { xs: '30%', sm: 'auto' }, fontSize: { xs: '0.7rem', sm: '1rem' } }}
-    >
-      {inboxOpen ? 'Close Inbox' : 'Open Inbox'}
-    </Button>
-
     <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
       <Alert onClose={() => setOpenSnackbar(false)} severity="success" sx={{ width: '100%' }}>
         {snackbarMessage}

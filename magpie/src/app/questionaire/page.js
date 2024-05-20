@@ -95,7 +95,8 @@ function AdminPage() {
         options: optionsArray,
         order,
         type: newType,
-        weight: newWeight
+        weight: newWeight,
+        visibility: true
       });
       setNewQuestionText('');
       setNewOptions('');
@@ -175,8 +176,8 @@ function AdminPage() {
           questionText,
           options: optionsArray,
           order: finalOrder,
-          type, // Update the type
-          weight // Update the weight
+          type, 
+          weight 
         });
         setSnackbarOpen(true);
         setSnackbarMessage('Question edited successfully');

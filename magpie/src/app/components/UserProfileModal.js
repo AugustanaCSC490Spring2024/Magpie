@@ -243,7 +243,7 @@ const UserProfileModal = ({ userProfile, matchingScores }) => {
                     }}
                 >
                     <Grid container spacing={2} sx={{ flex: '1 1 auto', overflowY: 'auto', padding: '2rem' }}>
-                        <Grid item xs={12} sm={3} sx={{ textAlign: 'center' }}>
+                        <Grid item lg={2} xs={12}  sx={{ textAlign: 'center' }}>
                             <img
                                 src={userProfile.imageUrl || `https://via.placeholder.com/150x150.png?text=No+Image`}
                                 alt={`User ${userProfile.name}`}
@@ -255,10 +255,20 @@ const UserProfileModal = ({ userProfile, matchingScores }) => {
                                 }}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={9} md={9} sx={{ paddingTop: isMobile ? '1rem' : '70px', paddingLeft: isMobile ? '0' : '40px', textAlign: isMobile ? 'center' : 'left' }}>
+                        <Grid item lg={7.5} xs={12}  sx={{ paddingTop: isMobile ? '1rem' : '70px', paddingLeft: isMobile ? '0' : '40px', textAlign: isMobile ? 'center' : 'center', marginTop: '30px' }}>
                             <Typography variant="h4" sx={{ fontFamily: 'poppins, sans-serif' }}>
                                 {userProfile.name || "Name not available"}
                             </Typography>
+
+                        </Grid>
+                        <Grid item lg={1} xs={12} sx={{ paddingTop: isMobile ? '1rem' : '70px', paddingLeft: isMobile ? '0' : '40px', textAlign: isMobile ? 'center' : 'center', marginTop: '30px' }} >
+                            <div style={{ width: isMobile ? 75 : 105, height: isMobile ? 75 : 105 }}>
+                                <CircularProgressbar
+                                    styles={{ path: { stroke: `rgba(33, 133, 220, 1)` }, text: { fill: '#2185dc' } }}
+                                    value={matchingScores[userProfile.id] ? matchingScores[userProfile.id].toFixed(1) : 0}
+                                    text={`${matchingScores[userProfile.id] ? matchingScores[userProfile.id].toFixed(1) : '0'}%`}
+                                />
+                            </div>
                         </Grid>
                         <Grid item xs={12} sx={{ textAlign: 'center', marginTop: isMobile ? '1rem' : '2.2rem' }}>
                             <Typography variant="h4" className="matchtitle" sx={{ color: 'blue', fontSize: 25, fontWeight: 450 }}>
@@ -293,15 +303,7 @@ const UserProfileModal = ({ userProfile, matchingScores }) => {
                                 {currentItem?.visibility ? currentItem?.response : <LockIcon />}
                             </Typography>
                         </Grid>
-                        <Grid item xs={6} sx={{ textAlign: 'center', padding: '1rem' }}>
-                            <div style={{ width: isMobile ? 75 : 105, height: isMobile ? 75 : 105 }}>
-                                <CircularProgressbar
-                                    styles={{ path: { stroke: `rgba(33, 133, 220, 1)` }, text: { fill: '#2185dc' } }}
-                                    value={matchingScores[userProfile.id] ? matchingScores[userProfile.id].toFixed(1) : 0}
-                                    text={`${matchingScores[userProfile.id] ? matchingScores[userProfile.id].toFixed(1) : '0'}%`}
-                                />
-                            </div>
-                        </Grid>
+
                     </Grid>
                     <Grid container justifyContent="center" sx={{ padding: '1rem' }}>
                         <Grid item>
