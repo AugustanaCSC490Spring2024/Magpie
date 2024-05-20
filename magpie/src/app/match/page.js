@@ -99,19 +99,19 @@ const Match = () => {
     const renderRequestButton = (userId) => {
         const request = matchRequests[userId];
         if (request && request.status === 'accepted') {
-            return <Button onClick={() => handleRequest(userId, 'unmatch')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px' }}>Unmatch User</Button>;
+            return <Button onClick={() => handleRequest(userId, 'unmatch')} style={{ backgroundColor: 'red', color: 'white', margin: '10px' }}>Unmatch User</Button>;
         } else if (request && request.status === 'pending' && request.from === user.uid) {
-            return <Button onClick={() => handleRequest(userId, 'cancel')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px' }}>Cancel Request</Button>;
+            return <Button onClick={() => handleRequest(userId, 'cancel')} style={{ backgroundColor: 'red', color: 'white', margin: '10px' }}>Cancel Request</Button>;
         } else if (request && request.status === 'pending' && request.to === user.uid) {
             return (
                 <>
-                    <Button onClick={() => handleResponse(userId, 'accept')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px', marginRight: '10px' }} color="primary">Accept Request</Button>
-                    <Button onClick={() => handleResponse(userId, 'decline')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px' }} color="secondary">Decline Request</Button>
+                    <Button onClick={() => handleResponse(userId, 'accept')} style={{ backgroundColor: 'blue', color: 'white', margin: '10px', marginRight: '10px' }} color="primary">Accept Request</Button>
+                    <Button onClick={() => handleResponse(userId, 'decline')} style={{ backgroundColor: 'blue', color: 'white', margin: '10px' }} color="secondary">Decline Request</Button>
                 </>
             );
         } else if (!request || request.status === 'declined') {
             return (
-                <Button onClick={() => handleRequest(userId, 'send')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px', borderRadius: '10px' }}>Send Match Request</Button>
+                <Button onClick={() => handleRequest(userId, 'send')} style={{ backgroundColor: 'blue', color: 'white', margin: '10px', borderRadius: '10px' }}>Send Match Request</Button>
             );
         }
     };
@@ -214,7 +214,7 @@ const Match = () => {
                 />
             )}
             <Button onClick={handleOpenMatches} variant="contained" color="primary" style={{ margin: '10px' }}>Matches</Button>
-            <Button onClick={handleOpenRequests} variant="contained" color="secondary" style={{ margin: '10px' }}>Pending Match Requests</Button>
+            <Button onClick={handleOpenRequests} variant="contained" color="secondary" style={{ margin: '10px', backgroundColor: 'green'}}>Pending Match Requests</Button>
 
             <Dialog open={openMatchesDialog} onClose={handleClose} PaperProps={{ style: dialogStyle }}>
                 <DialogTitle>Matches</DialogTitle>
@@ -250,7 +250,7 @@ const Match = () => {
                     </List>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="secondary">Close</Button>
+                    <Button onClick={handleClose} color="primary">Close</Button>
                 </DialogActions>
             </Dialog>
         </Container>

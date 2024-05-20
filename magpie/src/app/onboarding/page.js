@@ -138,7 +138,7 @@ const Onboarding = () => {
             </Select>
             <FormControlLabel
               control={<Checkbox checked={responses[currentQuestion.id]?.visibility || false} onChange={(e) => handleResponseChange(e, currentQuestion.id, 'visibility')} />}
-              label="Make response visible"
+              label="Make response visible to other users"
             />
           </FormControl>
         </Box>
