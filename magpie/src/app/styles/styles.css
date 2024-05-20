@@ -41,12 +41,17 @@
   height: auto;
   border-radius: 15px;
 }
-
+.image-container:hover{
+  scale: 101% ;
+}
 .text-container {
   padding: 20px;
   background-color: rgba(0, 0, 0, 0.5); /* Ensure readability */
   border-radius: 15px;
   max-width: 600px; /* Prevent the text container from getting too wide */
+}
+.text-container:hover{
+  scale: 101%;
 }
 
 .creators {
@@ -56,7 +61,9 @@
   gap: 20px; /* Add space between cards */
   color: white;
 }
-
+.creator-card:hover{
+  scale: 105%;
+}
 .creator-card {
   flex: 1 1 300px; /* Flex-grow, flex-shrink, and minimum width */
   max-width: 400px;
