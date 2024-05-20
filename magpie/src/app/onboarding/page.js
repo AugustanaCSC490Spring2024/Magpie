@@ -33,8 +33,13 @@ const Onboarding = () => {
         setHasSubmittedResponses(true);
       }
 
+      const initializedResponses = fetchedQuestions.reduce((acc, question) => {
+        acc[question.id] = existingResponses[question.id] || { response: '', visibility: true };
+        return acc;
+      }, {});
+
       setQuestions(fetchedQuestions);
-      setResponses(existingResponses);
+      setResponses(initializedResponses);
       setIsLoading(false);
     };
 
@@ -73,15 +78,15 @@ const Onboarding = () => {
       console.error('User must be logged in to submit responses.');
       return;
     }
-  
+
     const responsesForFirestore = Object.keys(responses).reduce((acc, questionId) => {
       acc[questionId] = {
         ...responses[questionId],
-        visibility: responses[questionId].visibility || true  
+        visibility: responses[questionId].visibility || false
       };
       return acc;
     }, {});
-  
+
     const batch = writeBatch(db);
     const responsesRef = doc(db, 'userResponses', user.uid);
     batch.set(responsesRef, {
@@ -89,7 +94,7 @@ const Onboarding = () => {
       responses: responsesForFirestore,
       submittedAt: new Date(),
     });
-  
+
     try {
       await batch.commit();
       console.log('Responses submitted successfully');
@@ -132,7 +137,7 @@ const Onboarding = () => {
               ))}
             </Select>
             <FormControlLabel
-              control={<Checkbox checked={responses[currentQuestion.id]?.visibility || true} onChange={(e) => handleResponseChange(e, currentQuestion.id, 'visibility')} />}
+              control={<Checkbox checked={responses[currentQuestion.id]?.visibility || false} onChange={(e) => handleResponseChange(e, currentQuestion.id, 'visibility')} />}
               label="Make response visible"
             />
           </FormControl>
