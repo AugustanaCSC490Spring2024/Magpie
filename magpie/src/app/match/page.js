@@ -111,7 +111,7 @@ const Match = () => {
             );
         } else if (!request || request.status === 'declined') {
             return (
-                <Button onClick={() => handleRequest(userId, 'send')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px' }}>Send Match Request</Button>
+                <Button onClick={() => handleRequest(userId, 'send')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px', borderRadius: '10px' }}>Send Match Request</Button>
             );
         }
     };

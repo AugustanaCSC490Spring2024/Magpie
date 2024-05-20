@@ -21,31 +21,31 @@ function AdminMessages({ userId, onClose }) {
                     console.log("No user profile found");
                     return;
                 }
-    
+
                 const messagesRef = collection(db, 'adminMessages');
                 const q = query(
                     messagesRef,
-                    where("userId", "in", [userId, user.uid]), // Includes both user IDs
-                    where("senderId", "in", [userId, user.uid]), // Includes both sender IDs
+                    where("userId", "in", [userId, user.uid]),
+                    where("senderId", "in", [userId, user.uid]),
                     orderBy('createdAt')
                 );
-    
+
                 const unsubscribe = onSnapshot(q, (snapshot) => {
                     const fetchedMessages = snapshot.docs.map(doc => ({
                         id: doc.id,
                         ...doc.data()
                     }));
-                    setMessages(fetchedMessages.sort((a, b) => a.createdAt - b.createdAt)); // Sort messages by createdAt
+                    setMessages(fetchedMessages.sort((a, b) => a.createdAt - b.createdAt));
                 }, error => {
                     console.error("Firestore error:", error);
                 });
-    
+
                 return () => unsubscribe();
             } else {
                 setMessages([]);
             }
         }
-    
+
         fetchData();
     }, [userId, user]);
 
@@ -60,44 +60,54 @@ function AdminMessages({ userId, onClose }) {
                 isAdmin: true
             };
             await addDoc(collection(db, 'adminMessages'), messageData);
-            console.log("Message sent:", messageData); // Debugging log
-            setMessages([...messages, { ...messageData, id: 'temp-id' }]); // Temp ID for UI purposes
+            setMessages([...messages, { ...messageData, id: 'temp-id' }]);
             setNewMessage('');
         }
     };
-
 
     return (
         <Container maxWidth="sm" sx={{
             position: 'fixed',
             right: 0,
-            top: 40,
-            height: '100vh',
+            top: 0,
+            height: '80vh',
             zIndex: 1300,
-            overflow: 'auto'
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: 3,
+            bgcolor: 'background.paper',
+            borderRadius: 1
         }}>
-            <Box sx={{ position: 'relative' }}>
+            <Box sx={{ position: 'relative', flexShrink: 0 }}>
                 <IconButton onClick={onClose} sx={{ position: 'absolute', right: 5, top: 12 }}>
                     <CloseIcon />
                 </IconButton>
                 <Box sx={{
-  mt: 4,
-  mb: 2,
-  p: 2,
-  borderRadius: 2,
-  boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-  background: 'linear-gradient(135deg, rgba(126,132,233,1) 0%, rgba(255,105,180,1) 100%)',
-  color: 'white',  // Ensures text color is white for high contrast
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center'
-}}>
-  <Typography variant="h5" sx={{ fontFamily: "'Roboto', sans-serif", fontWeight: 'bold', fontSize: '20px' }}>
-    Messaging {userName || 'User'}
-  </Typography>
-</Box>
+                    mt: 4,
+                    mb: 2,
+                    p: 2,
+                    borderRadius: 2,
+                    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                    background: 'linear-gradient(135deg, rgba(126,132,233,1) 0%, rgba(255,105,180,1) 100%)',
+                    color: 'white',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
+                    <Typography variant="h5" sx={{ fontFamily: "'Roboto', sans-serif", fontWeight: 'bold', fontSize: '20px' }}>
+                        Messaging {userName || 'User'}
+                    </Typography>
+                </Box>
             </Box>
-            <Box sx={{ my: 4, bgcolor: '#f0f0f0', p: 2, borderRadius: 2, boxShadow: 3 }}>
+            <Box sx={{
+                flex: 1,
+                overflowY: 'auto',
+                my: 2,
+                mx: 2,
+                p: 2,
+                bgcolor: '#f0f0f0',
+                borderRadius: 2
+            }}>
                 {messages.map((msg) => (
                     <Box key={msg.id} sx={{
                         display: 'flex',
@@ -105,7 +115,7 @@ function AdminMessages({ userId, onClose }) {
                         alignItems: msg.senderId === user.uid ? 'flex-end' : 'flex-start',
                         mb: 1,
                         p: 1,
-                        bgcolor: msg.senderId === user.uid ? '#D6EAF8' : '#E2EFDA', // Change colors as needed
+                        bgcolor: msg.senderId === user.uid ? '#D6EAF8' : '#E2EFDA',
                         borderRadius: '20px',
                         maxWidth: '70%',
                         wordWrap: 'break-word'
@@ -118,13 +128,15 @@ function AdminMessages({ userId, onClose }) {
                         </Typography>
                     </Box>
                 ))}
+            </Box>
+            <Box sx={{ p: 2, flexShrink: 0 }}>
                 <TextField
                     fullWidth
                     variant="outlined"
                     placeholder="Type your message..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                    onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                 />
                 <Button onClick={sendMessage} sx={{ mt: 2 }} variant="contained" color="primary">
                     Send
