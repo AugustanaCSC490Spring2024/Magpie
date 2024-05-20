@@ -13,14 +13,14 @@ const Match = () => {
     const db = getFirestore();
 
     const [users, setUsers] = useState([]);
-    const [selectedUser, setSelectedUser] = useState(null); 
+    const [selectedUser, setSelectedUser] = useState(null);
     const [matchRequests, setMatchRequests] = useState({});
     const [showMatchAnimation, setShowMatchAnimation] = useState(false);
-    const [matchedUserNames, setMatchedUserNames] = useState([]); 
+    const [matchedUserNames, setMatchedUserNames] = useState([]);
     const [openMatchesDialog, setOpenMatchesDialog] = useState(false);
     const [openRequestsDialog, setOpenRequestsDialog] = useState(false);
     const [showConfetti, setShowConfetti] = useState(false);
-    
+
     useEffect(() => {
         const fetchUsers = async () => {
             const usersCollection = collection(db, 'userProfiles');
@@ -28,7 +28,7 @@ const Match = () => {
             const usersList = snapshot.docs.map(doc => ({ id: doc.id, name: doc.data().name }));
             setUsers(usersList.filter(u => u.id !== user.uid));
         };
-    
+
         const fetchMatchRequests = () => {
             const matchRequestsRef = collection(db, 'matchRequests');
             handleMatchAnimation(selectedUser?.id);
@@ -38,10 +38,10 @@ const Match = () => {
                 snapshot.forEach(doc => {
                     const requestData = doc.data();
                     const key = requestData.from === user.uid ? requestData.to : requestData.from;
-    
+
                     if (requestData.from === user.uid || requestData.to === user.uid) {
                         requestsData[key] = { ...requestData, id: doc.id };
-                        
+
                         if (requestData.status === 'accepted') {
                             const matchedUser = users.find(u => u.id === key);
                             if (matchedUser) {
@@ -55,15 +55,15 @@ const Match = () => {
             });
             return unsubscribe;
         };
-    
+
         fetchUsers();
         const unsubscribeMatchRequests = fetchMatchRequests();
-    
+
         return () => {
             unsubscribeMatchRequests();
         };
     }, [db, user.uid, users]);
-    
+
 
     const getRequestDocId = (userId1, userId2) => {
         return [userId1, userId2].sort().join('_');
@@ -99,13 +99,13 @@ const Match = () => {
     const renderRequestButton = (userId) => {
         const request = matchRequests[userId];
         if (request && request.status === 'accepted') {
-            return <Button onClick={() => handleRequest(userId, 'unmatch')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px'}}>Unmatch User</Button>;
+            return <Button onClick={() => handleRequest(userId, 'unmatch')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px' }}>Unmatch User</Button>;
         } else if (request && request.status === 'pending' && request.from === user.uid) {
             return <Button onClick={() => handleRequest(userId, 'cancel')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px' }}>Cancel Request</Button>;
         } else if (request && request.status === 'pending' && request.to === user.uid) {
             return (
                 <>
-                    <Button onClick={() => handleResponse(userId, 'accept')}  style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px', marginRight: '10px' }} color="primary">Accept Request</Button>
+                    <Button onClick={() => handleResponse(userId, 'accept')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px', marginRight: '10px' }} color="primary">Accept Request</Button>
                     <Button onClick={() => handleResponse(userId, 'decline')} style={{ backgroundColor: 'blue', color: 'white', marginTop: '10px' }} color="secondary">Decline Request</Button>
                 </>
             );
@@ -126,9 +126,9 @@ const Match = () => {
 
     const handleMatchClick = (userId) => {
         setSelectedUser(users.find(u => u.id === userId));
-        handleClose(); 
+        handleClose();
     };
-    
+
 
     const handleOpenMatches = () => {
         setOpenMatchesDialog(true);
@@ -162,7 +162,7 @@ const Match = () => {
             position: 'relative',
             textAlign: 'center'
         }}>
-            <Typography variant="h4" sx={{marginTop: '60px', fontWeight: 'bold'}} gutterBottom>Become Roommates with a user</Typography>
+            <Typography variant="h4" sx={{ marginTop: '60px', fontWeight: 'bold' }} gutterBottom>Become Roommates with a user</Typography>
             <FormControl fullWidth style={{ margin: '20px 0' }}>
                 <Autocomplete
                     id="user-select"
@@ -221,10 +221,10 @@ const Match = () => {
                 <DialogContent>
                     <List>
                         {Object.entries(matchRequests).filter(([key, value]) => value.status === 'accepted').map(([key, value]) => (
-                            <ListItem 
-                            key={key} 
-                            button
-                            onClick={() => handleMatchClick(key)}>
+                            <ListItem
+                                key={key}
+                                button
+                                onClick={() => handleMatchClick(key)}>
                                 <ListItemText primary={`Matched with ${users.find(u => u.id === key).name}`} />
                             </ListItem>
                         ))}
@@ -240,8 +240,8 @@ const Match = () => {
                 <DialogContent>
                     <List>
                         {Object.entries(matchRequests).filter(([key, value]) => value.status === 'pending').map(([key, value]) => (
-                            <ListItem 
-                                key={key} 
+                            <ListItem
+                                key={key}
                                 button
                                 onClick={() => handleMatchClick(key)}>
                                 <ListItemText primary={`Request pending with ${users.find(u => u.id === key).name}`} />
