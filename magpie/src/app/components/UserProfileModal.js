@@ -1,5 +1,5 @@
 "use client";
-import { Grid, Button, Card, Typography, Modal, ModalContent, Box, Dialog, Container, useMediaQuery } from "@mui/material";
+import { Grid, Button, Box, Card, Typography, Modal, ModalContent, Dialog, Container, useMediaQuery } from "@mui/material";
 import { UserAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -20,8 +20,7 @@ const UserProfileModal = ({ userProfile, matchingScores }) => {
     const [receivedRequests, setReceivedRequests] = useState({});
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
-    const [hasSubmittedResponses, setHasSubmittedResponses] = useState(false);
-    const { user, logOut, isAdmin } = UserAuth();
+    const { user } = UserAuth();
     const isMobile = useMediaQuery('(max-width:600px)');
 
     useEffect(() => {
@@ -32,7 +31,6 @@ const UserProfileModal = ({ userProfile, matchingScores }) => {
             const q = query(collection(db, 'onboardingQuestions'), orderBy('order'));
             const querySnapshot = await getDocs(q);
             const fetchedQuestions = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            let existingResponses = {};
             setQuestions(fetchedQuestions);
             setIsLoading(false);
         };
@@ -151,7 +149,7 @@ const UserProfileModal = ({ userProfile, matchingScores }) => {
                     >
                         Message
                     </Button>
-                    <Button onClick={() => handleDeleteRequest(userId)} color="secondary">Unfriend</Button>
+                    <Button sx={{color:'red'}} onClick={() => handleDeleteRequest(userId)} color="secondary">Unfriend</Button>
                 </>
             );
         }
@@ -163,15 +161,27 @@ const UserProfileModal = ({ userProfile, matchingScores }) => {
         if (receivedRequest && receivedRequest.type === 'received') {
             return (
                 <>
-                    <Button onClick={() => handleRequestResponse(userId, 'accept')} color="primary">Accept</Button>
-                    <Button onClick={() => handleRequestResponse(userId, 'decline')} color="secondary">Decline</Button>
+                    <Button sx={{
+                        color: 'white',
+                        backgroundColor: 'rgba(33, 133, 220, 1)', borderRadius: '10px', '&:hover': {
+                            backgroundColor: 'rgba(33, 133, 220, 0.8)', // Slightly lighter blue for hover
+                            color: 'white' // Ensure text color stays white on hover
+                        }
+                    }} onClick={() => handleRequestResponse(userId, 'accept')} color="primary">Accept</Button>
+                    <Button sx={{color:'red'}} onClick={() => handleRequestResponse(userId, 'decline')} color="secondary">Decline</Button>
                 </>
             );
         } else if (sentRequest && sentRequest.type === 'sent') {
-            return <Button onClick={() => handleSendRequest(userId)} color="primary">Cancel Pending Request</Button>;
+            return <Button sx={{color:'red'}} onClick={() => handleSendRequest(userId)} color="primary">Cancel Pending Request</Button>;
         }
 
-        return <Button onClick={() => handleSendRequest(userId)}>Send Friend Request</Button>;
+        return <Button variant="primary" sx={{
+            color: 'white',
+            backgroundColor: 'rgba(33, 133, 220, 1)', borderRadius: '10px', '&:hover': {
+                backgroundColor: 'rgba(33, 133, 220, 0.8)', // Slightly lighter blue for hover
+                color: 'white' // Ensure text color stays white on hover
+            }
+        }} onClick={() => handleSendRequest(userId)}>Send Friend Request</Button>;
     };
 
     const questionsObject = {};
@@ -243,25 +253,21 @@ const UserProfileModal = ({ userProfile, matchingScores }) => {
                     }}
                 >
                     <Grid container spacing={2} sx={{ flex: '1 1 auto', overflowY: 'auto', padding: '2rem' }}>
-                        <Grid item lg={2} xs={12}  sx={{ textAlign: 'center' }}>
-                            <img
-                                src={userProfile.imageUrl || `https://via.placeholder.com/150x150.png?text=No+Image`}
-                                alt={`User ${userProfile.name}`}
-                                style={{
-                                    width: isMobile ? '100px' : '150px',
-                                    height: isMobile ? '100px' : '150px',
-                                    borderRadius: '50%',
-                                    margin: 'auto',
-                                }}
-                            />
-                        </Grid>
-                        <Grid item lg={7.5} xs={12}  sx={{ paddingTop: isMobile ? '1rem' : '70px', paddingLeft: isMobile ? '0' : '40px', textAlign: isMobile ? 'center' : 'center', marginTop: '30px' }}>
-                            <Typography variant="h4" sx={{ fontFamily: 'poppins, sans-serif' }}>
-                                {userProfile.name || "Name not available"}
-                            </Typography>
-
-                        </Grid>
-                        <Grid item lg={1} xs={12} sx={{ paddingTop: isMobile ? '1rem' : '70px', paddingLeft: isMobile ? '0' : '40px', textAlign: isMobile ? 'center' : 'center', marginTop: '30px' }} >
+                        <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <img
+                                    src={userProfile.imageUrl || `https://via.placeholder.com/150x150.png?text=No+Image`}
+                                    alt={`User ${userProfile.name}`}
+                                    style={{
+                                        width: isMobile ? '100px' : '150px',
+                                        height: isMobile ? '100px' : '150px',
+                                        borderRadius: '50%',
+                                    }}
+                                />
+                                <Typography variant="h4" sx={{ marginLeft: '1rem', fontFamily: 'Poppins, sans-serif' }}>
+                                    {userProfile.name || "Name not available"}
+                                </Typography>
+                            </Box>
                             <div style={{ width: isMobile ? 75 : 105, height: isMobile ? 75 : 105 }}>
                                 <CircularProgressbar
                                     styles={{ path: { stroke: `rgba(33, 133, 220, 1)` }, text: { fill: '#2185dc' } }}
@@ -270,75 +276,49 @@ const UserProfileModal = ({ userProfile, matchingScores }) => {
                                 />
                             </div>
                         </Grid>
-                        <Grid item xs={12} sx={{ textAlign: 'center', marginTop: isMobile ? '1rem' : '2.2rem' }}>
-                            <Typography variant="h4" className="matchtitle" sx={{ color: 'blue', fontSize: 25, fontWeight: 450 }}>
-                                {'BIO'}
+                        <Grid item xs={12} sx={{ textAlign: 'center', marginTop: '0.5rem' }}>
+                            <Typography variant="h5" sx={{ color: 'rgba(33, 133, 220, 1)', fontWeight: 'bold', textAlign: 'center' }}>
+                                BIO
                             </Typography>
-                        </Grid>
-                        <Grid item xs={12} sx={{ textAlign: 'center', paddingBottom: 10 }}>
-                            <Typography variant="h4" sx={{ fontSize: 25, fontWeight: 400 }}>
+                            <Typography variant="body1" fontSize={20} sx={{ marginTop: '0.3rem' }}>
                                 {userProfile.bio}
                             </Typography>
                         </Grid>
-                        <Grid item xs={2} sx={{ textAlign: 'center', padding: '1rem' }}>
+                        <Grid item xs={2} sx={{ textAlign: 'center', padding: '0.5rem', marginBottom: '-10px', paddingBottom: '0px' }}>
                             <IconButton aria-label="previous" onClick={previousItem}>
                                 <ChevronLeftIcon />
                             </IconButton>
                         </Grid>
-                        <Grid item xs={8} sx={{ textAlign: 'center' }}>
-                            <Typography variant="h4" className="matchtitle" sx={{ color: 'blue', fontSize: 25, fontWeight: 450 }}>
-                                {'RESPONSES'}
+                        <Grid item xs={8.2} sx={{ textAlign: 'center', padding: '0.5rem', marginBottom: '-10px' }}>
+                            <Typography variant="h5" sx={{ color: 'rgba(33, 133, 220, 1)', fontWeight: 'bold', textAlign: 'center' }}>
+                                RESPONSES
                             </Typography>
                         </Grid>
-                        <Grid item xs={2} sx={{ textAlign: 'center', padding: '1rem' }}>
+                        <Grid item xs={1.8} sx={{ textAlign: 'center', padding: '0.5rem', marginBottom: '-10px' }}>
                             <IconButton aria-label="next" onClick={nextItem}>
                                 <ChevronRightIcon />
                             </IconButton>
                         </Grid>
-                        <Grid item xs={12} sx={{ textAlign: 'center', paddingBottom: '1rem' }}>
-                            <Typography variant="h4" sx={{ fontSize: 25, fontWeight: 700 }}>
+                        <Grid item xs={12} sx={{ textAlign: 'center', paddingBottom: '0.5rem', marginTop: '0.3rem' }}>
+                            <Typography variant="h6" fontSize={25} sx={{ fontWeight: 'bold' }}>
                                 {questionsObject[currentKey]?.questionText}
                             </Typography>
-                            <Typography variant="h4" sx={{ fontSize: 25, fontWeight: 400, paddingTop: 4 }}>
+                            <Typography variant="body1" fontSize={20} sx={{ marginTop: '2rem' }}>
                                 {currentItem?.visibility ? currentItem?.response : <LockIcon />}
                             </Typography>
                         </Grid>
-
                     </Grid>
                     <Grid container justifyContent="center" sx={{ padding: '1rem' }}>
                         <Grid item>
-                            <Button
-                                onClick={() => handleSendRequest(userProfile.id)}
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                    textTransform: 'none',
-                                    borderRadius: '10px',
-                                    padding: '10px 20px',
-                                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                                    fontWeight: 'bold',
-                                    fontSize: '0.9rem',
-                                    transition: 'all 0.3s ease-out',
-                                    background: 'linear-gradient(45deg, #000022 30%, #555599 90%)',
-                                    color: '#ffffff',
-                                    '&:hover': {
-                                        background: 'linear-gradient(45deg, #000022 30%, #555599 90%)',
-                                        transform: 'scale(1.05)',
-                                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
-                                    },
-                                }}
-                            >
-                                {renderRequestButtons(userProfile.id)}
-                            </Button>
+                            {renderRequestButtons(userProfile.id)}
                             {selectedUserId && <AdminMessages userId={selectedUserId} onClose={handleClose} />}
                         </Grid>
                     </Grid>
                 </Dialog>
             </Container>
         </>
-
-
     );
 };
 
 export default UserProfileModal;
+
