@@ -204,9 +204,6 @@ function ResponsiveAppBar() {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                <MenuItem onClick={() => { router.push('/about') }}>
-                                    <Typography textAlign="center">{'About'}</Typography>
-                                </MenuItem>
                                 <MenuItem onClick={() => { router.push('/profile') }}>
                                     <Typography textAlign="center">{'Profile'}</Typography>
                                 </MenuItem>
