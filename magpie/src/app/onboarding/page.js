@@ -77,7 +77,7 @@ const Onboarding = () => {
     const responsesForFirestore = Object.keys(responses).reduce((acc, questionId) => {
       acc[questionId] = {
         ...responses[questionId],
-        visibility: responses[questionId].visibility || true  
+        visibility: responses[questionId].visibility || false  
       };
       return acc;
     }, {});
@@ -132,7 +132,7 @@ const Onboarding = () => {
               ))}
             </Select>
             <FormControlLabel
-              control={<Checkbox checked={responses[currentQuestion.id]?.visibility || true} onChange={(e) => handleResponseChange(e, currentQuestion.id, 'visibility')} />}
+              control={<Checkbox defaultChecked={true} checked={responses[currentQuestion.id]?.visibility || false} onChange={(e) => handleResponseChange(e, currentQuestion.id, 'visibility')} />}
               label="Make response visible"
             />
           </FormControl>

@@ -7,6 +7,7 @@ import { UserAuth } from '../context/AuthContext';
 import "../globals.css";
 import { motion } from 'framer-motion';
 import Confetti from 'react-confetti';
+import { getMatchingScores } from '../components/matching';
 
 const Match = () => {
     const { user } = UserAuth();
@@ -156,6 +157,8 @@ const Match = () => {
     };
 
     return (
+        <div style={{ backgroundImage: 'linear-gradient(135deg, #003087, #ffb914)',
+    minHeight: '100vh'}}>
         <Container style={{
             minHeight: '100vh',
             padding: '20px',
@@ -254,6 +257,7 @@ const Match = () => {
                 </DialogActions>
             </Dialog>
         </Container>
+        </div>
     );
 };
 
