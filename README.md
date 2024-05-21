@@ -41,11 +41,11 @@ Fully responsive design that ensures a smooth user experience on both desktop an
 - **Material-UI**: React components for faster and easier web development.
 
 ### Backend
-- **Firebase**: For authentication, Firestore for the database, and hosting.
+- **Firebase**: For authentication, Firestore for the database.
 
 ### Other Tools
-- **Splitwise API**: For managing shared expenses.
 - **Git**: Version control system.
+- **Render**: For hosting website
 
 ## Installation
 
