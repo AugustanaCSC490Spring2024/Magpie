@@ -1,11 +1,16 @@
 # Roomixer - Roommate Matching Application
 Welcome to **Magpie**, a comprehensive and intuitive roommate matching application designed to streamline the process of finding the perfect roommate .Magpie helps you find compatible roommates based on shared interests, lifestyle preferences, and more.
 
-# Here is a link of our development blog for this project from the first day till the last, posted weekly
+# Here is the link for our app
+https://roomixer-56aa.onrender.com/
+
+## Here is a link of our development blog for this project from the first day till the last, posted weekly
 https://development-blog-rommixer.vercel.app
 
-
 ## Features
+
+### Admin and User side
+This app is a full scale application that allows communication between admins and users. If your a developer, you can switch to become an admin by adding your email in the adminEmails in the authcontext.js file under context. 
 
 ### Advanced Matching Algorithm
 Magpie uses a sophisticated matching algorithm that takes into account various parameters to ensure compatibility. This includes preferences on cleanliness, noise levels, social habits, and more.
