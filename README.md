@@ -1,8 +1,8 @@
 # Roomixer - Roommate Matching Application
-Welcome to **Roomixer**, a comprehensive and intuitive roommate matching application designed to streamline the process of finding the perfect roommate. Roomixer helps you find compatible roommates based on shared interests, lifestyle preferences, and more.
+Welcome to **Roommixer**, a comprehensive and intuitive roommate matching application designed to streamline the process of finding the perfect roommate. Roommixer helps you find compatible roommates based on shared interests, lifestyle preferences, and more.
 
 # Here is the link for our app
-https://roomixer-56aa.onrender.com/
+www.roommixer.com
 
 ## Here is a link of our development blog for this project from the first day till the last, posted weekly
 https://development-blog-rommixer.vercel.app
