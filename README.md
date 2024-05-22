@@ -1,4 +1,4 @@
-# Roomixer - Roommate Matching Application
+# Roommixer - Roommate Matching Application
 Welcome to **Roommixer**, a comprehensive and intuitive roommate matching application designed to streamline the process of finding the perfect roommate. Roommixer helps you find compatible roommates based on shared interests, lifestyle preferences, and more.
 
 # Here is the link for our app
